@@ -6,3 +6,5 @@ build
 wp-cli*.yml
 bower_components
 node_modules
+dist/*
+!dist/.gitadd
