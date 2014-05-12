@@ -17,6 +17,15 @@
     "alternate": "lib/Arrow/AssetManager/%s.php"
   },
 
+  "lib/Arrow/TwigHelper/*.php": {
+    "type": "twig",
+    "test": "test/Arrow/TwigHelper/%sTest.php"
+  },
+  "test/Arrow/TwigHelper/*Test.php": {
+    "type": "test",
+    "alternate": "lib/Arrow/TwigHelper/%s.php"
+  },
+
   "lib/Arrow/OptionsManager/*.php": {
     "type": "options",
     "test": "test/Arrow/OptionsManager/%sTest.php"
