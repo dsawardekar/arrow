@@ -2,8 +2,8 @@
 
 class ArrowPluginLoader {
 
-  static $instance = null;
-  static function getInstance() {
+  static public $instance = null;
+  static public function getInstance() {
     if (is_null(self::$instance)) {
       self::$instance = new ArrowPluginLoader();
     }
@@ -13,15 +13,11 @@ class ArrowPluginLoader {
 
   public $plugins = array();
 
-  function __construct() {
+  public function __construct() {
     add_action('plugins_loaded', array($this, 'load'));
   }
 
-  function isRegistered($name) {
-    return array_key_exists($name, $this->plugins);
-  }
-
-  function register($name, $arrowVersion, $callback) {
+  public function register($name, $arrowVersion, $callback) {
     if ($this->isRegistered($name)) {
       return;
     }
@@ -33,6 +29,10 @@ class ArrowPluginLoader {
     );
 
     $this->plugins[$name] = $plugin;
+  }
+
+  function isRegistered($name) {
+    return array_key_exists($name, $this->plugins);
   }
 
   function load() {
