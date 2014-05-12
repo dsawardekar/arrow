@@ -1,0 +1,10 @@
+{
+  "lib/Arrow/*.php": {
+    "type": "arrow",
+    "test": "test/Arrow/%sTest.php"
+  },
+  "test/Arrow/*Test.php": {
+    "type": "test",
+    "alternate": "lib/Arrow/%s.php"
+  }
+}
