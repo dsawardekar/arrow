@@ -17,6 +17,9 @@
   "require-dev": {
     "phpunit/phpunit": "~3.7.0"
   },
+  "require":{
+    "dsawardekar/encase-php": "~0.1.0"
+  },
   "autoload": {
     "psr-4": {
       "Arrow\\": "lib/Arrow"
