@@ -25,6 +25,8 @@ class TwigPrecompilerAppTest extends \PHPUnit_Framework_TestCase {
     $sources = array('test/templates');
     $target  = 'dist/templates';
 
+    $this->app->sources = $sources;
+    $this->app->targetDir = $target;
     $this->app->compile($sources, $target);
 
     $reaper = $this->app->reaper;

@@ -9,6 +9,8 @@ class TwigPrecompilerApp {
 
   public $opts   = null;
   public $reaper = null;
+  public $sources = null;
+  public $targetDir = null;
 
   function run() {
     $this->loadOpts();
@@ -32,12 +34,20 @@ class TwigPrecompilerApp {
   }
 
   function getSourceDirs() {
-    $sources = $this->opts['s'];
-    return explode(',', $sources);
+    if (is_null($this->sources)) {
+      $sources = $this->opts['s'];
+      $this->sources = explode(',', $sources);
+    }
+
+    return $this->sources;
   }
 
   function getTargetDir() {
-    return $this->opts['t'];
+    if (is_null($this->targetDir)) {
+      $this->targetDir = $this->opts['t'];
+    }
+
+    return $this->targetDir;
   }
 
   function loadOpts() {
