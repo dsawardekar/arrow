@@ -110,4 +110,12 @@ class PluginMeta {
 
     return $this->stylesheetOptions;
   }
+
+  function getCustomStylesheet($name = 'custom.css') {
+    return get_stylesheet_directory() . '/' . $this->getSlug() . '/' . $name;
+  }
+
+  function hasCustomStylesheet($name = 'custom.css') {
+    return file_exists($this->getCustomStylesheet($name));
+  }
 }

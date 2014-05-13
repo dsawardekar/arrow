@@ -8,6 +8,11 @@ class OptionsValidator {
 
   public $validator;
   public $options;
+  public $pluginMeta;
+
+  function needs() {
+    return array('pluginMeta');
+  }
 
   function build() {
     $this->loadCustomRules();
