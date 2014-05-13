@@ -1,0 +1,37 @@
+{
+  "lib/Arrow/*.php": {
+    "type": "arrow",
+    "test": "test/Arrow/%sTest.php"
+  },
+  "test/Arrow/*Test.php": {
+    "type": "test",
+    "alternate": "lib/Arrow/%s.php"
+  },
+
+  "lib/Arrow/AssetManager/*.php": {
+    "type": "asset",
+    "test": "test/Arrow/AssetManager/%sTest.php"
+  },
+  "test/Arrow/AssetManager/*Test.php": {
+    "type": "test",
+    "alternate": "lib/Arrow/AssetManager/%s.php"
+  },
+
+  "lib/Arrow/TwigHelper/*.php": {
+    "type": "twig",
+    "test": "test/Arrow/TwigHelper/%sTest.php"
+  },
+  "test/Arrow/TwigHelper/*Test.php": {
+    "type": "test",
+    "alternate": "lib/Arrow/TwigHelper/%s.php"
+  },
+
+  "lib/Arrow/OptionsManager/*.php": {
+    "type": "options",
+    "test": "test/Arrow/OptionsManager/%sTest.php"
+  },
+  "test/Arrow/OptionsManager/*Test.php": {
+    "type": "test",
+    "alternate": "lib/Arrow/OptionsManager/%s.php"
+  }
+}

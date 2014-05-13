@@ -1,0 +1,9 @@
+#!/usr/bin/env php
+<?php
+
+require_once basename(__FILE__) . '/../vendor/autoload.php';
+
+use Arrow\TwigHelper\TwigPrecompilerApp;
+
+$app = new TwigPrecompilerApp();
+$app->run();
