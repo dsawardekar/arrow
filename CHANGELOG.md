@@ -1,5 +1,10 @@
 # Changelog
 
+### 0.3.1
+
+* Adds helpers to check for custom stylesheets.
+* Adds pluginMeta need to OptionsValidator.
+
 ### 0.3.0
 
 * Adds ifdef to prevent class redeclaration.
