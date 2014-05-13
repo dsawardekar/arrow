@@ -86,4 +86,21 @@ class PluginMetaTest extends \WP_UnitTestCase {
     $this->assertEquals('all', $options['media']);
   }
 
+  function test_it_can_build_path_to_custom_stylesheet() {
+    $actual = $this->meta->getCustomStylesheet();
+    $this->assertStringEndsWith('/my-plugin/custom.css', $actual);
+  }
+
+  function test_it_can_build_path_to_custom_named_stylesheet() {
+    $actual = $this->meta->getCustomStylesheet('foo.css');
+    $this->assertStringEndsWith('/my-plugin/foo.css', $actual);
+  }
+
+  function test_it_knows_if_custom_stylesheet_does_not_exists() {
+    $this->assertFalse($this->meta->hasCustomStylesheet());
+  }
+
+  // how to test if_exists case that will work over travis?
+  // TODO: travis permissions
+
 }
