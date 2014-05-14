@@ -53,7 +53,7 @@ class ArrowPluginLoaderTest extends \WP_UnitTestCase {
     );
 
     $actual = $this->loader->comparePlugins($a, $b);
-    $this->assertEquals(-1, $actual);
+    $this->assertEquals(1, $actual);
   }
 
   function test_it_knows_if_plugin_a_is_less_than_b() {
@@ -68,7 +68,7 @@ class ArrowPluginLoaderTest extends \WP_UnitTestCase {
     );
 
     $actual = $this->loader->comparePlugins($a, $b);
-    $this->assertEquals(1, $actual);
+    $this->assertEquals(-1, $actual);
   }
 
   function test_it_knows_if_plugin_a_equals_b() {
@@ -96,9 +96,9 @@ class ArrowPluginLoaderTest extends \WP_UnitTestCase {
   }
 
   function test_it_can_sort_plugins_into_correct_order() {
-    $this->loader->register('a', '1.0', null);
+    $this->loader->register('a', '3.0', null);
     $this->loader->register('b', '2.0', null);
-    $this->loader->register('c', '3.0', null);
+    $this->loader->register('c', '1.0', null);
 
     $plugins = $this->loader->sortPlugins();
     $keys = $this->getKeys($plugins);
@@ -114,7 +114,7 @@ class ArrowPluginLoaderTest extends \WP_UnitTestCase {
     $plugins = $this->loader->sortPlugins();
     $keys = $this->getKeys($plugins);
 
-    $this->assertEquals(array('b', 'c', 'a'), $keys);
+    $this->assertEquals(array('a', 'c', 'b'), $keys);
   }
 
   function test_it_can_send_plugin_event() {
@@ -155,7 +155,7 @@ class ArrowPluginLoaderTest extends \WP_UnitTestCase {
 
     $this->loader->load();
 
-    $this->assertEquals(array('b', 'c', 'a'), $this->pluginNames);
+    $this->assertEquals(array('a', 'c', 'b'), $this->pluginNames);
   }
 
   function test_it_is_a_singleton() {
@@ -175,7 +175,7 @@ class ArrowPluginLoaderTest extends \WP_UnitTestCase {
 
     do_action('plugins_loaded');
 
-    $this->assertEquals(array('b', 'c', 'a'), $this->pluginNames);
+    $this->assertEquals(array('a', 'c', 'b'), $this->pluginNames);
   }
 
 }
