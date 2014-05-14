@@ -51,4 +51,12 @@ class StylesheetText extends \WP_UnitTestCase {
 
     $this->assertTrue(wp_style_is('foo', 'enqueued'));
   }
+
+  function test_it_can_enqueue_custom_style() {
+    $this->stylesheet->slug = 'theme-custom';
+    $this->stylesheet->register();
+    $this->stylesheet->enqueue();
+
+    $this->assertTrue(wp_style_is('stylesheet_plugin-custom', 'enqueued'));
+  }
 }

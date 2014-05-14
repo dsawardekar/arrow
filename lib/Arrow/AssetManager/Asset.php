@@ -103,4 +103,15 @@ class Asset {
     return array();
   }
 
+  function uniqueSlug() {
+    if ($this->isCustomSlug()) {
+      $slug = preg_replace('/^theme-/', '', $this->slug);
+      $slug = $this->pluginMeta->getSlug() . "-$slug";
+    } else {
+      $slug = $this->slug;
+    }
+
+    return $slug;
+  }
+
 }
