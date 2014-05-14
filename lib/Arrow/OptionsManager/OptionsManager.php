@@ -12,6 +12,8 @@ class OptionsManager {
       ->singleton('twigHelper', 'Arrow\TwigHelper\TwigHelper');
 
     $container->initializer('twigHelper', array($this, 'initializeTwig'));
+
+    CustomValitronRules::load();
   }
 
   function initializeTwig($twigHelper, $container) {
