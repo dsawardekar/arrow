@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.4.1
+
+* Makes slug unique when using theme-custom.
+
 ### 0.4.0
 
 * Reverses plugin order to match Composer's default 'prepend-autoloader'
