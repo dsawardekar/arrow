@@ -16,7 +16,7 @@ class Stylesheet extends Asset {
 
   public function register() {
     wp_register_style(
-      $this->slug,
+      $this->uniqueSlug(),
       $this->path(),
       $this->dependencies,
       $this->option('version'),
@@ -25,7 +25,7 @@ class Stylesheet extends Asset {
   }
 
   function enqueue() {
-    wp_enqueue_style($this->slug);
+    wp_enqueue_style($this->uniqueSlug());
   }
 
 }

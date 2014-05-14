@@ -105,4 +105,18 @@ class AssetTest extends \WP_UnitTestCase {
   function onLocalize($asset) {
     return array('foo' => 'bar');
   }
+
+  function test_it_can_build_unique_slug() {
+    $this->asset->slug = 'theme-foo';
+    $actual = $this->asset->uniqueSlug();
+
+    $this->assertEquals("my_plugin-foo", $actual);
+  }
+
+  function test_it_can_build_unique_custom_slug() {
+    $this->asset->slug = 'theme-custom';
+    $actual = $this->asset->uniqueSlug();
+
+    $this->assertEquals("my_plugin-custom", $actual);
+  }
 }
