@@ -46,4 +46,8 @@ class OptionsManagerTest extends \WP_UnitTestCase {
     $this->assertEquals(getcwd() . '/test', $twigHelper->getBaseDir());
   }
 
+  function test_it_loads_custom_valitron_rules() {
+    $this->assertNotNull(CustomValitronRules::$instance);
+  }
+
 }

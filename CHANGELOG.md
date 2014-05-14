@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.4.2
+
+* Adds 'safeText' custom Valitron rule.
+
 ### 0.4.1
 
 * Makes slug unique when using theme-custom.
