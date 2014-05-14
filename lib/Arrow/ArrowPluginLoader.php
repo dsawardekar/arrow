@@ -69,15 +69,16 @@ if (class_exists('ArrowPluginLoader') === false) {
       return $plugins;
     }
 
-    /* order is flipped because we want descending order */
+    /* Ascending order, ensures default 'prepend-autoloader' works
+     * out of the box */
     function comparePlugins(&$a, &$b) {
       $versionA = $a['arrowVersion'];
       $versionB = $b['arrowVersion'];
 
       if (version_compare($versionA, $versionB, '<')) {
-        return 1;
-      } elseif (version_compare($versionA, $versionB, '>')) {
         return -1;
+      } elseif (version_compare($versionA, $versionB, '>')) {
+        return 1;
       } else {
         return 0;
       }
