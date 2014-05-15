@@ -4,6 +4,6 @@ namespace Arrow;
 
 class Version {
 
-  static public $version = '0.4.2';
+  static public $version = '0.5.0';
 
 }
