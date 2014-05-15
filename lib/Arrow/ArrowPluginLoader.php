@@ -14,43 +14,71 @@ if (class_exists('ArrowPluginLoader') === false) {
     }
 
     public $plugins = array();
+    public $currentPlugin = null;
 
     public function __construct() {
       add_action('plugins_loaded', array($this, 'load'));
     }
 
-    public function register($name, $arrowVersion, $callback) {
-      if ($this->isRegistered($name)) {
+    public function register($file, $arrowVersion, $callback) {
+      if ($this->isRegistered($file)) {
         return;
       }
 
       $plugin = array(
-        'name' => $name,
+        'file' => $file,
         'arrowVersion' => $arrowVersion,
         'callback' => $callback
       );
 
-      $this->plugins[$name] = $plugin;
+      $this->plugins[$file] = $plugin;
     }
 
-    function isRegistered($name) {
-      return array_key_exists($name, $this->plugins);
+    function isRegistered($file) {
+      return array_key_exists($file, $this->plugins);
     }
 
     function load() {
       $sorted = $this->sortPlugins();
 
       foreach ($sorted as $plugin) {
+        $this->requirePlugin($plugin);
+      }
+
+      foreach ($sorted as $plugin) {
         $this->loadPlugin($plugin);
+      }
+    }
+
+    function requirePlugin($plugin) {
+      $file = $plugin['file'];
+      $path = $this->getPluginAutoloadPath($file);
+
+      $this->requirePluginAutoload($path);
+    }
+
+    function getPluginAutoloadPath($file) {
+      return plugin_dir_path($file) . 'vendor/autoload.php';
+    }
+
+    function requirePluginAutoload($path) {
+      if (file_exists($path)) {
+        if (!defined('PHPUNIT_RUNNER')) {
+          require_once($path);
+        } else {
+          require($path);
+        }
       }
     }
 
     function loadPlugin(&$plugin) {
       $callback = $plugin['callback'];
-      $name     = $plugin['name'];
+      $file     = $plugin['file'];
+      $name     = basename($file, '.php');
+      $this->currentPlugin = $name;
 
       if (!is_null($callback)) {
-        call_user_func($callback, $name);
+        call_user_func($callback);
       }
 
       $this->sendPluginEvent($name, 'loaded');
@@ -59,7 +87,7 @@ if (class_exists('ArrowPluginLoader') === false) {
 
     function sendPluginEvent($name, $eventType) {
       $action = 'arrow-plugin-' . $name . "-$eventType";
-      do_action($action, $name);
+      do_action($action);
     }
 
     function sortPlugins() {
