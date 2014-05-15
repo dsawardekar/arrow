@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.5.1
+
+* Fixes issues with travis.
+
 ### 0.5.0
 
 * Adds automatic vendor autoloading.
