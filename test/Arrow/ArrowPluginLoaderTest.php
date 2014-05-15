@@ -9,46 +9,58 @@ class ArrowPluginLoaderTest extends \WP_UnitTestCase {
   public $didReady    = false;
   public $didCallback = false;
   public $pluginNames = array();
+  public $file;
+  public $one;
+  public $two;
+  public $three;
 
   function setUp() {
     parent::setUp();
 
     $this->loader = new ArrowPluginLoader();
+    $this->file = getcwd() . '/my-plugin.php';
+
+    $GLOBALS['arrowPlugins'] = array();
+
+    $plugins     = getcwd() . '/test/plugins';
+    $this->one   = $plugins . '/one/one.php';
+    $this->two   = $plugins . '/two/two.php';
+    $this->three = $plugins . '/three/three.php';
   }
 
-  function pluginLoaded($name) {
+  function pluginLoaded() {
     $this->didLoad = true;
   }
 
-  function pluginReady($name) {
+  function pluginReady() {
     $this->didReady = true;
   }
 
-  function pluginCallback($name) {
+  function pluginCallback() {
     $this->didCallback = true;
-    array_push($this->pluginNames, $name);
+    array_push($this->pluginNames, $this->loader->currentPlugin);
   }
 
   function test_it_knows_if_plugin_is_not_registered() {
-    $this->assertFalse($this->loader->isRegistered('my-plugin'));
+    $this->assertFalse($this->loader->isRegistered($this->file));
   }
 
   function test_it_knows_if_plugin_is_registered() {
     $this->loader->register(
-      'my-plugin', '0.1.0', array($this, 'onPluginLoad')
+      $this->file, '0.1.0', array($this, 'onPluginLoad')
     );
 
-    $this->assertTrue($this->loader->isRegistered('my-plugin'));
+    $this->assertTrue($this->loader->isRegistered($this->file));
   }
 
   function test_it_knows_if_plugin_a_is_greater_than_b() {
     $a = array(
-      'name' => 'a',
+      'file' => 'a',
       'arrowVersion' => '0.2.0'
     );
 
     $b = array(
-      'name' => 'b',
+      'file' => 'b',
       'arrowVersion' => '0.1.0'
     );
 
@@ -58,12 +70,12 @@ class ArrowPluginLoaderTest extends \WP_UnitTestCase {
 
   function test_it_knows_if_plugin_a_is_less_than_b() {
     $a = array(
-      'name' => 'a',
+      'file' => 'a',
       'arrowVersion' => '0.1.0'
     );
 
     $b = array(
-      'name' => 'b',
+      'file' => 'b',
       'arrowVersion' => '0.2.0'
     );
 
@@ -89,7 +101,7 @@ class ArrowPluginLoaderTest extends \WP_UnitTestCase {
   function getKeys(&$items) {
     $keys = array();
     foreach ($items as $item) {
-      array_push($keys, $item['name']);
+      array_push($keys, $item['file']);
     }
 
     return $keys;
@@ -117,6 +129,35 @@ class ArrowPluginLoaderTest extends \WP_UnitTestCase {
     $this->assertEquals(array('a', 'c', 'b'), $keys);
   }
 
+  function test_it_can_build_path_to_plugins_autoloader() {
+    $one = getcwd() . '/test/plugins/one/one.php';
+    $actual = $this->loader->getPluginAutoloadPath($one);
+    $this->assertEquals(getcwd() . '/test/plugins/one/vendor/autoload.php', $actual);
+  }
+
+  function test_it_can_load_plugins_autoloader() {
+    $path = getcwd() . '/test/plugins/one/vendor/autoload.php';
+    $this->loader->requirePluginAutoload($path);
+
+    $this->assertEquals(array('one'), $GLOBALS['arrowPlugins']);
+  }
+
+  function test_it_does_not_require_autoload_if_missing() {
+    $path = getcwd() . '/test/plugins/missing/vendor/autoload.php';
+    $this->loader->requirePluginAutoload($path);
+    $this->assertEquals(array(), $GLOBALS['arrowPlugins']);
+  }
+
+  function test_it_can_require_plugins_autoloader_from_file() {
+    $plugin = array(
+      'file' => getcwd() . '/test/plugins/one/one.php'
+    );
+
+    $this->loader->requirePlugin($plugin);
+
+    $this->assertEquals(array('one'), $GLOBALS['arrowPlugins']);
+  }
+
   function test_it_can_send_plugin_event() {
     add_action('arrow-plugin-my-plugin-loaded', array($this, 'pluginLoaded'));
     $this->loader->sendPluginEvent('my-plugin', 'loaded');
@@ -125,7 +166,7 @@ class ArrowPluginLoaderTest extends \WP_UnitTestCase {
 
   function test_it_sends_plugin_events_on_plugin_load() {
     $plugin = array(
-      'name' => 'my-plugin',
+      'file' => 'my-plugin',
       'callback' => null
     );
 
@@ -139,7 +180,7 @@ class ArrowPluginLoaderTest extends \WP_UnitTestCase {
 
   function test_it_can_run_callback_on_plugin_load() {
     $plugin = array(
-      'name' => 'my-plugin',
+      'file' => 'my-plugin',
       'callback' => array($this, 'pluginCallback')
     );
 
@@ -149,13 +190,16 @@ class ArrowPluginLoaderTest extends \WP_UnitTestCase {
 
   function test_it_can_load_plugins_in_correct_order() {
     $callback = array($this, 'pluginCallback');
-    $this->loader->register('a', '2.0.5', $callback);
-    $this->loader->register('b', '2.7.1', $callback);
-    $this->loader->register('c', '2.6.2', $callback);
+    $this->loader->register($this->one, '2.0.5', $callback);
+    $this->loader->register($this->two, '2.7.1', $callback);
+    $this->loader->register($this->three, '2.6.2', $callback);
 
     $this->loader->load();
 
-    $this->assertEquals(array('a', 'c', 'b'), $this->pluginNames);
+    $expected = array('one', 'three', 'two');
+
+    $this->assertEquals($expected, $GLOBALS['arrowPlugins']);
+    $this->assertEquals($expected, $this->pluginNames);
   }
 
   function test_it_is_a_singleton() {
@@ -167,15 +211,18 @@ class ArrowPluginLoaderTest extends \WP_UnitTestCase {
   }
 
   function test_it_can_automatically_load_plugins_in_correct_order() {
-    $loader = ArrowPluginLoader::getInstance();
+    $this->loader = ArrowPluginLoader::getInstance();
     $callback = array($this, 'pluginCallback');
-    $loader->register('a', '3.0.5', $callback);
-    $loader->register('b', '3.7.1', $callback);
-    $loader->register('c', '3.6.2', $callback);
+    $this->loader->register($this->one, '3.0.5', $callback);
+    $this->loader->register($this->two, '3.7.1', $callback);
+    $this->loader->register($this->three, '3.6.2', $callback);
 
     do_action('plugins_loaded');
 
-    $this->assertEquals(array('a', 'c', 'b'), $this->pluginNames);
+    $expected = array('one', 'three', 'two');
+
+    $this->assertEquals($expected, $GLOBALS['arrowPlugins']);
+    $this->assertEquals($expected, $this->pluginNames);
   }
 
 }
