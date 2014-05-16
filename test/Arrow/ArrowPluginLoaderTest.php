@@ -40,11 +40,6 @@ class ArrowPluginLoaderTest extends \WP_UnitTestCase {
     $this->didReady = true;
   }
 
-  function pluginCallback() {
-    $this->didCallback = true;
-    array_push($this->pluginNames, $this->loader->currentPlugin);
-  }
-
   function test_it_knows_if_plugin_is_not_registered() {
     $this->assertFalse($this->loader->isRegistered($this->bootstrap));
   }

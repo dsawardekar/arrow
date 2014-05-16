@@ -211,7 +211,7 @@ if (class_exists('ArrowPluginLoader') === false) {
         $plugin->run();
       }
 
-      $this->plugins = null;
+      $this->plugins = array();
       $this->loaded = true;
     }
 
