@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "0525a4b0fd965eaa2d22ed5ac50a5028",
+    "hash": "3e757c7c124a802ae1c9e7604241024b",
     "packages": [
         {
             "name": "dsawardekar/encase-php",

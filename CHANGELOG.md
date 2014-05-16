@@ -1,8 +1,12 @@
 # Changelog
 
+### 0.6.1
+
+* Fixes bug in ArrowPluginLoader Static API.
+
 ### 0.6.0
 
-* Major revisions to the ArrowPluginAutoloader.
+* Major revisions to the ArrowPluginLoader.
 * Switched to a declarative API, you declare the plugin class
   and the autoloader will take care of creating it at the right time
   in the right order.

@@ -168,10 +168,10 @@ if (class_exists('ArrowPluginLoader') === false) {
     }
 
     static public function load($file, $options) {
-      $pluginMeta = new PluginMeta($file, $options);
+      $pluginMeta = new ArrowPluginMeta($file, $options);
       $bootstrap  = new ArrowPluginBootstrap($pluginMeta);
 
-      $bootstrap->run();
+      $bootstrap->start();
     }
 
     public $plugins = array();

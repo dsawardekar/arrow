@@ -170,6 +170,34 @@ class ArrowPluginLoaderTest extends \WP_UnitTestCase {
     $this->assertEquals($expected, $GLOBALS['arrowPlugins']);
   }
 
+  function test_it_can_load_plugins_via_static_api() {
+    $options = array('plugin' => 'TestArrowPlugin', 'arrowVersion' => '2.0.5');
+    ArrowPluginLoader::load($this->one, $options);
+    $options = array('plugin' => 'TestArrowPlugin', 'arrowVersion' => '2.7.1');
+    ArrowPluginLoader::load($this->two, $options);
+    $options = array('plugin' => 'TestArrowPlugin', 'arrowVersion' => '2.6.2');
+    ArrowPluginLoader::load($this->three, $options);
+
+    do_action('plugins_loaded');
+
+    $expected = array('one', 'three', 'two');
+    $this->assertEquals($expected, $GLOBALS['arrowPlugins']);
+  }
+
+  function test_it_loads_plugins_only_once() {
+    ArrowPluginLoader::$instance = null;
+
+    $options = array('plugin' => 'TestArrowPlugin', 'arrowVersion' => '2.0.5');
+    ArrowPluginLoader::load($this->one, $options);
+
+    do_action('plugins_loaded');
+    do_action('plugins_loaded');
+
+    $expected = array('one');
+    $this->assertEquals($expected, $GLOBALS['arrowPlugins']);
+    $this->assertTrue(ArrowPluginLoader::getInstance()->loaded);
+  }
+
 }
 
 class TestArrowPlugin {
