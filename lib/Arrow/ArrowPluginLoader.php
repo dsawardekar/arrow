@@ -1,6 +1,160 @@
 <?php
 
+
 if (class_exists('ArrowPluginLoader') === false) {
+
+  class ArrowPluginMeta {
+
+    public $file;
+    public $options;
+    public $name         = null;
+    public $requirements = null;
+    public $arrowVersion = null;
+
+    function __construct($file, $options = array()) {
+      $this->file    = $file;
+      $this->options = $options;
+    }
+
+    function getFile() {
+      return $this->file;
+    }
+
+    function getOptions() {
+      return $this->options;
+    }
+
+    function getName() {
+      if (is_null($this->name)) {
+        if (array_key_exists('name', $this->options)) {
+          $this->name = $this->options['name'];
+        } else {
+          $this->name = basename($this->file, '.php');
+        }
+      }
+
+      return $this->name;
+    }
+
+    function getRequirements() {
+      if (is_null($this->requirements)) {
+        if (array_key_exists('requirements', $this->options)) {
+          $this->requirements = $this->options['requirements'];
+        } else {
+          $this->requirements = new WP_Min_Requirements();
+        }
+      }
+
+      return $this->requirements;
+    }
+
+    function getArrowVersion() {
+      if (is_null($this->arrowVersion)) {
+        if (array_key_exists('arrowVersion', $this->options)) {
+          $this->arrowVersion = $this->options['arrowVersion'];
+        } else {
+          $this->arrowVersion = '0.6.0';
+        }
+      }
+
+      return $this->arrowVersion;
+    }
+
+    function getPlugin() {
+      return $this->options['plugin'];
+    }
+
+  }
+
+  class ArrowPluginBootstrap {
+
+    public $pluginMeta;
+    public $didFauxPlugin = false;
+    public $didRegister   = false;
+
+    function __construct($pluginMeta) {
+      $this->pluginMeta = $pluginMeta;
+    }
+
+    function getPluginMeta() {
+      return $this->pluginMeta;
+    }
+
+    function start() {
+      $this->loadRequirements();
+      $requirements = $this->pluginMeta->getRequirements();
+
+      if ($requirements->satisfied()) {
+        $this->register();
+      } else {
+        $this->runFauxPlugin();
+      }
+    }
+
+    function register() {
+      $loader = ArrowPluginLoader::getInstance();
+      $loader->register($this);
+
+      $this->didRegister = true;
+    }
+
+    function run() {
+      $pluginClass = $this->pluginMeta->getPlugin();
+      $plugin      = $pluginClass::create($this->pluginMeta->getFile());
+      $name        = $this->pluginMeta->getName();
+
+      $plugin->enable();
+
+      $this->sendPluginEvent($name, 'ready');
+      return $plugin;
+    }
+
+    function sendPluginEvent($name, $eventType) {
+      $action = 'arrow-plugin-' . $name . "-$eventType";
+      do_action($action);
+    }
+
+    function runFauxPlugin() {
+      $plugin = new WP_Faux_Plugin(
+        $this->pluginMeta->getName(),
+        $this->pluginMeta->getRequirements()->getResults()
+      );
+
+      $this->didFauxPlugin = true;
+      $plugin->activate($this->pluginMeta->getFile());
+
+      return $plugin;
+    }
+
+    function getAutoloaderPath() {
+      $dir = plugin_dir_path($this->pluginMeta->getFile());
+      return $dir . 'vendor/autoload.php';
+    }
+
+    function autoload() {
+      $this->requireFile($this->getAutoloaderPath());
+    }
+
+    function getRequirementsPath() {
+      $dir = plugin_dir_path($this->pluginMeta->getFile());
+      return $dir . 'vendor/dsawardekar/wp-requirements/lib/Requirements.php';
+    }
+
+    function loadRequirements() {
+      $this->requireFile($this->getRequirementsPath());
+    }
+
+    function requireFile($path) {
+      if (file_exists($path)) {
+        if (!defined('PHPUNIT_RUNNER')) {
+          require_once($path);
+        } else {
+          require($path);
+        }
+      }
+    }
+
+  }
 
   class ArrowPluginLoader {
 
@@ -13,81 +167,52 @@ if (class_exists('ArrowPluginLoader') === false) {
       return self::$instance;
     }
 
-    public $plugins = array();
-    public $currentPlugin = null;
+    static public function load($file, $options) {
+      $pluginMeta = new PluginMeta($file, $options);
+      $bootstrap  = new ArrowPluginBootstrap($pluginMeta);
 
-    public function __construct() {
-      add_action('plugins_loaded', array($this, 'load'));
+      $bootstrap->run();
     }
 
-    public function register($file, $arrowVersion, $callback) {
-      if ($this->isRegistered($file)) {
+    public $plugins = array();
+    public $loaded  = false;
+
+    public function __construct() {
+      add_action('plugins_loaded', array($this, 'loadPlugins'));
+    }
+
+    public function register($bootstrap) {
+      $file = $bootstrap->getPluginMeta()->getFile();
+
+      if ($this->isRegistered($bootstrap)) {
         return;
       }
 
-      $plugin = array(
-        'file' => $file,
-        'arrowVersion' => $arrowVersion,
-        'callback' => $callback
-      );
-
-      $this->plugins[$file] = $plugin;
+      $this->plugins[$file] = $bootstrap;
     }
 
-    function isRegistered($file) {
+    function isRegistered($bootstrap) {
+      $file = $bootstrap->getPluginMeta()->getFile();
       return array_key_exists($file, $this->plugins);
     }
 
-    function load() {
+    function loadPlugins() {
+      if ($this->loaded) {
+        return;
+      }
+
       $sorted = $this->sortPlugins();
 
       foreach ($sorted as $plugin) {
-        $this->requirePlugin($plugin);
+        $plugin->autoload();
       }
 
       foreach ($sorted as $plugin) {
-        $this->loadPlugin($plugin);
-      }
-    }
-
-    function requirePlugin($plugin) {
-      $file = $plugin['file'];
-      $path = $this->getPluginAutoloadPath($file);
-
-      $this->requirePluginAutoload($path);
-    }
-
-    function getPluginAutoloadPath($file) {
-      return plugin_dir_path($file) . 'vendor/autoload.php';
-    }
-
-    function requirePluginAutoload($path) {
-      if (file_exists($path)) {
-        if (!defined('PHPUNIT_RUNNER')) {
-          require_once($path);
-        } else {
-          require($path);
-        }
-      }
-    }
-
-    function loadPlugin(&$plugin) {
-      $callback = $plugin['callback'];
-      $file     = $plugin['file'];
-      $name     = basename($file, '.php');
-      $this->currentPlugin = $name;
-
-      if (!is_null($callback)) {
-        call_user_func($callback);
+        $plugin->run();
       }
 
-      $this->sendPluginEvent($name, 'loaded');
-      $this->sendPluginEvent($name, 'ready');
-    }
-
-    function sendPluginEvent($name, $eventType) {
-      $action = 'arrow-plugin-' . $name . "-$eventType";
-      do_action($action);
+      $this->plugins = null;
+      $this->loaded = true;
     }
 
     function sortPlugins() {
@@ -100,8 +225,8 @@ if (class_exists('ArrowPluginLoader') === false) {
     /* Ascending order, ensures default 'prepend-autoloader' works
      * out of the box */
     function comparePlugins(&$a, &$b) {
-      $versionA = $a['arrowVersion'];
-      $versionB = $b['arrowVersion'];
+      $versionA = $a->getPluginMeta()->getArrowVersion();
+      $versionB = $b->getPluginMeta()->getArrowVersion();
 
       if (version_compare($versionA, $versionB, '<')) {
         return -1;
@@ -113,5 +238,7 @@ if (class_exists('ArrowPluginLoader') === false) {
     }
 
   }
+
+
 
 }
