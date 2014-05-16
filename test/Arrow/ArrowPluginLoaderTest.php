@@ -4,6 +4,8 @@ require_once __DIR__ . '/../../lib/Arrow/ArrowPluginLoader.php';
 
 class ArrowPluginLoaderTest extends \WP_UnitTestCase {
 
+  public $pluginMeta;
+  public $bootstrap;
   public $loader;
   public $didLoad     = false;
   public $didReady    = false;
@@ -17,6 +19,8 @@ class ArrowPluginLoaderTest extends \WP_UnitTestCase {
   function setUp() {
     parent::setUp();
 
+    $this->pluginMeta = new ArrowPluginMeta('my-plugin.php');
+    $this->bootstrap = new ArrowPluginBootstrap($this->pluginMeta);
     $this->loader = new ArrowPluginLoader();
     $this->file = getcwd() . '/my-plugin.php';
 
@@ -42,75 +46,80 @@ class ArrowPluginLoaderTest extends \WP_UnitTestCase {
   }
 
   function test_it_knows_if_plugin_is_not_registered() {
-    $this->assertFalse($this->loader->isRegistered($this->file));
+    $this->assertFalse($this->loader->isRegistered($this->bootstrap));
   }
 
   function test_it_knows_if_plugin_is_registered() {
-    $this->loader->register(
-      $this->file, '0.1.0', array($this, 'onPluginLoad')
-    );
-
-    $this->assertTrue($this->loader->isRegistered($this->file));
+    $this->loader->register($this->bootstrap);
+    $this->assertTrue($this->loader->isRegistered($this->bootstrap));
   }
 
   function test_it_knows_if_plugin_a_is_greater_than_b() {
-    $a = array(
-      'file' => 'a',
-      'arrowVersion' => '0.2.0'
+    $aMeta = new ArrowPluginMeta('a', array(
+      'arrowVersion' => '0.2.0')
     );
+    $aBootstrap = new ArrowPluginBootstrap($aMeta);
 
-    $b = array(
-      'file' => 'b',
-      'arrowVersion' => '0.1.0'
+    $bMeta = new ArrowPluginMeta('b', array(
+      'arrowVersion' => '0.1.0')
     );
+    $bBootstrap = new ArrowPluginBootstrap($bMeta);
 
-    $actual = $this->loader->comparePlugins($a, $b);
+    $actual = $this->loader->comparePlugins($aBootstrap, $bBootstrap);
     $this->assertEquals(1, $actual);
   }
 
   function test_it_knows_if_plugin_a_is_less_than_b() {
-    $a = array(
-      'file' => 'a',
-      'arrowVersion' => '0.1.0'
+    $aMeta = new ArrowPluginMeta('a', array(
+      'arrowVersion' => '0.1.0')
     );
+    $aBootstrap = new ArrowPluginBootstrap($aMeta);
 
-    $b = array(
-      'file' => 'b',
-      'arrowVersion' => '0.2.0'
+    $bMeta = new ArrowPluginMeta('b', array(
+      'arrowVersion' => '0.2.0')
     );
+    $bBootstrap = new ArrowPluginBootstrap($bMeta);
 
-    $actual = $this->loader->comparePlugins($a, $b);
+    $actual = $this->loader->comparePlugins($aBootstrap, $bBootstrap);
     $this->assertEquals(-1, $actual);
   }
 
   function test_it_knows_if_plugin_a_equals_b() {
-    $a = array(
-      'name' => 'a',
-      'arrowVersion' => '0.1.0'
+    $aMeta = new ArrowPluginMeta('a', array(
+      'arrowVersion' => '0.1.0')
     );
+    $aBootstrap = new ArrowPluginBootstrap($aMeta);
 
-    $b = array(
-      'name' => 'b',
-      'arrowVersion' => '0.1.0'
+    $bMeta = new ArrowPluginMeta('b', array(
+      'arrowVersion' => '0.1.0')
     );
+    $bBootstrap = new ArrowPluginBootstrap($bMeta);
 
-    $actual = $this->loader->comparePlugins($a, $b);
+    $actual = $this->loader->comparePlugins($aBootstrap, $bBootstrap);
     $this->assertEquals(0, $actual);
   }
 
   function getKeys(&$items) {
     $keys = array();
     foreach ($items as $item) {
-      array_push($keys, $item['file']);
+      array_push($keys, $item->getPluginMeta()->getFile());
     }
 
     return $keys;
   }
 
+  function newBootstrap($file, $arrowVersion, $options = array()) {
+    $options['arrowVersion'] = $arrowVersion;
+    $pluginMeta = new ArrowPluginMeta($file, $options);
+    $bootstrap = new ArrowPluginBootstrap($pluginMeta);
+
+    return $bootstrap;
+  }
+
   function test_it_can_sort_plugins_into_correct_order() {
-    $this->loader->register('a', '3.0', null);
-    $this->loader->register('b', '2.0', null);
-    $this->loader->register('c', '1.0', null);
+    $this->loader->register($this->newBootstrap('a', '3.0'));
+    $this->loader->register($this->newBootstrap('b', '2.0'));
+    $this->loader->register($this->newBootstrap('c', '1.0'));
 
     $plugins = $this->loader->sortPlugins();
     $keys = $this->getKeys($plugins);
@@ -119,9 +128,9 @@ class ArrowPluginLoaderTest extends \WP_UnitTestCase {
   }
 
   function test_it_can_sort_semver_plugins_into_correct_order() {
-    $this->loader->register('a', '1.0.5', null);
-    $this->loader->register('b', '1.7.1', null);
-    $this->loader->register('c', '1.6.2', null);
+    $this->loader->register($this->newBootstrap('a', '1.0.5'));
+    $this->loader->register($this->newBootstrap('b', '1.7.1'));
+    $this->loader->register($this->newBootstrap('c', '1.6.2'));
 
     $plugins = $this->loader->sortPlugins();
     $keys = $this->getKeys($plugins);
@@ -129,77 +138,19 @@ class ArrowPluginLoaderTest extends \WP_UnitTestCase {
     $this->assertEquals(array('a', 'c', 'b'), $keys);
   }
 
-  function test_it_can_build_path_to_plugins_autoloader() {
-    $one = getcwd() . '/test/plugins/one/one.php';
-    $actual = $this->loader->getPluginAutoloadPath($one);
-    $this->assertEquals(getcwd() . '/test/plugins/one/vendor/autoload.php', $actual);
-  }
-
-  function test_it_can_load_plugins_autoloader() {
-    $path = getcwd() . '/test/plugins/one/vendor/autoload.php';
-    $this->loader->requirePluginAutoload($path);
-
-    $this->assertEquals(array('one'), $GLOBALS['arrowPlugins']);
-  }
-
-  function test_it_does_not_require_autoload_if_missing() {
-    $path = getcwd() . '/test/plugins/missing/vendor/autoload.php';
-    $this->loader->requirePluginAutoload($path);
-    $this->assertEquals(array(), $GLOBALS['arrowPlugins']);
-  }
-
-  function test_it_can_require_plugins_autoloader_from_file() {
-    $plugin = array(
-      'file' => getcwd() . '/test/plugins/one/one.php'
-    );
-
-    $this->loader->requirePlugin($plugin);
-
-    $this->assertEquals(array('one'), $GLOBALS['arrowPlugins']);
-  }
-
-  function test_it_can_send_plugin_event() {
-    add_action('arrow-plugin-my-plugin-loaded', array($this, 'pluginLoaded'));
-    $this->loader->sendPluginEvent('my-plugin', 'loaded');
-    $this->assertTrue($this->didLoad);
-  }
-
-  function test_it_sends_plugin_events_on_plugin_load() {
-    $plugin = array(
-      'file' => 'my-plugin',
-      'callback' => null
-    );
-
-    add_action('arrow-plugin-my-plugin-loaded', array($this, 'pluginLoaded'));
-    add_action('arrow-plugin-my-plugin-ready', array($this, 'pluginReady'));
-
-    $this->loader->loadPlugin($plugin);
-    $this->assertTrue($this->didLoad);
-    $this->assertTrue($this->didReady);
-  }
-
-  function test_it_can_run_callback_on_plugin_load() {
-    $plugin = array(
-      'file' => 'my-plugin',
-      'callback' => array($this, 'pluginCallback')
-    );
-
-    $this->loader->loadPlugin($plugin);
-    $this->assertTrue($this->didCallback);
-  }
 
   function test_it_can_load_plugins_in_correct_order() {
-    $callback = array($this, 'pluginCallback');
-    $this->loader->register($this->one, '2.0.5', $callback);
-    $this->loader->register($this->two, '2.7.1', $callback);
-    $this->loader->register($this->three, '2.6.2', $callback);
+    $options = array('plugin' => 'TestArrowPlugin');
+    $this->loader->register($this->newBootstrap($this->one, '2.0.5', $options));
+    $options = array('plugin' => 'TestArrowPlugin');
+    $this->loader->register($this->newBootstrap($this->two, '2.7.1', $options));
+    $options = array('plugin' => 'TestArrowPlugin');
+    $this->loader->register($this->newBootstrap($this->three, '2.6.2', $options));
 
-    $this->loader->load();
+    $this->loader->loadPlugins();
 
     $expected = array('one', 'three', 'two');
-
     $this->assertEquals($expected, $GLOBALS['arrowPlugins']);
-    $this->assertEquals($expected, $this->pluginNames);
   }
 
   function test_it_is_a_singleton() {
@@ -211,18 +162,35 @@ class ArrowPluginLoaderTest extends \WP_UnitTestCase {
   }
 
   function test_it_can_automatically_load_plugins_in_correct_order() {
-    $this->loader = ArrowPluginLoader::getInstance();
-    $callback = array($this, 'pluginCallback');
-    $this->loader->register($this->one, '3.0.5', $callback);
-    $this->loader->register($this->two, '3.7.1', $callback);
-    $this->loader->register($this->three, '3.6.2', $callback);
+    $options = array('plugin' => 'TestArrowPlugin');
+    $this->loader->register($this->newBootstrap($this->one, '2.0.5', $options));
+    $options = array('plugin' => 'TestArrowPlugin');
+    $this->loader->register($this->newBootstrap($this->two, '2.7.1', $options));
+    $options = array('plugin' => 'TestArrowPlugin');
+    $this->loader->register($this->newBootstrap($this->three, '2.6.2', $options));
 
     do_action('plugins_loaded');
 
     $expected = array('one', 'three', 'two');
-
     $this->assertEquals($expected, $GLOBALS['arrowPlugins']);
-    $this->assertEquals($expected, $this->pluginNames);
+  }
+
+}
+
+class TestArrowPlugin {
+
+  static function create($file) {
+    return new TestArrowPlugin($file);
+  }
+
+  public $file;
+
+  function __construct($file) {
+    $this->file = $file;
+  }
+
+  function enable() {
+
   }
 
 }
