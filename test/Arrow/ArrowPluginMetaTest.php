@@ -46,15 +46,15 @@ class ArrowPluginMetaTest extends \WP_UnitTestCase {
   }
 
   function test_it_uses_arrow_version_from_options() {
-    $options = array('arrowVersion' => '0.7.0');
+    $options = array('arrowVersion' => '10.7.0');
     $this->pluginMeta->options = $options;
     $actual = $this->pluginMeta->getArrowVersion();
 
-    $this->assertEquals('0.7.0', $actual);
+    $this->assertEquals('10.7.0', $actual);
   }
 
   function test_it_has_default_arrow_version() {
-    $this->assertEquals('0.6.0', $this->pluginMeta->getArrowVersion());
+    $this->assertEquals('0.7.0', $this->pluginMeta->getArrowVersion());
   }
 
   function test_it_uses_plugin_class_from_options() {

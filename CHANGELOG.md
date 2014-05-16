@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.7.0
+
+* Adds Plugin base class.
+
 ### 0.6.1
 
 * Fixes bug in ArrowPluginLoader Static API.
