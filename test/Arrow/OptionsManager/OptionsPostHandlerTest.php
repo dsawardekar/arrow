@@ -73,7 +73,6 @@ class OptionsPostHandlerTest extends \WP_UnitTestCase {
   }
 
   function test_it_knows_if_nonce_is_not_valid() {
-    $nonce = 'foo';
     $this->assertFalse($this->handler->isValidNonce());
   }
 

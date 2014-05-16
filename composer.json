@@ -1,6 +1,6 @@
 {
   "name": "dsawardekar/arrow",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "type": "library",
   "description": "WordPress Plugin Development Library",
   "keywords": ["wordpress","wordpress plugins", "library"],
@@ -19,6 +19,7 @@
   },
   "require":{
     "dsawardekar/encase-php": "~0.1.0",
+    "dsawardekar/wp-requirements": "~0.3.0",
     "vlucas/valitron": "~1.1.5",
     "twig/twig": "~1.15.0"
   },

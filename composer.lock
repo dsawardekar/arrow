@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "c5b4f1ffeece44bdd8f200c8ed74d65a",
+    "hash": "0525a4b0fd965eaa2d22ed5ac50a5028",
     "packages": [
         {
             "name": "dsawardekar/encase-php",
@@ -48,6 +48,45 @@
                 "ioc"
             ],
             "time": "2014-05-01 16:19:03"
+        },
+        {
+            "name": "dsawardekar/wp-requirements",
+            "version": "0.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dsawardekar/wp-requirements.git",
+                "reference": "3e3b38b637b020834ed17af39440fda5ed4c13ef"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dsawardekar/wp-requirements/zipball/3e3b38b637b020834ed17af39440fda5ed4c13ef",
+                "reference": "3e3b38b637b020834ed17af39440fda5ed4c13ef",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~3.7.0"
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Darshan Sawardekar",
+                    "email": "darshan@sawardekar.org",
+                    "homepage": "http://pressing-matters.io",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Library for handling minimum system requirements in WordPress Plugins",
+            "homepage": "http://github.com/dsawardekar/wp-requirements",
+            "keywords": [
+                "minimum",
+                "system requirements",
+                "wordpress"
+            ],
+            "time": "2014-05-13 15:26:32"
         },
         {
             "name": "twig/twig",
