@@ -53,7 +53,7 @@ if (class_exists('ArrowPluginLoader') === false) {
         if (array_key_exists('arrowVersion', $this->options)) {
           $this->arrowVersion = $this->options['arrowVersion'];
         } else {
-          $this->arrowVersion = '0.6.0';
+          $this->arrowVersion = '0.7.0';
         }
       }
 
