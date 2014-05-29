@@ -33,5 +33,14 @@
   "test/Arrow/OptionsManager/*Test.php": {
     "type": "test",
     "alternate": "lib/Arrow/OptionsManager/%s.php"
+  },
+
+  "lib/Arrow/Ajax/*.php": {
+    "type": "ajax",
+    "test": "test/Arrow/Ajax/%sTest.php"
+  },
+  "test/Arrow/Ajax/*Test.php": {
+    "type": "test",
+    "alternate": "lib/Arrow/Ajax/%s.php"
   }
 }
