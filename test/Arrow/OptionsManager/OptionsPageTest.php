@@ -39,6 +39,7 @@ class OptionsPageTest extends \WP_UnitTestCase {
       ->singleton('optionsFlash', 'Arrow\OptionsManager\OptionsFlash')
       ->singleton('optionsPostHandler', 'Arrow\OptionsManager\OptionsPostHandler')
       ->singleton('optionsValidator', 'Arrow\OptionsManager\MyOptionsValidator')
+      ->singleton('optionsSentry', 'Arrow\OptionsManager\OptionsSentry')
       ->singleton('twigHelper', 'Arrow\TwigHelper\TwigHelper')
       ->singleton('optionsPage', 'Arrow\OptionsManager\MyOptionsPage');
 

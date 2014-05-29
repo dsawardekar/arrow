@@ -28,6 +28,7 @@ class OptionsPostHandlerTest extends \WP_UnitTestCase {
       ->singleton('optionsFlash', 'Arrow\OptionsManager\OptionsFlash')
       ->singleton('optionsValidator', 'Arrow\OptionsManager\MyOptionsValidator')
       ->singleton('optionsStore', 'Arrow\OptionsManager\OptionsStore')
+      ->singleton('optionsSentry', 'Arrow\OptionsManager\OptionsSentry')
       ->singleton('handler', 'Arrow\OptionsManager\OptionsPostHandler');
 
     $this->handler   = $this->container->lookup('handler');

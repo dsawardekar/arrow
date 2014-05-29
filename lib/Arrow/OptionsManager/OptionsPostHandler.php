@@ -22,7 +22,8 @@ class OptionsPostHandler {
       'pluginMeta',
       'optionsFlash',
       'optionsValidator',
-      'optionsStore'
+      'optionsStore',
+      'optionsSentry'
     );
   }
 
