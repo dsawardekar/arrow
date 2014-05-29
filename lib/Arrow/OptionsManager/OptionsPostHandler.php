@@ -9,13 +9,13 @@ class OptionsPostHandler {
   public $optionsFlash;
   public $optionsValidator;
   public $optionsStore;
+  public $optionsSentry;
 
-  public $postAction = null;
   public $redirectTo = '';
-  public $didDeny = false;
-  public $didQuit = false;
+  public $didDeny    = false;
+  public $didQuit    = false;
   public $denyReason = '';
-  public $didEnable = false;
+  public $didEnable  = false;
 
   function needs() {
     return array(
@@ -33,24 +33,8 @@ class OptionsPostHandler {
   }
 
   function process() {
-    if ($this->isPOST() === false) {
-      return $this->deny('not_post');
-    }
-
-    if ($this->isValidReferer() === false) {
-      return $this->deny('invalid_referer');
-    }
-
-    if ($this->isValidNonce() === false) {
-      return $this->deny('invalid_nonce');
-    }
-
-    if ($this->isLoggedIn() === false) {
-      return $this->deny('not_logged_in');
-    }
-
-    if ($this->hasOptionsAccess() === false) {
-      return $this->deny('not_enough_permissions');
+    if (!$this->authorize()) {
+      return false;
     }
 
     if ($this->isResetRequest()) {
@@ -62,42 +46,25 @@ class OptionsPostHandler {
     $this->redirect();
   }
 
-  function getPostAction() {
-    if (!is_null($this->postAction)) {
-      return $this->postAction;
+  function authorize() {
+    if (!$this->optionsSentry->authorize()) {
+      $this->didDeny    = true;
+      $this->denyReason = $this->optionsSentry->denyReason;
+      $this->didQuit    = $this->optionsSentry->didQuit;
+
+      return false;
+    } else {
+      return true;
     }
+  }
 
-    $optionsKey       = $this->pluginMeta->getOptionsKey();
-    $this->postAction = "$optionsKey-post";
-    $this->postAction = str_replace('-', '_', $this->postAction);
-
-    return $this->postAction;
+  function getPostAction() {
+    $action = $this->pluginMeta->getOptionsKey() . '_post';
+    return str_replace('-', '_', $action);
   }
 
   function getNonceName() {
-    $prefix = $this->getPostAction();
-    $name   = $prefix . "_wpnonce";
-
-    return str_replace('-', '_', $name);
-  }
-
-  function getNonceValue() {
-    $key = $this->getNonceName();
-
-    if (array_key_exists($key, $_POST)) {
-      return $_POST[$key];
-    } else {
-      return '';
-    }
-  }
-
-  function deny($reason = '') {
-    $this->didDeny = true;
-    $this->denyReason = $reason;
-
-    if (!$this->isPHPUnit()) {
-      wp_die('You do not have sufficient permissions to access this page.');
-    }
+    return $this->optionsSentry->getNonceName();
   }
 
   function validate() {
@@ -151,19 +118,11 @@ class OptionsPostHandler {
   function redirect() {
     $this->redirectTo = $this->pluginMeta->getOptionsUrl();
 
-    if (!$this->isPHPUnit()) {
+    if (!$this->optionsSentry->isPHPUnit()) {
       wp_redirect($this->redirectTo);
     }
 
     $this->quit();
-  }
-
-  function quit() {
-    $this->didQuit = true;
-
-    if (!$this->isPHPUnit()) {
-      exit();
-    }
   }
 
   function saveSuccess() {
@@ -193,41 +152,6 @@ class OptionsPostHandler {
     return $options;
   }
 
-  function isPOST() {
-    return array_key_exists('REQUEST_METHOD', $_SERVER) && $_SERVER['REQUEST_METHOD'] === 'POST';
-  }
-
-  function isValidReferer() {
-    return $this->getReferer() === $this->pluginMeta->getOptionsUrl();
-  }
-
-  function getReferer() {
-    if (array_key_exists('HTTP_REFERER', $_SERVER)) {
-      return $_SERVER['HTTP_REFERER'];
-    } else {
-      return '';
-    }
-  }
-
-  function isValidNonce() {
-    return wp_verify_nonce(
-      $this->getNonceValue(), $this->getPostAction()
-    ) !== false;
-  }
-
-  function isLoggedIn() {
-    return is_user_logged_in();
-  }
-
-  function hasOptionsAccess() {
-    $capability = $this->pluginMeta->getOptionsCapability();
-    return current_user_can($capability);
-  }
-
-  function isPHPUnit() {
-    return defined('PHPUNIT_RUNNER');
-  }
-
   function isResetRequest() {
     return array_key_exists('reset', $_POST);
   }
@@ -236,4 +160,11 @@ class OptionsPostHandler {
     return array_key_exists('submit', $_POST);
   }
 
+  function quit() {
+    $this->didQuit = true;
+
+    if (!$this->optionsSentry->isPHPUnit()) {
+      exit();
+    }
+  }
 }

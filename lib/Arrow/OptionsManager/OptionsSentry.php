@@ -34,9 +34,18 @@ class OptionsSentry extends \Arrow\Sentry {
   /* nonce is my_plugin_options_wpnonce */
   function getNonceName() {
     $name = $this->pluginMeta->getOptionsKey();
-    $name .= '_wpnonce';
+    $name .= '_post_wpnonce';
 
     return str_replace('-', '_', $name);
+  }
+
+  /* find nonce in POST */
+  function getNonceValue() {
+    if (array_key_exists($this->getNonceName(), $_POST)) {
+      return $_POST[$this->getNonceName()];
+    } else {
+      return '';
+    }
   }
 
 }

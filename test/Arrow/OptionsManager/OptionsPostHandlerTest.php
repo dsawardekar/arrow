@@ -59,66 +59,6 @@ class OptionsPostHandlerTest extends \WP_UnitTestCase {
     $this->assertEquals('post_handler_plugin_options_post_wpnonce', $actual);
   }
 
-  function test_it_knows_if_request_is_not_a_POST() {
-    $this->assertFalse($this->handler->isPOST());
-  }
-
-  function test_it_knows_if_request_is_a_POST() {
-    $_SERVER['REQUEST_METHOD'] = 'POST';
-    $this->assertTrue($this->handler->isPOST());
-  }
-
-  function test_it_can_find_nonce_in_POST() {
-    $_POST[$this->handler->getNonceName()] = 'foo';
-    $this->assertEquals('foo', $this->handler->getNonceValue());
-  }
-
-  function test_it_knows_if_nonce_is_not_valid() {
-    $this->assertFalse($this->handler->isValidNonce());
-  }
-
-  function test_it_knows_if_nonce_is_valid() {
-    $nonce = wp_create_nonce($this->handler->getPostAction());
-    $_POST[$this->handler->getNonceName()] = $nonce;
-    $this->assertTrue($this->handler->isValidNonce());
-  }
-
-  function test_it_knows_if_user_is_not_logged_in() {
-    $this->assertFalse($this->handler->isLoggedIn());
-  }
-
-  function test_it_knows_if_user_is_logged_in() {
-    wp_set_current_user(1);
-    $this->assertTrue($this->handler->isLoggedIn());
-  }
-
-  function test_it_knows_if_user_can_manage_options() {
-    wp_set_current_user(1);
-    $this->assertTrue($this->handler->hasOptionsAccess());
-  }
-
-  function test_it_knows_if_user_can_not_manage_options() {
-    $this->assertFalse($this->handler->hasOptionsAccess());
-  }
-
-  function test_it_knows_if_request_was_denied() {
-    $this->handler->deny();
-    $this->assertTrue($this->handler->didDeny);
-  }
-
-  function test_it_knows_if_request_was_not_denied() {
-    $this->assertFalse($this->handler->didDeny);
-  }
-
-  function test_it_knows_if_request_did_quit() {
-    $this->handler->quit();
-    $this->assertTrue($this->handler->didQuit);
-  }
-
-  function test_it_knows_if_request_did_not_quit() {
-    $this->assertFalse($this->handler->didQuit);
-  }
-
   function test_it_can_save_success_flash() {
     $this->handler->saveSuccess();
     $value = $this->flash->getValue();
@@ -185,24 +125,6 @@ class OptionsPostHandlerTest extends \WP_UnitTestCase {
     $this->assertEquals(2, count($value['errors']));
   }
 
-  function test_it_can_get_current_referer() {
-    $_SERVER['HTTP_REFERER'] = 'foo';
-    $this->assertEquals('foo', $this->handler->getReferer());
-  }
-
-  function test_it_returns_empty_referer_if_not_found() {
-    $this->assertEquals('', $this->handler->getReferer());
-  }
-
-  function test_it_knows_if_referer_is_invalid() {
-    $this->assertFalse($this->handler->isValidReferer());
-  }
-
-  function test_it_knows_if_referer_is_valid() {
-    $_SERVER['HTTP_REFERER'] = $this->pluginMeta->getOptionsUrl();
-    $this->assertTrue($this->handler->isValidReferer());
-  }
-
   /* integration tests */
 
   function test_it_denies_a_GET_request() {
@@ -211,7 +133,7 @@ class OptionsPostHandlerTest extends \WP_UnitTestCase {
     do_action('admin_post_' . $this->handler->getPostAction());
 
     $this->assertTrue($this->handler->didDeny);
-    $this->assertEquals('not_post', $this->handler->denyReason);
+    $this->assertEquals('invalid_method', $this->handler->denyReason);
   }
 
   function test_it_denies_a_request_with_an_invalid_referer() {
@@ -257,7 +179,7 @@ class OptionsPostHandlerTest extends \WP_UnitTestCase {
   function test_it_denies_a_request_if_not_logged_in() {
     $_SERVER['REQUEST_METHOD'] = 'POST';
     $_SERVER['HTTP_REFERER'] = $this->pluginMeta->getOptionsUrl();
-    $_POST[$this->handler->getNonceName()] = wp_create_nonce($this->handler->getPostAction());
+    $_POST[$this->handler->getNonceName()] = wp_create_nonce($this->handler->getNonceName());
     $this->handler->enable();
     do_action('admin_post_' . $this->handler->getPostAction());
 
@@ -271,12 +193,12 @@ class OptionsPostHandlerTest extends \WP_UnitTestCase {
 
     $_SERVER['REQUEST_METHOD'] = 'POST';
     $_SERVER['HTTP_REFERER'] = $this->pluginMeta->getOptionsUrl();
-    $_POST[$this->handler->getNonceName()] = wp_create_nonce($this->handler->getPostAction());
+    $_POST[$this->handler->getNonceName()] = wp_create_nonce($this->handler->getNonceName());
     $this->handler->enable();
     do_action('admin_post_' . $this->handler->getPostAction());
 
     $this->assertTrue($this->handler->didDeny);
-    $this->assertEquals('not_enough_permissions', $this->handler->denyReason);
+    $this->assertEquals('invalid_permissions', $this->handler->denyReason);
   }
 
   function test_it_resets_options_if_reset_request() {
@@ -284,7 +206,7 @@ class OptionsPostHandlerTest extends \WP_UnitTestCase {
 
     $_SERVER['REQUEST_METHOD'] = 'POST';
     $_SERVER['HTTP_REFERER'] = $this->pluginMeta->getOptionsUrl();
-    $_POST[$this->handler->getNonceName()] = wp_create_nonce($this->handler->getPostAction());
+    $_POST[$this->handler->getNonceName()] = wp_create_nonce($this->handler->getNonceName());
     $_POST['reset'] = 'Restore Defaults';
 
     $this->handler->enable();
@@ -314,7 +236,7 @@ class OptionsPostHandlerTest extends \WP_UnitTestCase {
     wp_set_current_user(1);
     $_SERVER['REQUEST_METHOD'] = 'POST';
     $_SERVER['HTTP_REFERER'] = $this->pluginMeta->getOptionsUrl();
-    $_POST[$this->handler->getNonceName()] = wp_create_nonce($this->handler->getPostAction());
+    $_POST[$this->handler->getNonceName()] = wp_create_nonce($this->handler->getNonceName());
     $this->handler->enable();
     do_action('admin_post_' . $this->handler->getPostAction());
 
@@ -343,7 +265,7 @@ class OptionsPostHandlerTest extends \WP_UnitTestCase {
     wp_set_current_user(1);
     $_SERVER['REQUEST_METHOD'] = 'POST';
     $_SERVER['HTTP_REFERER'] = $this->pluginMeta->getOptionsUrl();
-    $_POST[$this->handler->getNonceName()] = wp_create_nonce($this->handler->getPostAction());
+    $_POST[$this->handler->getNonceName()] = wp_create_nonce($this->handler->getNonceName());
     $this->handler->enable();
     do_action('admin_post_' . $this->handler->getPostAction());
 
@@ -353,4 +275,5 @@ class OptionsPostHandlerTest extends \WP_UnitTestCase {
     $this->assertEquals($this->pluginMeta->getOptionsUrl(), $this->handler->redirectTo);
     $this->assertTrue($this->handler->didQuit);
   }
+
 }
