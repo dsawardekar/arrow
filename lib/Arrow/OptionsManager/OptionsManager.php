@@ -9,6 +9,7 @@ class OptionsManager {
       ->singleton('optionsStore', 'Arrow\OptionsManager\OptionsStore')
       ->singleton('optionsFlash', 'Arrow\OptionsManager\OptionsFlash')
       ->singleton('optionsPostHandler', 'Arrow\OptionsManager\OptionsPostHandler')
+      ->singleton('optionsSentry', 'Arrow\OptionsManager\OptionsSentry')
       ->singleton('twigHelper', 'Arrow\TwigHelper\TwigHelper');
 
     $container->initializer('twigHelper', array($this, 'initializeTwig'));
