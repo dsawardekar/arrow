@@ -2,53 +2,10 @@
 
 namespace Arrow\Ajax;
 
+require_once __DIR__ . '/MockJsonPrinter.php';
+require_once __DIR__ . '/MyAjaxController.php';
+
 use Encase\Container;
-
-class MockJsonPrinter {
-
-  public $data;
-  public $statusCode;
-
-  function sendSuccess($data, $statusCode = '200 OK') {
-    $this->data = $data;
-    $this->statusCode = $statusCode;
-  }
-
-  function sendError($error, $statusCode = '403') {
-    $this->data = $error;
-    $this->statusCode = $statusCode;
-  }
-
-}
-
-class MyAjaxController extends Controller {
-
-  function index() {
-    $this->sendSuccess('index');
-  }
-
-  function create() {
-    $this->sendSuccess('create');
-  }
-
-  function update() {
-    $this->sendSuccess('update');
-  }
-
-  function show() {
-    $this->sendSuccess('show');
-  }
-
-  function delete() {
-    $this->sendSuccess('delete');
-  }
-
-  function hello() {
-    $this->sendSuccess(
-      array('message' => 'Hello ' . $this->params['name'])
-    );
-  }
-}
 
 class AjaxControllerTest extends \WP_UnitTestCase {
 

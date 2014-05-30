@@ -22,6 +22,16 @@ class Controller {
     );
   }
 
+  function actionMethods() {
+    return array(
+      'index'  => array('GET'),
+      'create' => array('POST'),
+      'update' => array('PUT', 'PATCH'),
+      'show'   => array('GET'),
+      'delete' => array('DELETE')
+    );
+  }
+
   function capability() {
     return 'manage_options';
   }
