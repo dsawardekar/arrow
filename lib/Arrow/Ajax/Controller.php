@@ -2,7 +2,7 @@
 
 namespace Arrow\Ajax;
 
-class AjaxController {
+class Controller {
 
   public $container;
   public $ajaxJsonPrinter;

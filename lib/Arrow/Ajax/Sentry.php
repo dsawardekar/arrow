@@ -2,7 +2,7 @@
 
 namespace Arrow\Ajax;
 
-class AjaxSentry extends \Arrow\Sentry {
+class Sentry extends \Arrow\Sentry {
 
   /* only allow requests from options page */
   function getValidReferer() {

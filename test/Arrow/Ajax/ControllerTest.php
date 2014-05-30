@@ -21,7 +21,7 @@ class MockJsonPrinter {
 
 }
 
-class MyAjaxController extends AjaxController {
+class MyAjaxController extends Controller {
 
   function index() {
     $this->sendSuccess('index');
