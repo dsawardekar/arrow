@@ -146,7 +146,7 @@ class SentryTest extends \WP_UnitTestCase {
   }
 
   function test_it_has_correct_action_if_present() {
-    $_GET['action'] = 'foo';
+    $_GET['operation'] = 'foo';
     $this->assertEquals('foo', $this->sentry->getAction());
   }
 
@@ -170,14 +170,14 @@ class SentryTest extends \WP_UnitTestCase {
 
   function test_it_does_not_have_valid_action_for_unknown_controller() {
     $_GET['controller'] = 'foo';
-    $_GET['action']     = 'index';
+    $_GET['operation']     = 'index';
     $this->assertFalse($this->sentry->isValidAction());
   }
 
   function test_it_does_not_have_valid_action_for_admin_action_with_public_access() {
     $this->sentry->public = true;
     $_GET['controller']   = 'public';
-    $_GET['action']       = 'private_one';
+    $_GET['operation']       = 'private_one';
 
     $this->assertFalse($this->sentry->isValidAction());
   }
@@ -185,7 +185,7 @@ class SentryTest extends \WP_UnitTestCase {
   function test_it_does_not_have_valid_action_for_unknown_action() {
     $this->sentry->public = true;
     $_GET['controller']   = 'public';
-    $_GET['action']       = 'known_missing';
+    $_GET['operation']       = 'known_missing';
 
     $this->assertFalse($this->sentry->isValidAction());
   }
@@ -193,7 +193,7 @@ class SentryTest extends \WP_UnitTestCase {
   function test_it_has_valid_action_for_public_access() {
     $this->sentry->public = true;
     $_GET['controller'] = 'public';
-    $_GET['action'] = 'public_one';
+    $_GET['operation'] = 'public_one';
 
     $this->assertTrue($this->sentry->isValidAction());
   }
@@ -201,14 +201,14 @@ class SentryTest extends \WP_UnitTestCase {
   function test_it_has_valid_action_for_admin_access() {
     $this->sentry->public = false;
     $_GET['controller'] = 'private';
-    $_GET['action'] = 'admin_one';
+    $_GET['operation'] = 'admin_one';
 
     $this->assertTrue($this->sentry->isValidAction());
   }
 
   function test_it_knows_if_index_request_method_is_invalid() {
     $_GET['controller']        = 'public';
-    $_GET['action']            = 'index';
+    $_GET['operation']            = 'index';
     $_SERVER['REQUEST_METHOD'] = 'POST';
 
     $this->assertFalse($this->sentry->isValidMethod());
@@ -216,7 +216,7 @@ class SentryTest extends \WP_UnitTestCase {
 
   function test_it_knows_if_index_request_method_is_valid() {
     $_GET['controller']        = 'public';
-    $_GET['action']            = 'index';
+    $_GET['operation']            = 'index';
     $_SERVER['REQUEST_METHOD'] = 'GET';
 
     $this->assertTrue($this->sentry->isValidMethod());
@@ -224,7 +224,7 @@ class SentryTest extends \WP_UnitTestCase {
 
   function test_it_knows_if_create_request_is_invalid() {
     $_GET['controller']        = 'public';
-    $_GET['action']            = 'create';
+    $_GET['operation']            = 'create';
     $_SERVER['REQUEST_METHOD'] = 'DELETE';
 
     $this->assertFalse($this->sentry->isValidMethod());
@@ -232,7 +232,7 @@ class SentryTest extends \WP_UnitTestCase {
 
   function test_it_knows_if_create_request_is_valid() {
     $_GET['controller']        = 'standard';
-    $_GET['action']            = 'create';
+    $_GET['operation']            = 'create';
     $_SERVER['REQUEST_METHOD'] = 'POST';
 
     $this->assertTrue($this->sentry->isValidMethod());
@@ -240,7 +240,7 @@ class SentryTest extends \WP_UnitTestCase {
 
   function test_it_knows_if_custom_request_is_invalid() {
     $_GET['controller']        = 'public';
-    $_GET['action']            = 'public_one';
+    $_GET['operation']            = 'public_one';
     $_SERVER['REQUEST_METHOD'] = 'POST';
 
     $this->assertFalse($this->sentry->isValidMethod());
@@ -248,7 +248,7 @@ class SentryTest extends \WP_UnitTestCase {
 
   function test_it_knows_if_custom_request_is_valid() {
     $_GET['controller']        = 'public';
-    $_GET['action']            = 'public_one';
+    $_GET['operation']            = 'public_one';
     $_SERVER['REQUEST_METHOD'] = 'GET';
 
     $this->assertTrue($this->sentry->isValidMethod());
@@ -317,7 +317,7 @@ class SentryTest extends \WP_UnitTestCase {
 
   function test_it_will_not_authorize_request_with_invalid_action() {
     $_GET['controller'] = 'public';
-    $_GET['action'] = 'unknown';
+    $_GET['operation'] = 'unknown';
 
     $this->assertFalse($this->sentry->authorizePublic());
     $this->assertEquals('invalid_action', $this->printer->data);
@@ -325,7 +325,7 @@ class SentryTest extends \WP_UnitTestCase {
 
   function test_it_will_not_authorize_request_with_invalid_method() {
     $_GET['controller']        = 'public';
-    $_GET['action']            = 'public_one';
+    $_GET['operation']            = 'public_one';
     $_SERVER['REQUEST_METHOD'] = 'PATCH';
 
     $this->assertFalse($this->sentry->authorizePublic());
@@ -334,7 +334,7 @@ class SentryTest extends \WP_UnitTestCase {
 
   function test_it_will_not_authorize_request_with_invalid_params() {
     $_GET['controller']        = 'public';
-    $_GET['action']            = 'public_two';
+    $_GET['operation']            = 'public_two';
     $_SERVER['REQUEST_METHOD'] = 'POST';
 
     $actual = $this->sentry->authorizePublic();
@@ -344,7 +344,7 @@ class SentryTest extends \WP_UnitTestCase {
 
   function test_it_will_not_authorize_request_without_nonce() {
     $_GET['controller']        = 'standard';
-    $_GET['action']            = 'index';
+    $_GET['operation']            = 'index';
     $_SERVER['REQUEST_METHOD'] = 'GET';
     $_GET['ajax_sentry_options_ajax_wpnonce'] = 'foo';
 
@@ -354,7 +354,7 @@ class SentryTest extends \WP_UnitTestCase {
 
   function test_it_will_not_authorize_request_without_referer() {
     $_GET['controller']        = 'standard';
-    $_GET['action']            = 'index';
+    $_GET['operation']            = 'index';
     $_SERVER['REQUEST_METHOD'] = 'GET';
     $_GET['ajax_sentry_options_ajax_wpnonce'] = wp_create_nonce($this->sentry->getNonceName());
 
@@ -364,7 +364,7 @@ class SentryTest extends \WP_UnitTestCase {
 
   function test_it_will_not_authorize_request_for_non_logged_in_users() {
     $_GET['controller']        = 'standard';
-    $_GET['action']            = 'index';
+    $_GET['operation']            = 'index';
     $_SERVER['REQUEST_METHOD'] = 'GET';
     $_GET['ajax_sentry_options_ajax_wpnonce'] = wp_create_nonce($this->sentry->getNonceName());
     $_SERVER['HTTP_REFERER'] = $this->pluginMeta->getOptionsUrl();
@@ -378,7 +378,7 @@ class SentryTest extends \WP_UnitTestCase {
     wp_set_current_user($id);
 
     $_GET['controller']        = 'standard';
-    $_GET['action']            = 'index';
+    $_GET['operation']            = 'index';
     $_SERVER['REQUEST_METHOD'] = 'GET';
     $_GET['ajax_sentry_options_ajax_wpnonce'] = wp_create_nonce($this->sentry->getNonceName());
     $_SERVER['HTTP_REFERER'] = $this->pluginMeta->getOptionsUrl();
@@ -391,7 +391,7 @@ class SentryTest extends \WP_UnitTestCase {
     wp_set_current_user(1);
 
     $_GET['controller']                       = 'standard';
-    $_GET['action']                           = 'index';
+    $_GET['operation']                           = 'index';
     $_SERVER['REQUEST_METHOD']                = 'GET';
     $_GET['ajax_sentry_options_ajax_wpnonce'] = wp_create_nonce($this->sentry->getNonceName());
     $_SERVER['HTTP_REFERER']                  = $this->pluginMeta->getOptionsUrl();

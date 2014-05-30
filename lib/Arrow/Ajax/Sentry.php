@@ -114,9 +114,10 @@ class Sentry extends \Arrow\Sentry {
   }
 
   /* action */
+  /* using operation to avoid conflict with WordPress's action parameter */
   function getAction() {
-    if (array_key_exists('action', $_GET)) {
-      return $_GET['action'];
+    if (array_key_exists('operation', $_GET)) {
+      return $_GET['operation'];
     } else {
       return '';
     }
