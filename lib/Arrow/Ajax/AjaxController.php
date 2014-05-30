@@ -1,0 +1,67 @@
+<?php
+
+namespace Arrow\Ajax;
+
+class AjaxController {
+
+  public $container;
+  public $ajaxJsonPrinter;
+  public $params;
+
+  function needs() {
+    return array('ajaxJsonPrinter');
+  }
+
+  function publicActions() {
+    return array();
+  }
+
+  function adminActions() {
+    return array(
+      'index', 'create', 'update', 'show', 'delete'
+    );
+  }
+
+  function capability() {
+    return 'manage_options';
+  }
+
+  function sendSuccess($data, $statusCode = '200 OK') {
+    return $this->ajaxJsonPrinter->sendSuccess($data, $statusCode);
+  }
+
+  function sendError($error, $statusCode = '403') {
+    return $this->ajaxJsonPrinter->sendError($error, $statusCode);
+  }
+
+  function process($action, $params = array()) {
+    if (method_exists($this, $action)) {
+      $this->params = $params;
+      $this->$action();
+    } else {
+      $this->sendError('invalid_action');
+    }
+  }
+
+  /* abstract */
+  function index() {
+
+  }
+
+  function create() {
+
+  }
+
+  function update() {
+
+  }
+
+  function show() {
+
+  }
+
+  function delete() {
+
+  }
+
+}
