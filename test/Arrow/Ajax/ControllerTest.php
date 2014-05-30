@@ -30,6 +30,8 @@ class AjaxControllerTest extends \WP_UnitTestCase {
   }
 
   function test_it_does_not_have_any_public_actions() {
+    $this->container->singleton('ajaxController', 'Arrow\Ajax\Controller');
+    $this->controller = $this->container->lookup('ajaxController');
     $this->assertEmpty($this->controller->publicActions());
   }
 
