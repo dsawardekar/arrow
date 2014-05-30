@@ -4,6 +4,8 @@ namespace Arrow\OptionsManager;
 
 class OptionsSentry extends \Arrow\Sentry {
 
+  public $pluginMeta;
+
   function needs() {
     return array_merge(
       parent::needs(),
