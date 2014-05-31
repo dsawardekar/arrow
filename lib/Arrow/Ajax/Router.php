@@ -6,7 +6,7 @@ class Router {
 
   public $container;
   public $pluginMeta;
-  public $public = false;
+  public $allowPublic = false;
 
   function needs() {
     return array('pluginMeta', 'ajaxSentry');
@@ -22,10 +22,10 @@ class Router {
     return str_replace('-', '_', $hook);
   }
 
-  function register($public = false) {
-    $this->public = $public;
+  function register($allowPublic = false) {
+    $this->allowPublic = $allowPublic;
 
-    if ($public) {
+    if ($allowPublic) {
       add_action($this->hookName(true), array($this, 'processPublic'));
     }
 
@@ -64,5 +64,6 @@ class Router {
       return $this->ajaxSentry->authorize();
     }
   }
+
 
 }

@@ -30,6 +30,12 @@ class Sentry extends \Arrow\Sentry {
   }
 
   function doAuthorize() {
+    /* public request from logged in user is treated as public */
+    /* allows front end requests for public resources */
+    if (!$this->public && $this->isPublicRequest()) {
+      return $this->deny('invalid_public_admin_access');
+    }
+
     if (!$this->isValidController()) {
       return $this->deny('invalid_controller');
     }
@@ -262,4 +268,14 @@ class Sentry extends \Arrow\Sentry {
       return true;
     }
   }
+
+  /* admin flag */
+  function isAdminRequest() {
+    return array_key_exists('admin', $_GET) && $_GET['admin'] === '1';
+  }
+
+  function isPublicRequest() {
+    return !$this->isAdminRequest();
+  }
+
 }

@@ -48,6 +48,10 @@ class PrivateController extends Controller {
 
 class StandardController extends Controller {
 
+  function publicActions() {
+    return $this->adminActions();
+  }
+
 }
 
 class SentryTest extends \WP_UnitTestCase {
@@ -302,6 +306,17 @@ class SentryTest extends \WP_UnitTestCase {
     $this->assertTrue($this->sentry->isValidNonce());
   }
 
+  function test_it_knows_if_request_is_not_an_admin_request() {
+    $actual = $this->sentry->isAdminRequest();
+    $this->assertFalse($actual);
+  }
+
+  function test_it_knows_if_request_is_an_admin_request() {
+    $_GET['admin'] = '1';
+    $actual = $this->sentry->isAdminRequest();
+    $this->assertTrue($actual);
+  }
+
   /* integration tests */
   function test_it_will_not_authorize_request_with_invalid_controller() {
     $_GET['controller'] = 'unknown';
@@ -336,11 +351,27 @@ class SentryTest extends \WP_UnitTestCase {
     $this->assertEquals('invalid_params', $this->printer->data);
   }
 
+  function test_it_will_not_authorize_public_request_for_logged_in_user_if_public_is_disabled() {
+    wp_set_current_user(1);
+
+    $_GET['controller']        = 'standard';
+    $_GET['operation']         = 'index';
+    $_GET['admin'] = '0';
+    $_SERVER['REQUEST_METHOD'] = 'GET';
+    $_GET['nonce']             = wp_create_nonce($this->sentry->getNonceName());
+    $_SERVER['HTTP_REFERER']   = $this->pluginMeta->getOptionsUrl();
+
+    $actual = $this->sentry->authorize();
+    $this->assertFalse($actual);
+    $this->assertEquals('invalid_public_admin_access', $this->printer->data);
+  }
+
   function test_it_will_not_authorize_request_without_nonce() {
     $_GET['controller']        = 'standard';
     $_GET['operation']            = 'index';
     $_SERVER['REQUEST_METHOD'] = 'GET';
     $_GET['nonce'] = 'foo';
+    $_GET['admin'] = '1';
 
     $this->assertFalse($this->sentry->authorize());
     $this->assertEquals('invalid_nonce', $this->printer->data);
@@ -351,6 +382,7 @@ class SentryTest extends \WP_UnitTestCase {
     $_GET['operation']            = 'index';
     $_SERVER['REQUEST_METHOD'] = 'GET';
     $_GET['nonce'] = wp_create_nonce($this->sentry->getNonceName());
+    $_GET['admin'] = '1';
 
     $this->assertFalse($this->sentry->authorize());
     $this->assertEquals('invalid_referer', $this->printer->data);
@@ -361,6 +393,7 @@ class SentryTest extends \WP_UnitTestCase {
     $_GET['operation']            = 'index';
     $_SERVER['REQUEST_METHOD'] = 'GET';
     $_GET['nonce'] = wp_create_nonce($this->sentry->getNonceName());
+    $_GET['admin'] = '1';
     $_SERVER['HTTP_REFERER'] = $this->pluginMeta->getOptionsUrl();
 
     $this->assertFalse($this->sentry->authorize());
@@ -372,14 +405,16 @@ class SentryTest extends \WP_UnitTestCase {
     wp_set_current_user($id);
 
     $_GET['controller']        = 'standard';
-    $_GET['operation']            = 'index';
+    $_GET['operation']         = 'index';
     $_SERVER['REQUEST_METHOD'] = 'GET';
-    $_GET['nonce'] = wp_create_nonce($this->sentry->getNonceName());
-    $_SERVER['HTTP_REFERER'] = $this->pluginMeta->getOptionsUrl();
+    $_GET['nonce']             = wp_create_nonce($this->sentry->getNonceName());
+    $_GET['admin'] = '1';
+    $_SERVER['HTTP_REFERER']   = $this->pluginMeta->getOptionsUrl();
 
     $this->assertFalse($this->sentry->authorize());
     $this->assertEquals('invalid_permissions', $this->printer->data);
   }
+
 
   function test_it_can_authorize_valid_request() {
     wp_set_current_user(1);
@@ -388,6 +423,7 @@ class SentryTest extends \WP_UnitTestCase {
     $_GET['operation']                           = 'index';
     $_SERVER['REQUEST_METHOD']                = 'GET';
     $_GET['nonce'] = wp_create_nonce($this->sentry->getNonceName());
+    $_GET['admin'] = '1';
     $_SERVER['HTTP_REFERER']                  = $this->pluginMeta->getOptionsUrl();
 
     $this->assertTrue($this->sentry->authorize());
