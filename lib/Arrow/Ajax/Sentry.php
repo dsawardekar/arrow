@@ -20,12 +20,7 @@ class Sentry extends \Arrow\Sentry {
   }
 
   function authorize($params = null) {
-    if ($this->isPublicRequest()) {
-      $this->public = true;
-    } else {
-      $this->public = false;
-    }
-
+    $this->public = $this->isPublicRequest();
     return $this->doAuthorize();
   }
 
