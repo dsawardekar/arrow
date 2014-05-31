@@ -227,14 +227,7 @@ class Sentry extends \Arrow\Sentry {
 
   /* nonce */
   function getNonceName() {
-    if ($this->public) {
-      return '';
-    } else {
-      $name  = $this->pluginMeta->getOptionsKey();
-      $name .= '_ajax_wpnonce';
-
-      return str_replace('-', '_', $name);
-    }
+    return 'nonce';
   }
 
   function getNonceValue() {

@@ -274,16 +274,10 @@ class SentryTest extends \WP_UnitTestCase {
     $this->assertEquals(array('foo' => 'bar'), $params);
   }
 
-  function test_it_has_empty_nonce_name_for_public_access() {
-    $this->sentry->public = true;
-    $actual = $this->sentry->getNonceName();
-    $this->assertEquals('', $actual);
-  }
-
   function test_it_has_correct_nonce_name_for_admin_access() {
     $this->sentry->public = false;
     $actual = $this->sentry->getNonceName();
-    $this->assertEquals('ajax_sentry_options_ajax_wpnonce', $actual);
+    $this->assertEquals('nonce', $actual);
   }
 
   function test_it_has_empty_nonce_value_for_public_access() {
@@ -293,7 +287,7 @@ class SentryTest extends \WP_UnitTestCase {
 
   function test_it_has_correct_nonce_value_for_admin_access() {
     $this->sentry->public = false;
-    $_GET['ajax_sentry_options_ajax_wpnonce'] = 'foo';
+    $_GET['nonce'] = 'foo';
     $this->assertEquals('foo', $this->sentry->getNonceValue());
   }
 
@@ -304,7 +298,7 @@ class SentryTest extends \WP_UnitTestCase {
 
   function test_it_needs_valid_nonce_for_admin_access() {
     $this->sentry->public = false;
-    $_GET['ajax_sentry_options_ajax_wpnonce'] = wp_create_nonce($this->sentry->getNonceName());
+    $_GET['nonce'] = wp_create_nonce($this->sentry->getNonceName());
     $this->assertTrue($this->sentry->isValidNonce());
   }
 
@@ -346,7 +340,7 @@ class SentryTest extends \WP_UnitTestCase {
     $_GET['controller']        = 'standard';
     $_GET['operation']            = 'index';
     $_SERVER['REQUEST_METHOD'] = 'GET';
-    $_GET['ajax_sentry_options_ajax_wpnonce'] = 'foo';
+    $_GET['nonce'] = 'foo';
 
     $this->assertFalse($this->sentry->authorize());
     $this->assertEquals('invalid_nonce', $this->printer->data);
@@ -356,7 +350,7 @@ class SentryTest extends \WP_UnitTestCase {
     $_GET['controller']        = 'standard';
     $_GET['operation']            = 'index';
     $_SERVER['REQUEST_METHOD'] = 'GET';
-    $_GET['ajax_sentry_options_ajax_wpnonce'] = wp_create_nonce($this->sentry->getNonceName());
+    $_GET['nonce'] = wp_create_nonce($this->sentry->getNonceName());
 
     $this->assertFalse($this->sentry->authorize());
     $this->assertEquals('invalid_referer', $this->printer->data);
@@ -366,7 +360,7 @@ class SentryTest extends \WP_UnitTestCase {
     $_GET['controller']        = 'standard';
     $_GET['operation']            = 'index';
     $_SERVER['REQUEST_METHOD'] = 'GET';
-    $_GET['ajax_sentry_options_ajax_wpnonce'] = wp_create_nonce($this->sentry->getNonceName());
+    $_GET['nonce'] = wp_create_nonce($this->sentry->getNonceName());
     $_SERVER['HTTP_REFERER'] = $this->pluginMeta->getOptionsUrl();
 
     $this->assertFalse($this->sentry->authorize());
@@ -380,7 +374,7 @@ class SentryTest extends \WP_UnitTestCase {
     $_GET['controller']        = 'standard';
     $_GET['operation']            = 'index';
     $_SERVER['REQUEST_METHOD'] = 'GET';
-    $_GET['ajax_sentry_options_ajax_wpnonce'] = wp_create_nonce($this->sentry->getNonceName());
+    $_GET['nonce'] = wp_create_nonce($this->sentry->getNonceName());
     $_SERVER['HTTP_REFERER'] = $this->pluginMeta->getOptionsUrl();
 
     $this->assertFalse($this->sentry->authorize());
@@ -393,7 +387,7 @@ class SentryTest extends \WP_UnitTestCase {
     $_GET['controller']                       = 'standard';
     $_GET['operation']                           = 'index';
     $_SERVER['REQUEST_METHOD']                = 'GET';
-    $_GET['ajax_sentry_options_ajax_wpnonce'] = wp_create_nonce($this->sentry->getNonceName());
+    $_GET['nonce'] = wp_create_nonce($this->sentry->getNonceName());
     $_SERVER['HTTP_REFERER']                  = $this->pluginMeta->getOptionsUrl();
 
     $this->assertTrue($this->sentry->authorize());
