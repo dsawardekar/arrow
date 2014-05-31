@@ -20,7 +20,12 @@ class Sentry extends \Arrow\Sentry {
   }
 
   function authorize($params = null) {
-    $this->public = false;
+    if ($this->isPublicRequest()) {
+      $this->public = true;
+    } else {
+      $this->public = false;
+    }
+
     return $this->doAuthorize();
   }
 
@@ -30,12 +35,6 @@ class Sentry extends \Arrow\Sentry {
   }
 
   function doAuthorize() {
-    /* public request from logged in user is treated as public */
-    /* allows front end requests for public resources */
-    if (!$this->public && $this->isPublicRequest()) {
-      return $this->deny('invalid_public_admin_access');
-    }
-
     if (!$this->isValidController()) {
       return $this->deny('invalid_controller');
     }

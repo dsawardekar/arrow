@@ -5,7 +5,7 @@ namespace Arrow\Ajax;
 class MyAjaxController extends Controller {
 
   function publicActions() {
-    return $this->adminActions();
+    return array('create', 'update', 'delete');
   }
 
   function index() {

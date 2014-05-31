@@ -3,6 +3,7 @@
 namespace Arrow\Ajax;
 
 require_once __DIR__ . '/MockJsonPrinter.php';
+require_once __DIR__ . '/MyAjaxController.php';
 
 use Encase\Container;
 
@@ -72,6 +73,7 @@ class SentryTest extends \WP_UnitTestCase {
       ->singleton('ajaxJsonPrinter', 'Arrow\Ajax\MockJsonPrinter')
       ->singleton('standardController', 'Arrow\Ajax\StandardController')
       ->singleton('publicController', 'Arrow\Ajax\PublicController')
+      ->singleton('myController', 'Arrow\Ajax\MyAjaxController')
       ->singleton('privateController', 'Arrow\Ajax\PrivateController');
 
     $this->sentry = $this->container->lookup('ajaxSentry');
@@ -351,19 +353,29 @@ class SentryTest extends \WP_UnitTestCase {
     $this->assertEquals('invalid_params', $this->printer->data);
   }
 
-  function test_it_will_not_authorize_public_request_for_logged_in_user_if_public_is_disabled() {
+  function test_it_will_allow_public_request_from_logged_in_user_without_admin_checks() {
     wp_set_current_user(1);
 
-    $_GET['controller']        = 'standard';
+    $_GET['controller']        = 'my';
+    $_GET['operation']         = 'delete';
+    $_GET['admin']             = '0';
+    $_SERVER['REQUEST_METHOD'] = 'DELETE';
+
+    $actual = $this->sentry->authorize();
+    $this->assertTrue($actual);
+  }
+
+  function test_it_will_not_allow_public_request_from_logged_in_user_if_not_public() {
+    wp_set_current_user(1);
+
+    $_GET['controller']        = 'my';
     $_GET['operation']         = 'index';
-    $_GET['admin'] = '0';
+    $_GET['admin']             = '0';
     $_SERVER['REQUEST_METHOD'] = 'GET';
-    $_GET['nonce']             = wp_create_nonce($this->sentry->getNonceName());
-    $_SERVER['HTTP_REFERER']   = $this->pluginMeta->getOptionsUrl();
 
     $actual = $this->sentry->authorize();
     $this->assertFalse($actual);
-    $this->assertEquals('invalid_public_admin_access', $this->printer->data);
+    $this->assertEquals('invalid_action', $this->printer->data);
   }
 
   function test_it_will_not_authorize_request_without_nonce() {
