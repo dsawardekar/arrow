@@ -27,8 +27,8 @@ class JsonPrinterTest extends \WP_UnitTestCase {
   }
 
   function test_it_can_autoset_response_status_code() {
-    $this->printer->header('Status', '302 Moved Temporarily');
-    $this->assertEquals('302 Moved Temporarily', $this->printer->status);
+    $this->printer->header('Status', 302);
+    $this->assertEquals(302, $this->printer->status);
   }
 
   function test_it_can_add_headers() {
@@ -63,10 +63,10 @@ class JsonPrinterTest extends \WP_UnitTestCase {
       'foo' => 'bar'
     );
 
-    $this->printer->sendError($error, '405 Not Supported');
+    $this->printer->sendError($error, 405);
     $output = $this->getOutput();
 
-    $this->assertEquals('405 Not Supported', $this->printer->didHeaders['Status']);
+    $this->assertEquals(405, $this->printer->didHeaders['Status']);
     $this->assertEquals(array('foo' => 'bar'), $output['data']['error']);
     $this->assertTrue($this->printer->didQuit);
   }
@@ -79,7 +79,7 @@ class JsonPrinterTest extends \WP_UnitTestCase {
     $this->printer->sendSuccess($data);
     $output = $this->getOutput();
 
-    $this->assertEquals('200 OK', $this->printer->status);
+    $this->assertEquals(200, $this->printer->status);
     $this->assertEquals(array('lorem' => 'ipsum'), $output['data']);
     $this->assertTrue($this->printer->didQuit);
   }

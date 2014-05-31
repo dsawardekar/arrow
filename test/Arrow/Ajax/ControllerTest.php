@@ -46,31 +46,31 @@ class AjaxControllerTest extends \WP_UnitTestCase {
   function test_it_can_send_json_success_data() {
     $this->controller->sendSuccess(array('foo' => 'bar'));
     $this->assertEquals(array('foo' => 'bar'), $this->printer->data);
-    $this->assertEquals('200 OK', $this->printer->statusCode);
+    $this->assertEquals(200, $this->printer->statusCode);
   }
 
   function test_it_can_send_json_error_data() {
     $this->controller->sendError(array('foo' => 'bar'));
     $this->assertEquals(array('foo' => 'bar'), $this->printer->data);
-    $this->assertEquals('403', $this->printer->statusCode);
+    $this->assertEquals(403, $this->printer->statusCode);
   }
 
   function test_it_can_process_an_action_without_params() {
     $this->controller->process('index');
     $this->assertEquals('index', $this->printer->data);
-    $this->assertEquals('200 OK', $this->printer->statusCode);
+    $this->assertEquals(200, $this->printer->statusCode);
   }
 
   function test_it_can_process_invalid_actions() {
     $this->controller->process('foobar');
     $this->assertEquals('invalid_action', $this->printer->data);
-    $this->assertEquals('403', $this->printer->statusCode);
+    $this->assertEquals(403, $this->printer->statusCode);
   }
 
   function test_it_can_process_an_action_with_params() {
     $this->controller->process('hello', array('name' => 'Darshan'));
     $this->assertEquals(array('message' => 'Hello Darshan'), $this->printer->data);
-    $this->assertEquals('200 OK', $this->printer->statusCode);
+    $this->assertEquals(200, $this->printer->statusCode);
   }
 
 }

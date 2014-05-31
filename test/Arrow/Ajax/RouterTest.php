@@ -115,7 +115,7 @@ class RouterTest extends \WP_UnitTestCase {
     $this->router->processPublic();
 
     $this->assertEquals('index', $this->printer->data);
-    $this->assertEquals('200 OK', $this->printer->statusCode);
+    $this->assertEquals(200, $this->printer->statusCode);
   }
 
   function test_it_can_process_valid_admin_ajax_request() {
@@ -125,7 +125,7 @@ class RouterTest extends \WP_UnitTestCase {
     $this->router->process();
 
     $this->assertEquals('create', $this->printer->data);
-    $this->assertEquals('200 OK', $this->printer->statusCode);
+    $this->assertEquals(200, $this->printer->statusCode);
   }
 
   /* integration */
@@ -138,7 +138,7 @@ class RouterTest extends \WP_UnitTestCase {
     do_action('wp_ajax_no_priv_my_plugin');
 
     $this->assertEquals('index', $this->printer->data);
-    $this->assertEquals('200 OK', $this->printer->statusCode);
+    $this->assertEquals(200, $this->printer->statusCode);
   }
 
   function test_it_can_respond_to_valid_admin_ajax_request() {
@@ -150,7 +150,7 @@ class RouterTest extends \WP_UnitTestCase {
     do_action('wp_ajax_my_plugin');
 
     $this->assertEquals('create', $this->printer->data);
-    $this->assertEquals('200 OK', $this->printer->statusCode);
+    $this->assertEquals(200, $this->printer->statusCode);
   }
 
 }

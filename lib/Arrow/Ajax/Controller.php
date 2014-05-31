@@ -36,11 +36,11 @@ class Controller {
     return 'manage_options';
   }
 
-  function sendSuccess($data, $statusCode = '200 OK') {
+  function sendSuccess($data, $statusCode = 200) {
     return $this->ajaxJsonPrinter->sendSuccess($data, $statusCode);
   }
 
-  function sendError($error, $statusCode = '403') {
+  function sendError($error, $statusCode = 403) {
     return $this->ajaxJsonPrinter->sendError($error, $statusCode);
   }
 

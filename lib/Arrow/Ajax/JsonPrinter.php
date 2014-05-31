@@ -20,7 +20,7 @@ class JsonPrinter {
     $this->quit();
   }
 
-  function sendSuccess($data, $statusCode = '200 OK') {
+  function sendSuccess($data, $statusCode = 200) {
     $response = array(
       'status' => $statusCode,
       'success' => true,
@@ -31,7 +31,7 @@ class JsonPrinter {
     $this->send($response);
   }
 
-  function sendError($error, $statusCode = '403 Forbidden') {
+  function sendError($error, $statusCode = 403) {
     $response = array(
       'status'  => $statusCode,
       'success' => false,
