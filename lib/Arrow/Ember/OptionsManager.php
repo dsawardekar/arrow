@@ -16,6 +16,7 @@ class OptionsManager {
       ->singleton('ajaxJsonPrinter', 'Arrow\Ajax\JsonPrinter')
       ->singleton('ajaxRouter', 'Arrow\Ajax\Router')
       ->singleton('optionsPage', 'Arrow\Ember\OptionsPage')
+      ->singleton('optionsValidator', 'Arrow\OptionsManager\OptionsValidator')
       ->singleton('optionsController', 'Arrow\Ember\OptionsController');
 
     if (!$container->contains('assetManager')) {
