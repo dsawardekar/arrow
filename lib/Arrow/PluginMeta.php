@@ -20,7 +20,12 @@ class PluginMeta {
   }
 
   function getVersion() {
-    return $this->version;
+    if ($this->getDebug()) {
+      /* for cache busting in development */
+      return strval(strtotime('now'));
+    } else {
+      return $this->version;
+    }
   }
 
   function getFile() {
@@ -41,6 +46,10 @@ class PluginMeta {
     }
 
     return $this->dir;
+  }
+
+  function getDebug() {
+    return defined('WP_DEBUG') && WP_DEBUG === true;
   }
 
   function getOptionsKey() {

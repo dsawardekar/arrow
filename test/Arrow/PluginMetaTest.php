@@ -71,18 +71,18 @@ class PluginMetaTest extends \WP_UnitTestCase {
 
   function test_it_has_a_default_version() {
     $actual = $this->meta->getVersion();
-    $this->assertEquals('0.0.0', $actual);
+    $this->assertNotEquals('', $actual);
   }
 
   function test_it_has_default_script_options() {
     $options = $this->meta->getScriptOptions();
-    $this->assertEquals('0.0.0', $options['version']);
+    $this->assertNotEquals('', $options['version']);
     $this->assertTrue($options['in_footer']);
   }
 
   function test_it_has_default_stylesheet_options() {
     $options = $this->meta->getStylesheetOptions();
-    $this->assertEquals('0.0.0', $options['version']);
+    $this->assertNotEquals('', $options['version']);
     $this->assertEquals('all', $options['media']);
   }
 
