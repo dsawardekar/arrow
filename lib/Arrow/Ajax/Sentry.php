@@ -227,16 +227,15 @@ class Sentry extends \Arrow\Sentry {
 
   /* nonce */
   function getNonceName() {
-    return 'nonce';
+    return $this->pluginMeta->getSlug();
   }
 
   function getNonceValue() {
     if ($this->public) {
       return '';
     } else {
-      $name = $this->getNonceName();
-      if (array_key_exists($name, $_GET)) {
-        return $_GET[$name];
+      if (array_key_exists('nonce', $_GET)) {
+        return $_GET['nonce'];
       } else {
         return '';
       }

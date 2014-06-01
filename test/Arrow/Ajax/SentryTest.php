@@ -283,7 +283,7 @@ class SentryTest extends \WP_UnitTestCase {
   function test_it_has_correct_nonce_name_for_admin_access() {
     $this->sentry->public = false;
     $actual = $this->sentry->getNonceName();
-    $this->assertEquals('nonce', $actual);
+    $this->assertEquals('ajax-sentry', $actual);
   }
 
   function test_it_has_empty_nonce_value_for_public_access() {
