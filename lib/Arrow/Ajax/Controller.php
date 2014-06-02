@@ -22,13 +22,14 @@ class Controller {
     );
   }
 
+  /* not strictly REST to allow for older PHP */
   function actionMethods() {
     return array(
       'index'  => array('GET'),
       'create' => array('POST'),
-      'update' => array('PUT', 'PATCH'),
+      'update' => array('POST', 'PUT', 'PATCH'),
       'show'   => array('GET'),
-      'delete' => array('DELETE')
+      'delete' => array('GET', 'DELETE')
     );
   }
 
