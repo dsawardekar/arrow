@@ -81,7 +81,8 @@ class OptionsManager {
   function loadSupportScripts() {
     $loader = $this->lookup('adminScriptLoader');
     $options = array(
-      'dependencies' => array('ember')
+      'dependencies' => array('ember'),
+      'version' => $this->lookup('pluginMeta')->getVersion()
     );
 
     foreach ($this->getSupportScripts() as $script) {
@@ -97,8 +98,13 @@ class OptionsManager {
   }
 
   function loadStyles() {
+    $options = array(
+      'in_footer' => true,
+      'version' => $this->lookup('pluginMeta')->getVersion()
+    );
+
     $loader = $this->lookup('adminStylesheetLoader');
-    $loader->schedule($this->getEmberAppSlug());
+    $loader->schedule($this->getEmberAppSlug(), $options);
 
     $this->loadSupportStyles();
 

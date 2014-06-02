@@ -99,7 +99,7 @@ class OptionsManagerTest extends \WP_UnitTestCase {
   function test_it_has_api_endpoint() {
     $apiEndpoint = $this->manager->getApiEndpoint();
     $this->assertContains('admin-ajax.php', $apiEndpoint);
-    $this->assertContains('action=my-plugin', $apiEndpoint);
+    $this->assertContains('action=my_plugin', $apiEndpoint);
     $this->assertContains('admin=1', $apiEndpoint);
   }
 
@@ -110,7 +110,7 @@ class OptionsManagerTest extends \WP_UnitTestCase {
 
     $this->assertEquals(1, wp_verify_nonce($nonce, $this->pluginMeta->getSlug()));
     $this->assertContains('admin-ajax.php', $apiEndpoint);
-    $this->assertContains('action=my-plugin', $apiEndpoint);
+    $this->assertContains('action=my_plugin', $apiEndpoint);
     $this->assertContains('admin=1', $apiEndpoint);
   }
 
