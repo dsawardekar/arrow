@@ -70,7 +70,7 @@ class OptionsManager {
     $loader->schedule(
       $this->getEmberAppSlug(),
       array(
-        'dependencies' => array('ember', 'parsley'),
+        'dependencies' => array('ember'),
         'localizer' => array($this, 'getEmberConfig')
       )
     );
