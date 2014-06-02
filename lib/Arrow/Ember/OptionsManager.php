@@ -129,8 +129,9 @@ class OptionsManager {
   }
 
   function getApiEndpoint() {
+    $action = str_replace('-', '_', $this->lookup('pluginMeta')->getSlug());
     $url = admin_url('admin-ajax.php');
-    $url .= '?action=' . $this->lookup('pluginMeta')->getSlug();
+    $url .= '?action=' . $action;
     $url .= '&admin=1';
 
     return $url;
