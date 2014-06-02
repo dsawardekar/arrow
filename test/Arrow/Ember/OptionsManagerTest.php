@@ -124,7 +124,6 @@ class OptionsManagerTest extends \WP_UnitTestCase {
     $loader = $this->container->lookup('adminScriptLoader');
 
     $this->assertTrue($loader->isScheduled('handlebars'));
-    $this->assertTrue($loader->isScheduled('parsley'));
     $this->assertTrue($loader->isScheduled('ember'));
     $this->assertTrue($loader->isScheduled('my-plugin-app'));
   }
@@ -133,8 +132,15 @@ class OptionsManagerTest extends \WP_UnitTestCase {
     $this->manager->loadStyles();
     $loader = $this->container->lookup('adminStylesheetLoader');
 
-    $this->assertTrue($loader->isScheduled('parsley'));
     $this->assertTrue($loader->isScheduled('my-plugin-app'));
+  }
+
+  function test_it_can_load_support_scripts() {
+    $this->manager->loadEmber();
+    $loader = $this->container->lookup('adminScriptLoader');
+
+    $this->assertTrue($loader->isScheduled('ember-validations'));
+    $this->assertTrue($loader->isScheduled('ember-easyForm'));
   }
 
   function test_it_does_not_allow_public_access_to_api_endpoint() {

@@ -59,12 +59,13 @@ class OptionsManager {
   function loadEmber() {
     $loader = $this->lookup('adminScriptLoader');
     $loader->schedule('handlebars');
-    $loader->schedule('parsley');
     $loader->schedule(
       'ember', array('dependencies' => array(
         'jquery', 'handlebars')
       )
     );
+
+    $this->loadSupportScripts();
 
     $loader->schedule(
       $this->getEmberAppSlug(),
@@ -77,12 +78,43 @@ class OptionsManager {
     $loader->load();
   }
 
+  function loadSupportScripts() {
+    $loader = $this->lookup('adminScriptLoader');
+    $options = array(
+      'dependencies' => array('ember')
+    );
+
+    foreach ($this->getSupportScripts() as $script) {
+      $loader->schedule($script, $options);
+    }
+  }
+
+  function getSupportScripts() {
+    return array(
+      'ember-validations',
+      'ember-easyForm'
+    );
+  }
+
   function loadStyles() {
     $loader = $this->lookup('adminStylesheetLoader');
-    $loader->schedule('parsley');
     $loader->schedule($this->getEmberAppSlug());
 
+    $this->loadSupportStyles();
+
     $loader->load();
+  }
+
+  function loadSupportStyles() {
+    $loader = $this->lookup('adminStylesheetLoader');
+
+    foreach ($this->getSupportStyles() as $style) {
+      $loader->schedule($style);
+    }
+  }
+
+  function getSupportStyles() {
+    return array();
   }
 
   function getEmberAppSlug() {
