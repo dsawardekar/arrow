@@ -100,6 +100,24 @@ class PluginMetaTest extends \WP_UnitTestCase {
     $this->assertFalse($this->meta->hasCustomStylesheet());
   }
 
+  function test_it_does_not_minify_in_debug_mode() {
+    $this->assertFalse($this->meta->getMinify());
+  }
+
+  function test_it_can_minify_if_enabled() {
+    $this->meta->minify = true;
+    $this->assertTrue($this->meta->getMinify());
+  }
+
+  function test_it_checks_files_before_switching_to_minified_version() {
+    $this->assertTrue($this->meta->getMinifyChecks());
+  }
+
+  function test_it_does_not_check_files_exists_for_minification_if_disabled() {
+    $this->meta->minifyChecks = false;
+    $this->assertFalse($this->meta->getMinifyChecks());
+  }
+
   // how to test if_exists case that will work over travis?
   // TODO: travis permissions
 
