@@ -1,5 +1,20 @@
 # Changelog
 
+### 0.8.0
+
+* Adds getDebug to PluginMeta.
+* Adds Minification support.
+  * If a corresponding .min.js version is present it is used instead.
+  * Does not minify in debug mode.
+* Changes getVersion to use timestamp for cache busting.
+  * Timestamp is used in development only.
+* Adds Ajax API
+  * Restful API with allowance for older PHP.
+  * Uses admin-ajax.php but routes requests to corresponding
+    controllers.
+  * Controllers can be free form, or follow REST conventions.
+* Adds Ember based OptionsManager.
+
 ### 0.7.0
 
 * Adds Plugin base class.
