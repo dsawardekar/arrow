@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.8.1
+
+* Improves Tests.
+
 ### 0.8.0
 
 * Adds getDebug to PluginMeta.
