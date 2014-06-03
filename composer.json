@@ -1,6 +1,6 @@
 {
   "name": "dsawardekar/arrow",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "type": "library",
   "description": "WordPress Plugin Development Library",
   "keywords": ["wordpress","wordpress plugins", "library"],

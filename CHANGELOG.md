@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.8.2
+
+* Fixes json_last_error() for PHP 5.5.
+
 ### 0.8.1
 
 * Improves Tests.

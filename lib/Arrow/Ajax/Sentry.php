@@ -211,12 +211,21 @@ class Sentry extends \Arrow\Sentry {
     }
 
     $json = json_decode($input, true);
-    if (json_last_error() === JSON_ERROR_NONE) {
+
+    /* php5.5 so/q?18239405 */
+    /* default PHP 5.5 does not have complete json apis */
+    /* need to install php5-json separately */
+    if (function_exists('json_last_error')) {
+      if (json_last_error() === JSON_ERROR_NONE) {
+        $this->hasValidParams = true;
+        return $json;
+      } else {
+        $this->hasValidParams = false;
+        return array();
+      }
+    } else {
       $this->hasValidParams = true;
       return $json;
-    } else {
-      $this->hasValidParams = false;
-      return array();
     }
   }
 
