@@ -4,7 +4,7 @@ namespace Arrow\AssetManager;
 
 use Encase\Container;
 
-class StylesheetText extends \WP_UnitTestCase {
+class StylesheetTest extends \WP_UnitTestCase {
 
   public $container;
   public $stylesheet;
@@ -13,10 +13,7 @@ class StylesheetText extends \WP_UnitTestCase {
   function setUp() {
     parent::setUp();
 
-    $this->pluginMeta       = new PluginMeta();
-    $this->pluginMeta->file = getcwd() . '/stylesheet-plugin.php';
-    $this->pluginMeta->dir  = getcwd();
-    $this->pluginMeta->slug = 'stylesheet_plugin';
+    $this->pluginMeta       = new \Arrow\PluginMeta(getcwd() . '/stylesheet-plugin.php');
     $this->pluginMeta->scriptOptions = array(
       'media' => 'screen'
     );
@@ -57,6 +54,6 @@ class StylesheetText extends \WP_UnitTestCase {
     $this->stylesheet->register();
     $this->stylesheet->enqueue();
 
-    $this->assertTrue(wp_style_is('stylesheet_plugin-custom', 'enqueued'));
+    $this->assertTrue(wp_style_is('stylesheet-plugin-custom', 'enqueued'));
   }
 }

@@ -2,7 +2,6 @@
 
 namespace Arrow\AssetManager;
 
-require_once __DIR__ . '/PluginMeta.php';
 use Encase\Container;
 
 class AdminScriptLoaderTest extends \WP_UnitTestCase {
@@ -14,10 +13,7 @@ class AdminScriptLoaderTest extends \WP_UnitTestCase {
   function setUp() {
     parent::setUp();
 
-    $this->pluginMeta       = new PluginMeta();
-    $this->pluginMeta->file = getcwd() . '/admin-script-plugin.php';
-    $this->pluginMeta->dir  = getcwd();
-    $this->pluginMeta->slug = 'admin-script-plugin';
+    $this->pluginMeta       = new \Arrow\PluginMeta(getcwd() . '/admin-script-plugin.php');
     $this->pluginMeta->scriptOptions = array(
       'in_footer' => true,
       'version' => '0.1.0'

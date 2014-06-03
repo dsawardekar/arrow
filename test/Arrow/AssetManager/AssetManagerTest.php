@@ -13,10 +13,7 @@ class AssetManagerTest extends \WP_UnitTestCase {
   function setUp() {
     parent::setUp();
 
-    $this->pluginMeta       = new PluginMeta();
-    $this->pluginMeta->file = getcwd() . '/my-plugin.php';
-    $this->pluginMeta->dir  = getcwd();
-    $this->pluginMeta->slug = 'my_plugin';
+    $this->pluginMeta       = new \Arrow\PluginMeta(getcwd() . '/my-plugin.php');
     $this->pluginMeta->scriptOptions = array(
       'in_footer' => true,
       'version' => '0.1.0'
