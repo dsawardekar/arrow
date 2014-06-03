@@ -13,10 +13,7 @@ class AdminStylesheetLoaderTest extends \WP_UnitTestCase {
   function setUp() {
     parent::setUp();
 
-    $this->pluginMeta       = new PluginMeta();
-    $this->pluginMeta->file = getcwd() . '/admin-stylesheet-plugin.php';
-    $this->pluginMeta->dir  = getcwd();
-    $this->pluginMeta->slug = 'admin-stylesheet-plugin';
+    $this->pluginMeta       = new \Arrow\PluginMeta(getcwd() . '/admin-stylesheet-plugin.php');
     $this->pluginMeta->stylesheetOptions = array(
       'media' => 'screen',
       'version' => '0.1.0'

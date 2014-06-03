@@ -13,10 +13,7 @@ class ScriptLoaderTest extends \WP_UnitTestCase {
   function setUp() {
     parent::setUp();
 
-    $this->pluginMeta       = new PluginMeta();
-    $this->pluginMeta->file = getcwd() . '/script-plugin.php';
-    $this->pluginMeta->dir  = getcwd();
-    $this->pluginMeta->slug = 'script_plugin';
+    $this->pluginMeta       = new \Arrow\PluginMeta(getcwd() . '/script-plugin.php');
     $this->pluginMeta->scriptOptions = array(
       'in_footer' => true,
       'version' => '0.1.0'

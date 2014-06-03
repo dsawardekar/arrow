@@ -13,10 +13,7 @@ class StylesheetLoaderTest extends \WP_UnitTestCase {
   function setUp() {
     parent::setUp();
 
-    $this->pluginMeta       = new PluginMeta();
-    $this->pluginMeta->file = getcwd() . '/stylesheet-loader-plugin.php';
-    $this->pluginMeta->dir  = getcwd();
-    $this->pluginMeta->slug = 'stylesheet-loader-plugin';
+    $this->pluginMeta       = new \Arrow\PluginMeta(getcwd() . '/stylesheet-loader-plugin.php');
     $this->pluginMeta->stylesheetOptions = array(
       'media' => '0.1.0'
     );
