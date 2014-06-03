@@ -64,7 +64,12 @@ class Asset {
   }
 
   function relpath() {
-    return $this->dirname() . "/" . $this->slug . $this->extension();
+    $slug = $this->slug;
+    if ($this->canMinify()) {
+      $slug .= '.min';
+    }
+
+    return $this->dirname() . "/" . $slug . $this->extension();
   }
 
   function path() {
@@ -75,6 +80,26 @@ class Asset {
         $this->relpath(), $this->pluginMeta->getFile()
       );
     }
+  }
+
+  function filepath($min = false) {
+    $path = $this->pluginMeta->getDir();
+    $path .= '/';
+    $path .= $this->dirname();
+    $path .= '/';
+    $path .= $this->slug;
+
+    if ($min) {
+      $path .= '.min';
+    }
+
+    $path .= $this->extension();
+
+    return $path;
+  }
+
+  function exists($min = false) {
+    return file_exists($this->filepath($min));
   }
 
   function isCustomSlug() {
@@ -112,6 +137,14 @@ class Asset {
     }
 
     return $slug;
+  }
+
+  function canMinify() {
+    if ($this->pluginMeta->getMinify()) {
+      return $this->exists(true);
+    } else {
+      return false;
+    }
   }
 
 }

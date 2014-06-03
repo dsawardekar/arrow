@@ -33,5 +33,23 @@
   "test/Arrow/OptionsManager/*Test.php": {
     "type": "test",
     "alternate": "lib/Arrow/OptionsManager/%s.php"
+  },
+
+  "lib/Arrow/Ajax/*.php": {
+    "type": "ajax",
+    "test": "test/Arrow/Ajax/%sTest.php"
+  },
+  "test/Arrow/Ajax/*Test.php": {
+    "type": "test",
+    "alternate": "lib/Arrow/Ajax/%s.php"
+  },
+
+  "lib/Arrow/Ember/*.php": {
+    "type": "ember",
+    "test": "test/Arrow/Ember/%sTest.php"
+  },
+  "test/Arrow/Ember/*.php": {
+    "type": "test",
+    "alternate": "lib/Arrow/Ember/%s.php"
   }
 }

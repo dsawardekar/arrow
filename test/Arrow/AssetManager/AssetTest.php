@@ -13,10 +13,10 @@ class AssetTest extends \WP_UnitTestCase {
   function setUp() {
     parent::setUp();
 
-    $this->pluginMeta       = new PluginMeta();
-    $this->pluginMeta->file = getcwd() . '/my-plugin.php';
-    $this->pluginMeta->dir  = getcwd();
-    $this->pluginMeta->slug = 'my_plugin';
+    $this->pluginMeta       = new \Arrow\PluginMeta(getcwd() . '/my-plugin.php');
+    //$this->pluginMeta->file = getcwd() . '/my-plugin.php';
+    //$this->pluginMeta->dir  = getcwd();
+    //$this->pluginMeta->slug = 'my_plugin';
 
     $this->container = new Container();
     $this->container->singleton('asset', 'Arrow\AssetManager\Asset');
@@ -110,13 +110,76 @@ class AssetTest extends \WP_UnitTestCase {
     $this->asset->slug = 'theme-foo';
     $actual = $this->asset->uniqueSlug();
 
-    $this->assertEquals("my_plugin-foo", $actual);
+    $this->assertEquals("my-plugin-foo", $actual);
   }
 
   function test_it_can_build_unique_custom_slug() {
     $this->asset->slug = 'theme-custom';
     $actual = $this->asset->uniqueSlug();
 
-    $this->assertEquals("my_plugin-custom", $actual);
+    $this->assertEquals("my-plugin-custom", $actual);
+  }
+
+  function test_it_can_build_asset_filepath() {
+    $this->asset->slug = 'foo';
+    $actual = $this->asset->filepath();
+
+    $this->assertStringEndsWith('assets/foo.js', $actual);
+  }
+
+  function test_it_can_build_minified_asset_filepath() {
+    $this->asset->slug = 'foo';
+    $actual = $this->asset->filepath(true);
+
+    $this->assertStringEndsWith('assets/foo.min.js', $actual);
+  }
+
+  function test_it_knows_if_asset_filepath_does_not_exist() {
+    $this->asset->slug = 'foo';
+    $this->assertFalse($this->asset->exists());
+  }
+
+  function test_it_knows_if_asset_filepath_exists() {
+    $this->asset->slug = 'sample';
+    $this->assertTrue($this->asset->exists());
+  }
+
+  function test_it_knows_if_minified_asset_filepath_does_not_exist() {
+    $this->asset->slug = 'foo';
+    $this->assertFalse($this->asset->exists(true));
+  }
+
+  function test_it_knows_if_minified_asset_filepath_exists() {
+    $this->asset->slug = 'sample';
+    $this->assertTrue($this->asset->exists(true));
+  }
+
+  function test_it_will_not_minify_if_disabled() {
+    $this->asset->slug = 'foo';
+    $this->assertFalse($this->asset->canMinify());
+  }
+
+  function test_it_will_not_minify_if_minified_asset_is_not_present() {
+    $this->asset->slug = 'one';
+    $this->pluginMeta->minify = true;
+    $this->assertFalse($this->asset->canMinify());
+  }
+
+  function test_it_will_minify_if_minified_asset_is_present() {
+    $this->asset->slug = 'sample';
+    $this->pluginMeta->minify = true;
+    $this->assertTrue($this->asset->canMinify());
+  }
+
+  function test_it_will_not_use_minified_path_if_disabled() {
+    $this->asset->slug = 'sample';
+    $this->pluginMeta->minify = false;
+    $this->assertEquals('assets/sample.js', $this->asset->relpath());
+  }
+
+  function test_it_will_use_minified_path_if_can_minify() {
+    $this->asset->slug = 'sample';
+    $this->pluginMeta->minify = true;
+    $this->assertEquals('assets/sample.min.js', $this->asset->relpath());
   }
 }

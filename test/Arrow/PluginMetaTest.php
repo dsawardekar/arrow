@@ -71,18 +71,18 @@ class PluginMetaTest extends \WP_UnitTestCase {
 
   function test_it_has_a_default_version() {
     $actual = $this->meta->getVersion();
-    $this->assertEquals('0.0.0', $actual);
+    $this->assertNotEquals('', $actual);
   }
 
   function test_it_has_default_script_options() {
     $options = $this->meta->getScriptOptions();
-    $this->assertEquals('0.0.0', $options['version']);
+    $this->assertNotEquals('', $options['version']);
     $this->assertTrue($options['in_footer']);
   }
 
   function test_it_has_default_stylesheet_options() {
     $options = $this->meta->getStylesheetOptions();
-    $this->assertEquals('0.0.0', $options['version']);
+    $this->assertNotEquals('', $options['version']);
     $this->assertEquals('all', $options['media']);
   }
 
@@ -98,6 +98,24 @@ class PluginMetaTest extends \WP_UnitTestCase {
 
   function test_it_knows_if_custom_stylesheet_does_not_exists() {
     $this->assertFalse($this->meta->hasCustomStylesheet());
+  }
+
+  function test_it_does_not_minify_in_debug_mode() {
+    $this->assertFalse($this->meta->getMinify());
+  }
+
+  function test_it_can_minify_if_enabled() {
+    $this->meta->minify = true;
+    $this->assertTrue($this->meta->getMinify());
+  }
+
+  function test_it_checks_files_before_switching_to_minified_version() {
+    $this->assertTrue($this->meta->getMinifyChecks());
+  }
+
+  function test_it_does_not_check_files_exists_for_minification_if_disabled() {
+    $this->meta->minifyChecks = false;
+    $this->assertFalse($this->meta->getMinifyChecks());
   }
 
   // how to test if_exists case that will work over travis?

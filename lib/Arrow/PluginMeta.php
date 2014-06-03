@@ -4,23 +4,30 @@ namespace Arrow;
 
 class PluginMeta {
 
-  protected $version           = '0.0.0';
-  protected $file              = null;
-  protected $slug              = null;
-  protected $dir               = null;
-  protected $optionsKey        = null;
-  protected $optionsPageTitle  = null;
-  protected $displayName       = null;
-  protected $defaultOptions    = array();
-  protected $scriptOptions     = array('in_footer' => true);
-  protected $stylesheetOptions = array('media' => 'all');
+  public $version           = '0.0.0';
+  public $file              = null;
+  public $slug              = null;
+  public $dir               = null;
+  public $optionsKey        = null;
+  public $optionsPageTitle  = null;
+  public $displayName       = null;
+  public $defaultOptions    = array();
+  public $scriptOptions     = array('in_footer' => true);
+  public $stylesheetOptions = array('media' => 'all');
+  public $minify;
+  public $minifyChecks = true;
 
   function __construct($file) {
     $this->file = $file;
   }
 
   function getVersion() {
-    return $this->version;
+    if ($this->getDebug()) {
+      /* for cache busting in development */
+      return strval(strtotime('now'));
+    } else {
+      return $this->version;
+    }
   }
 
   function getFile() {
@@ -41,6 +48,10 @@ class PluginMeta {
     }
 
     return $this->dir;
+  }
+
+  function getDebug() {
+    return defined('WP_DEBUG') && WP_DEBUG === true;
   }
 
   function getOptionsKey() {
@@ -117,5 +128,17 @@ class PluginMeta {
 
   function hasCustomStylesheet($name = 'custom.css') {
     return file_exists($this->getCustomStylesheet($name));
+  }
+
+  function getMinify() {
+    if (is_null($this->minify)) {
+      $this->minify = $this->getDebug() === false;
+    }
+
+    return $this->minify;
+  }
+
+  function getMinifyChecks() {
+    return $this->minifyChecks;
   }
 }
