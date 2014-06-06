@@ -18,7 +18,7 @@
     "phpunit/phpunit": "~3.7.0"
   },
   "require":{
-    "dsawardekar/encase-php": "~0.1.0",
+    "dsawardekar/encase-php": "~0.2.0",
     "dsawardekar/wp-requirements": "~0.3.0",
     "vlucas/valitron": "~1.1.5",
     "twig/twig": "~1.15.0"
