@@ -1,6 +1,6 @@
 <?php
 
-namespace Arrow\AssetManager;
+namespace Arrow\Asset;
 
 use Encase\Container;
 
@@ -20,7 +20,7 @@ class ScriptTest extends \WP_UnitTestCase {
     );
 
     $this->container = new Container();
-    $this->container->singleton('script', 'Arrow\AssetManager\Script');
+    $this->container->singleton('script', 'Arrow\Asset\Script');
     $this->container->object('pluginMeta', $this->pluginMeta);
 
     $this->script = $this->container->lookup('script');

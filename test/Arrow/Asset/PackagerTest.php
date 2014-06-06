@@ -1,13 +1,12 @@
 <?php
 
-namespace Arrow\AssetManager;
+namespace Arrow\Asset;
 
 use Encase\Container;
 
-class AssetManagerTest extends \WP_UnitTestCase {
+class PackagerTest extends \WP_UnitTestCase {
 
   public $container;
-  public $assetManager;
   public $pluginMeta;
 
   function setUp() {
@@ -24,8 +23,9 @@ class AssetManagerTest extends \WP_UnitTestCase {
     );
 
     $this->container = new Container();
-    $this->container->object('pluginMeta', $this->pluginMeta);
-    $this->assetManager = new AssetManager($this->container);
+    $this->container
+      ->object('pluginMeta', $this->pluginMeta)
+      ->packager('assetPackager', 'Arrow\Asset\Packager');
   }
 
   function lookup($key) {
@@ -34,7 +34,7 @@ class AssetManagerTest extends \WP_UnitTestCase {
 
   function test_it_adds_a_script_to_the_container() {
     $script = $this->lookup('script');
-    $this->assertInstanceOf('Arrow\AssetManager\Script', $script);
+    $this->assertInstanceOf('Arrow\Asset\Script', $script);
   }
 
   function test_it_adds_a_script_factory_to_the_container() {
@@ -46,7 +46,7 @@ class AssetManagerTest extends \WP_UnitTestCase {
 
   function test_it_adds_a_stylesheet_to_the_container() {
     $stylesheet = $this->lookup('stylesheet');
-    $this->assertInstanceOf('Arrow\AssetManager\Stylesheet', $stylesheet);
+    $this->assertInstanceOf('Arrow\Asset\Stylesheet', $stylesheet);
   }
 
   function test_it_adds_a_stylesheet_factory_to_the_container() {
@@ -58,7 +58,7 @@ class AssetManagerTest extends \WP_UnitTestCase {
 
   function test_it_adds_a_script_loader_to_the_container() {
     $loader = $this->lookup('scriptLoader');
-    $this->assertInstanceOf('Arrow\AssetManager\ScriptLoader', $loader);
+    $this->assertInstanceOf('Arrow\Asset\ScriptLoader', $loader);
   }
 
   function test_it_adds_a_singleton_script_loader_to_the_container() {
@@ -70,7 +70,7 @@ class AssetManagerTest extends \WP_UnitTestCase {
 
   function test_it_adds_a_stylesheet_loader_to_the_container() {
     $loader = $this->lookup('stylesheetLoader');
-    $this->assertInstanceOf('Arrow\AssetManager\StylesheetLoader', $loader);
+    $this->assertInstanceOf('Arrow\Asset\StylesheetLoader', $loader);
   }
 
   function test_it_adds_a_singleton_stylesheet_loader_to_the_container() {
@@ -82,7 +82,7 @@ class AssetManagerTest extends \WP_UnitTestCase {
 
   function test_it_adds_an_admin_script_loader_to_the_container() {
     $loader = $this->lookup('adminScriptLoader');
-    $this->assertInstanceOf('Arrow\AssetManager\AdminScriptLoader', $loader);
+    $this->assertInstanceOf('Arrow\Asset\AdminScriptLoader', $loader);
   }
 
   function test_it_adds_a_singleton_admin_script_loader_to_the_container() {
@@ -94,7 +94,7 @@ class AssetManagerTest extends \WP_UnitTestCase {
 
   function test_it_adds_an_admin_stylesheet_loader_to_the_container() {
     $loader = $this->lookup('adminStylesheetLoader');
-    $this->assertInstanceOf('Arrow\AssetManager\AdminStylesheetLoader', $loader);
+    $this->assertInstanceOf('Arrow\Asset\AdminStylesheetLoader', $loader);
   }
 
   function test_it_adds_a_singleton_admin_stylesheet_loader_to_the_container() {

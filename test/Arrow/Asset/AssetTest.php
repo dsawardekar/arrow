@@ -1,6 +1,6 @@
 <?php
 
-namespace Arrow\AssetManager;
+namespace Arrow\Asset;
 
 use Encase\Container;
 
@@ -14,12 +14,9 @@ class AssetTest extends \WP_UnitTestCase {
     parent::setUp();
 
     $this->pluginMeta       = new \Arrow\PluginMeta(getcwd() . '/my-plugin.php');
-    //$this->pluginMeta->file = getcwd() . '/my-plugin.php';
-    //$this->pluginMeta->dir  = getcwd();
-    //$this->pluginMeta->slug = 'my_plugin';
 
     $this->container = new Container();
-    $this->container->singleton('asset', 'Arrow\AssetManager\Asset');
+    $this->container->singleton('asset', 'Arrow\Asset\Asset');
     $this->container->object('pluginMeta', $this->pluginMeta);
 
     $this->asset = $this->container->lookup('asset');

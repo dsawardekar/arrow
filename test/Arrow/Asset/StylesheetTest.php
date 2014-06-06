@@ -1,6 +1,6 @@
 <?php
 
-namespace Arrow\AssetManager;
+namespace Arrow\Asset;
 
 use Encase\Container;
 
@@ -19,7 +19,7 @@ class StylesheetTest extends \WP_UnitTestCase {
     );
 
     $this->container = new Container();
-    $this->container->singleton('stylesheet', 'Arrow\AssetManager\Stylesheet');
+    $this->container->singleton('stylesheet', 'Arrow\Asset\Stylesheet');
     $this->container->object('pluginMeta', $this->pluginMeta);
 
     $this->stylesheet = $this->container->lookup('stylesheet');

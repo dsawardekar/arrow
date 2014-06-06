@@ -1,6 +1,6 @@
 <?php
 
-namespace Arrow\AssetManager;
+namespace Arrow\Asset;
 
 use Encase\Container;
 
@@ -20,9 +20,9 @@ class AdminScriptLoaderTest extends \WP_UnitTestCase {
     );
 
     $this->container = new Container();
-    $this->container->factory('script', 'Arrow\AssetManager\Script');
+    $this->container->factory('script', 'Arrow\Asset\Script');
     $this->container->object('pluginMeta', $this->pluginMeta);
-    $this->container->singleton('loader', 'Arrow\AssetManager\AdminScriptLoader');
+    $this->container->singleton('loader', 'Arrow\Asset\AdminScriptLoader');
 
     $this->loader = $this->container->lookup('loader');
   }

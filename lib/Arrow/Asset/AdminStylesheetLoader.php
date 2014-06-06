@@ -1,8 +1,8 @@
 <?php
 
-namespace Arrow\AssetManager;
+namespace Arrow\Asset;
 
-class AdminScriptLoader extends ScriptLoader {
+class AdminStylesheetLoader extends StylesheetLoader {
 
   public $pluginMeta;
 

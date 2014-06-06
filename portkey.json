@@ -8,13 +8,13 @@
     "alternate": "lib/Arrow/%s.php"
   },
 
-  "lib/Arrow/AssetManager/*.php": {
+  "lib/Arrow/Asset/*.php": {
     "type": "asset",
-    "test": "test/Arrow/AssetManager/%sTest.php"
+    "test": "test/Arrow/Asset/%sTest.php"
   },
-  "test/Arrow/AssetManager/*Test.php": {
+  "test/Arrow/Asset/*Test.php": {
     "type": "test",
-    "alternate": "lib/Arrow/AssetManager/%s.php"
+    "alternate": "lib/Arrow/Asset/%s.php"
   },
 
   "lib/Arrow/TwigHelper/*.php": {

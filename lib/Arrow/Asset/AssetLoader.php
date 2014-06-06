@@ -1,6 +1,6 @@
 <?php
 
-namespace Arrow\AssetManager;
+namespace Arrow\Asset;
 
 class AssetLoader {
 

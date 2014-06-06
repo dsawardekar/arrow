@@ -1,6 +1,6 @@
 <?php
 
-namespace Arrow\AssetManager;
+namespace Arrow\Asset;
 
 use Encase\Container;
 
@@ -20,9 +20,9 @@ class AdminStylesheetLoaderTest extends \WP_UnitTestCase {
     );
 
     $this->container = new Container();
-    $this->container->factory('stylesheet', 'Arrow\AssetManager\Stylesheet');
+    $this->container->factory('stylesheet', 'Arrow\Asset\Stylesheet');
     $this->container->object('pluginMeta', $this->pluginMeta);
-    $this->container->singleton('loader', 'Arrow\AssetManager\AdminStylesheetLoader');
+    $this->container->singleton('loader', 'Arrow\Asset\AdminStylesheetLoader');
 
     $this->loader = $this->container->lookup('loader');
   }

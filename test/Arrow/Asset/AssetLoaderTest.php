@@ -1,6 +1,6 @@
 <?php
 
-namespace Arrow\AssetManager;
+namespace Arrow\Asset;
 
 use Encase\Container;
 
@@ -21,8 +21,8 @@ class AssetLoaderTest extends \WP_UnitTestCase {
 
     $this->container = new Container();
     $this->container->object('pluginMeta', $this->pluginMeta);
-    $this->container->factory('asset', 'Arrow\AssetManager\Script');
-    $this->container->singleton('loader', 'Arrow\AssetManager\AssetLoader');
+    $this->container->factory('asset', 'Arrow\Asset\Script');
+    $this->container->singleton('loader', 'Arrow\Asset\AssetLoader');
 
     $this->loader = $this->container->lookup('loader');
   }
