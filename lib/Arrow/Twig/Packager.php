@@ -4,6 +4,8 @@ namespace Arrow\Twig;
 
 class Packager {
 
+  public $pluginMeta;
+
   function needs() {
     return array('pluginMeta');
   }

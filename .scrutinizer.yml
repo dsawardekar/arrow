@@ -1,3 +1,5 @@
+filter:
+  paths: [lib/*]
 tools:
   external_code_coverage:
     runs: 2
