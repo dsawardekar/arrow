@@ -49,8 +49,14 @@ class PrivateController extends Controller {
 
 class StandardController extends Controller {
 
+  public $_capability = 'manage_options';
+
   function publicActions() {
     return $this->adminActions();
+  }
+
+  function capability() {
+    return $this->_capability;
   }
 
 }
@@ -286,11 +292,6 @@ class SentryTest extends \WP_UnitTestCase {
     $this->assertEquals('ajax-sentry', $actual);
   }
 
-  function test_it_has_empty_nonce_value_for_public_access() {
-    $this->sentry->pulic = true;
-    $this->assertEquals('', $this->sentry->getNonceValue());
-  }
-
   function test_it_has_correct_nonce_value_for_admin_access() {
     $this->sentry->public = false;
     $_GET['nonce'] = 'foo';
@@ -317,6 +318,28 @@ class SentryTest extends \WP_UnitTestCase {
     $_GET['admin'] = '1';
     $actual = $this->sentry->isAdminRequest();
     $this->assertTrue($actual);
+  }
+
+  function test_it_knows_if_current_user_does_not_have_valid_permissions() {
+    $_GET['controller'] = 'standard';
+    $actual = $this->sentry->hasValidPermissions();
+    $this->assertFalse($actual);
+  }
+
+  function test_it_knows_if_current_user_has_valid_permissions() {
+    wp_set_current_user(1);
+    $_GET['controller'] = 'standard';
+    $actual = $this->sentry->hasValidPermissions();
+
+    $this->assertTrue($actual);
+  }
+
+  function test_it_allows_any_permissions_if_controller_has_empty_capability() {
+    $_GET['controller'] = 'standard';
+    $controller = $this->container->lookup('standardController');
+    $controller->_capability = '';
+
+    $this->assertTrue($this->sentry->hasValidPermissions());
   }
 
   /* integration tests */

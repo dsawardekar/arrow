@@ -240,14 +240,10 @@ class Sentry extends \Arrow\Sentry {
   }
 
   function getNonceValue() {
-    if ($this->public) {
-      return '';
+    if (array_key_exists('nonce', $_GET)) {
+      return $_GET['nonce'];
     } else {
-      if (array_key_exists('nonce', $_GET)) {
-        return $_GET['nonce'];
-      } else {
-        return '';
-      }
+      return '';
     }
   }
 

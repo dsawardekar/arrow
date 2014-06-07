@@ -29,6 +29,7 @@ class Router {
       return;
     }
 
+    $this->didRegister = true;
     $this->allowPublic = $allowPublic;
 
     if ($allowPublic) {

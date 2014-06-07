@@ -94,6 +94,34 @@ class RouterTest extends \WP_UnitTestCase {
     $this->assertTrue(has_action('wp_ajax_no_priv_my_plugin'));
   }
 
+  function test_it_will_not_register_if_already_registered() {
+    $this->router->register(true);
+    $this->router->register();
+
+    $this->assertTrue($this->router->allowPublic);
+  }
+
+  function test_it_will_not_reenable_if_already_enabled() {
+    $this->router->enable(true);
+    $this->router->enable();
+
+    $this->assertTrue($this->router->didEnable);
+  }
+
+  function test_it_does_not_process_unauthorized_request() {
+    $this->sentry->authorizeResult = false;
+    $actual = $this->router->process();
+
+    $this->assertFalse($actual);
+  }
+
+  function test_it_does_not_process_unauthorized_public_request() {
+    $this->sentry->authorizePublicResult = false;
+    $actual = $this->router->processPublic();
+
+    $this->assertFalse($actual);
+  }
+
   function test_it_uses_public_sentry_authorization_if_public() {
     $this->sentry->authorizePublicResult = 'public';
     $actual = $this->router->authorize(true);
