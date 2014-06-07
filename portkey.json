@@ -17,13 +17,13 @@
     "alternate": "lib/Arrow/Asset/%s.php"
   },
 
-  "lib/Arrow/TwigHelper/*.php": {
+  "lib/Arrow/Twig/*.php": {
     "type": "twig",
-    "test": "test/Arrow/TwigHelper/%sTest.php"
+    "test": "test/Arrow/Twig/%sTest.php"
   },
-  "test/Arrow/TwigHelper/*Test.php": {
+  "test/Arrow/Twig/*Test.php": {
     "type": "test",
-    "alternate": "lib/Arrow/TwigHelper/%s.php"
+    "alternate": "lib/Arrow/Twig/%s.php"
   },
 
   "lib/Arrow/Options/*.php": {

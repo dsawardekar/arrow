@@ -1,17 +1,13 @@
 <?php
 
-namespace Arrow\TwigHelper;
+namespace Arrow\Twig;
 
-class TwigPrecompiler {
+class Compiler {
 
-  protected $twigEnv = null;
+  public $twigEnvironment;
 
-  function setEnvironment($twigEnv) {
-    $this->twigEnv = $twigEnv;
-  }
-
-  function getEnvironment() {
-    return $this->twigEnv;
+  function needs() {
+    return array('twigEnvironment');
   }
 
   function compile($sourceDirs) {
@@ -28,13 +24,17 @@ class TwigPrecompiler {
     }
   }
 
-  function compileTemplate($templatePath) {
-    $this->twigEnv->loadTemplate($templatePath);
+  function compileTemplate($templateName) {
+    $this->twigEnvironment->loadTemplate($templateName);
   }
 
   function templateNamesInDir($dir) {
     $templates = $this->templatesInDir($dir);
     return array_map(array($this, 'templateNameFor'), $templates);
+  }
+
+  function getFoo() {
+    return 'foo';
   }
 
   function templatesInDir($dir) {
