@@ -298,6 +298,10 @@ class SentryTest extends \WP_UnitTestCase {
     $this->assertEquals('foo', $this->sentry->getNonceValue());
   }
 
+  function test_it_returns_empty_nonce_value_if_absent() {
+    $this->assertEquals('', $this->sentry->getNonceValue());
+  }
+
   function test_it_does_not_need_nonce_for_public_access() {
     $this->sentry->public = true;
     $this->assertTrue($this->sentry->isValidNonce());

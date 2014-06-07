@@ -224,7 +224,7 @@ class Sentry extends \Arrow\Sentry {
         return array();
       }
     } else {
-      $this->hasValidParams = true;
+      $this->hasValidParams = is_array($json);
       return $json;
     }
   }

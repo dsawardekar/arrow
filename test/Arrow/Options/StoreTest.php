@@ -144,10 +144,11 @@ class StoreTest extends \WP_UnitTestCase {
   function test_it_wont_load_if_already_loaded() {
     $json = '{"foo":"one", "bar":"two"}';
     update_option('store-plugin-options', $json);
-
     $this->store->load();
+
     $json = '{"foo":"three", "bar":"two"}';
     update_option('store-plugin-options', $json);
+    $this->store->load();
 
     $this->assertEquals('one', $this->store->getOption('foo'));
   }
