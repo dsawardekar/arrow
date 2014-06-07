@@ -7,7 +7,7 @@ require_once __DIR__ . '/MyAjaxController.php';
 
 use Encase\Container;
 
-class AjaxControllerTest extends \WP_UnitTestCase {
+class ControllerTest extends \WP_UnitTestCase {
 
   public $printer;
   public $container;
@@ -73,4 +73,51 @@ class AjaxControllerTest extends \WP_UnitTestCase {
     $this->assertEquals(200, $this->printer->statusCode);
   }
 
+  function test_it_has_a_validator() {
+    $this->controller->params = array('foo' => 1);
+    $validator = $this->controller->getValidator();
+    $validator->rule('required', 'foo');
+
+    $this->assertTrue($validator->validate());
+  }
+
+  function test_it_returns_an_error_object_as_error_result() {
+    $result = $this->controller->error('foo', 422);
+
+    $this->assertInstanceOf('Arrow\Ajax\ControllerError', $result);
+    $this->assertEquals('foo', $result->error);
+    $this->assertEquals(422, $result->statusCode);
+  }
+
+  function test_it_sends_success_for_result_returning_action() {
+    $this->controller->doAction('index');
+    $this->assertEquals('index', $this->printer->data);
+    $this->assertEquals(200, $this->printer->statusCode);
+  }
+
+  function test_it_sends_error_for_error_returning_action() {
+    $this->controller->doAction('helloError');
+    $this->assertEquals('helloError', $this->printer->data);
+    $this->assertEquals(403, $this->printer->statusCode);
+  }
+
+  function test_it_does_not_send_success_if_did_success() {
+    $this->controller->didSuccess = true;
+    $this->controller->doAction('index');
+
+    $this->assertNull($this->printer->data);
+  }
+
+  function test_it_does_not_send_error_if_did_error() {
+    $this->controller->didError = true;
+    $this->controller->doAction('index');
+
+    $this->assertNull($this->printer->data);
+  }
+
+  function test_it_trap_and_sends_exception_inside_actions() {
+    $this->controller->process('helloException');
+    $this->assertEquals('helloException', $this->printer->data);
+    $this->assertEquals(500, $this->printer->statusCode);
+  }
 }

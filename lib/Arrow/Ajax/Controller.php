@@ -55,8 +55,8 @@ class Controller {
 
       try {
         $this->doAction($action);
-      } catch (Exception $e) {
-        $this->sendError($e->getMessage());
+      } catch (\Exception $e) {
+        $this->sendError($e->getMessage(), 500);
       }
     } else {
       $this->sendError('invalid_action');
@@ -69,7 +69,7 @@ class Controller {
       if (!($result instanceof ControllerError)) {
         $this->sendSuccess($result);
       } else {
-        $this->sendError($result);
+        $this->sendError($result->error, $result->statusCode);
       }
     }
   }
