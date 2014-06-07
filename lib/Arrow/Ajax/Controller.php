@@ -83,7 +83,7 @@ class Controller {
   }
 
   /* abstract */
-  /* @codeCoverageIgnoreStart */
+  // @codeCoverageIgnoreStart
   function index() {
 
   }
@@ -103,7 +103,7 @@ class Controller {
   function delete() {
 
   }
-  /* @codeCoverageIgnoreEnd */
+  // @codeCoverageIgnoreEnd
 
 }
 
