@@ -1,8 +1,8 @@
 <?php
 
-namespace Arrow\Ember;
+namespace Arrow\Options;
 
-class OptionsController extends \Arrow\Ajax\Controller {
+class Controller extends \Arrow\Ajax\Controller {
 
   public $optionsStore;
 

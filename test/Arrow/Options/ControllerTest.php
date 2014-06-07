@@ -1,6 +1,6 @@
 <?php
 
-namespace Arrow\Ember;
+namespace Arrow\Options;
 
 use Encase\Container;
 
@@ -10,7 +10,7 @@ class MockPluginMeta extends \Arrow\PluginMeta {
 
 }
 
-class EmberOptionsValidator extends \Arrow\OptionsManager\OptionsValidator {
+class ControllerOptionsValidator extends \Arrow\Options\Validator {
 
   function loadRules($validator) {
     $validator->rule('required', 'name');
@@ -21,7 +21,7 @@ class EmberOptionsValidator extends \Arrow\OptionsManager\OptionsValidator {
 
 }
 
-class OptionsControllerTest extends \WP_UnitTestCase {
+class ControllerTest extends \WP_UnitTestCase {
 
   public $container;
   public $pluginMeta;
@@ -35,10 +35,10 @@ class OptionsControllerTest extends \WP_UnitTestCase {
     $this->container = new Container();
     $this->container
       ->object('pluginMeta', new MockPluginMeta('my-plugin.php'))
-      ->singleton('optionsStore', 'Arrow\OptionsManager\OptionsStore')
+      ->singleton('optionsStore', 'Arrow\Options\Store')
       ->singleton('ajaxJsonPrinter', 'Arrow\Ajax\JsonPrinter')
-      ->singleton('optionsValidator', 'Arrow\Ember\EmberOptionsValidator')
-      ->singleton('optionsController', 'Arrow\Ember\OptionsController');
+      ->singleton('optionsValidator', 'Arrow\Options\ControllerOptionsValidator')
+      ->singleton('optionsController', 'Arrow\Options\Controller');
 
     $this->pluginMeta = $this->container->lookup('pluginMeta');
     $this->store      = $this->container->lookup('optionsStore');
@@ -49,8 +49,6 @@ class OptionsControllerTest extends \WP_UnitTestCase {
       'name' => 'your name',
       'email' => 'your@email.com'
     );
-
-    \Arrow\OptionsManager\CustomValitronRules::load();
   }
 
   function test_it_has_an_options_store() {

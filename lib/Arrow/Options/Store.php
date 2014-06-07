@@ -1,8 +1,8 @@
 <?php
 
-namespace Arrow\OptionsManager;
+namespace Arrow\Options;
 
-class OptionsStore {
+class Store {
 
   public $container;
   public $pluginMeta;
