@@ -26,13 +26,13 @@
     "alternate": "lib/Arrow/TwigHelper/%s.php"
   },
 
-  "lib/Arrow/OptionsManager/*.php": {
+  "lib/Arrow/Options/*.php": {
     "type": "options",
-    "test": "test/Arrow/OptionsManager/%sTest.php"
+    "test": "test/Arrow/Options/%sTest.php"
   },
-  "test/Arrow/OptionsManager/*Test.php": {
+  "test/Arrow/Options/*Test.php": {
     "type": "test",
-    "alternate": "lib/Arrow/OptionsManager/%s.php"
+    "alternate": "lib/Arrow/Options/%s.php"
   },
 
   "lib/Arrow/Ajax/*.php": {

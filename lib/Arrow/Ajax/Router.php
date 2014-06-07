@@ -7,6 +7,8 @@ class Router {
   public $container;
   public $pluginMeta;
   public $allowPublic = false;
+  public $didRegister = false;
+  public $didEnable   = false;
 
   function needs() {
     return array('pluginMeta', 'ajaxSentry');
@@ -23,6 +25,10 @@ class Router {
   }
 
   function register($allowPublic = false) {
+    if ($this->didRegister) {
+      return;
+    }
+
     $this->allowPublic = $allowPublic;
 
     if ($allowPublic) {
@@ -30,6 +36,17 @@ class Router {
     }
 
     add_action($this->hookName(), array($this, 'process'));
+  }
+
+  function enable($allowPublic = false) {
+    if ($this->didEnable) {
+      return;
+    }
+
+    $this->didEnable = true;
+    add_action(
+      'admin_init', array($this, 'register'), 10, $allowPublic
+    );
   }
 
   function process() {

@@ -1,10 +1,26 @@
 <?php
 
-namespace Arrow\OptionsManager;
+namespace Arrow\Options;
 
-use Valitron\Validator;
+class Validator {
 
-class OptionsValidator {
+  static $staticRulesLoaded = false;
+
+  static function loadStaticRules() {
+    if (self::$staticRulesLoaded) {
+      return;
+    }
+
+    \Valitron\Validator::addRule(
+      'safeText', array('Arrow\Options\Validator', 'isSafeText')
+    );
+
+    self::$staticRulesLoaded = true;
+  }
+
+  static function isSafeText($field, $value, $params) {
+    return sanitize_text_field($value) === $value;
+  }
 
   public $validator;
   public $options;
@@ -17,7 +33,7 @@ class OptionsValidator {
   function build() {
     $this->loadCustomRules();
 
-    $this->validator = new Validator($this->options);
+    $this->validator = new \Valitron\Validator($this->options);
     $this->loadRules($this->validator);
   }
 
@@ -42,7 +58,10 @@ class OptionsValidator {
   }
 
   function loadCustomRules() {
-    return;
+    if (!Validator::$staticRulesLoaded) {
+      Validator::loadStaticRules();
+    }
   }
+
 
 }

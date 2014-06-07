@@ -1,12 +1,10 @@
 <?php
 
-namespace Arrow\OptionsManager;
+namespace Arrow\Options;
 
 require_once __DIR__ . '/MyOptionsValidator.php';
 
-use Valitron\Validator;
-
-class OptionsValidatorTest extends \WP_UnitTestCase {
+class ValidatorTest extends \WP_UnitTestCase {
 
   public $validator;
 
@@ -84,4 +82,34 @@ class OptionsValidatorTest extends \WP_UnitTestCase {
     $this->assertTrue($result);
   }
 
+  function test_it_knows_text_with_tags_is_not_safe() {
+    $actual = Validator::isSafeText('safeText', '<b>foo</b>', null);
+    $this->assertFalse($actual);
+  }
+
+  function test_it_knows_text_with_script_tags_is_not_safe() {
+    $actual = Validator::isSafeText('safeText', '<script>alert("hello");</script>', null);
+    $this->assertFalse($actual);
+  }
+
+  function test_it_knows_plain_text_is_safe() {
+    $actual = Validator::isSafeText('safeText', 'foo', null);
+    $this->assertTrue($actual);
+  }
+
+  function test_it_can_validate_with_safe_text_rule_with_invalid_input() {
+    Validator::loadStaticRules();
+    $validator = new \Valitron\Validator(array('name' => '<b>Darshan</b>'));
+    $validator->rule('safeText', 'name');
+
+    $this->assertFalse($validator->validate());
+  }
+
+  function test_it_can_validate_with_safe_text_rule_with_valid_input() {
+    Validator::loadStaticRules();
+    $validator = new \Valitron\Validator(array('name' => 'Darshan'));
+    $validator->rule('safeText', 'name');
+
+    $this->assertTrue($validator->validate());
+  }
 }

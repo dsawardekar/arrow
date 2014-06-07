@@ -1,10 +1,8 @@
 <?php
 
-namespace Arrow\OptionsManager;
+namespace Arrow\Options;
 
-use Valitron\Validator;
-
-class MyOptionsValidator extends OptionsValidator {
+class MyOptionsValidator extends \Arrow\Options\Validator {
 
   public $didCustomRules  = false;
   public $myCheckedFields = array();
@@ -15,9 +13,10 @@ class MyOptionsValidator extends OptionsValidator {
   }
 
   function loadCustomRules() {
+    parent::loadCustomRules();
     $this->didCustomRules = true;
 
-    Validator::addRule('customRule', function($field, $value, $params) {
+    \Valitron\Validator::addRule('customRule', function($field, $value, $params) {
       return $value === 'foo';
     }, 'values must be foo');
   }

@@ -168,6 +168,45 @@ class RouterTest extends \WP_UnitTestCase {
     $this->assertEquals(200, $this->printer->statusCode);
   }
 
+  /* The admin_init hook makes these tests quite slow.
+   * The hooks are only supposed to invoke the corresponding register
+   * method. So we directly call register here.
+   *
+   * Should be good enough. Revisit if not working.
+   * TODO: figure out why 'admin_init' is slow?
+   */
+  function test_it_can_be_enabled_for_admin_access() {
+    $this->router->enable(false);
+
+    $_GET['admin'] = '1';
+    $this->sentry->authorizeResult = true;
+    $this->sentry->controller = 'foo';
+    $this->sentry->action = 'create';
+
+    //do_action('admin_init');
+    $this->router->register(false);
+    do_action('wp_ajax_my_plugin');
+
+    $this->assertEquals('create', $this->printer->data);
+    $this->assertEquals(200, $this->printer->statusCode);
+  }
+
+  function test_it_can_be_enabled_for_public_access() {
+    $this->router->enable(true);
+
+    $_GET['admin'] = '0';
+    $this->sentry->authorizeResult = true;
+    $this->sentry->controller = 'foo';
+    $this->sentry->action = 'index';
+
+    //do_action('admin_init');
+    $this->router->register(true);
+    do_action('wp_ajax_my_plugin');
+
+    $this->assertEquals('index', $this->printer->data);
+    $this->assertEquals(200, $this->printer->statusCode);
+  }
+
   /* TODO: integration tests */
 
 }

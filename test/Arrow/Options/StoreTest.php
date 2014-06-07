@@ -1,10 +1,10 @@
 <?php
 
-namespace Arrow\OptionsManager;
+namespace Arrow\Options;
 
 use Encase\Container;
 
-class OptionsStoreTest extends \WP_UnitTestCase {
+class StoreTest extends \WP_UnitTestCase {
 
   public $container;
   public $store;
@@ -13,8 +13,7 @@ class OptionsStoreTest extends \WP_UnitTestCase {
   function setUp() {
     parent::setUp();
 
-    $this->pluginMeta = new PluginMeta();
-    $this->pluginMeta->optionsKey = 'options-store-plugin';
+    $this->pluginMeta = new \Arrow\PluginMeta('store-plugin/store-plugin.php');
     $this->pluginMeta->defaultOptions = array(
       'foo' => 1,
       'bar' => 'two'
@@ -23,7 +22,7 @@ class OptionsStoreTest extends \WP_UnitTestCase {
     $container = new Container();
     $container
       ->object('pluginMeta', $this->pluginMeta)
-      ->singleton('store', 'Arrow\OptionsManager\OptionsStore');
+      ->singleton('store', 'Arrow\Options\Store');
 
     $this->container = $container;
     $this->store = $container->lookup('store');
@@ -76,14 +75,14 @@ class OptionsStoreTest extends \WP_UnitTestCase {
   }
 
   function test_it_knows_if_options_are_loaded() {
-    update_option('options-store-plugin', '{"foo":1}');
+    update_option('store-plugin-options', '{"foo":1}');
     $this->store->load();
     $this->assertTrue($this->store->loaded());
   }
 
   function test_it_can_load_all_options_from_db() {
     $json = '{"lorem": 1, "ipsum": 2}';
-    update_option('options-store-plugin', $json);
+    update_option('store-plugin-options', $json);
 
     $options = $this->store->getOptions();
     $this->assertEquals(1, $options['lorem']);
@@ -92,7 +91,7 @@ class OptionsStoreTest extends \WP_UnitTestCase {
 
   function test_it_can_load_specific_options_from_db() {
     $json = '{"lorem": 1, "ipsum": 2}';
-    update_option('options-store-plugin', $json);
+    update_option('store-plugin-options', $json);
 
     $this->assertEquals(1, $this->store->getOption('lorem'));
     $this->assertEquals(2, $this->store->getOption('ipsum'));
@@ -100,18 +99,18 @@ class OptionsStoreTest extends \WP_UnitTestCase {
 
   function test_it_uses_default_option_if_not_found_in_db() {
     $json = '{"lorem": 1, "ipsum": 2}';
-    update_option('options-store-plugin', $json);
+    update_option('store-plugin-options', $json);
 
     $this->assertEquals('two', $this->store->getOption('bar'));
   }
 
   function test_it_can_clear_all_options() {
     $json = '{"lorem": 1, "ipsum": 2}';
-    update_option('options-store-plugin', $json);
+    update_option('store-plugin-options', $json);
     $this->store->load();
     $this->store->clear();
 
-    $this->assertFalse(get_option('options-store-plugin'));
+    $this->assertFalse(get_option('store-plugin-options'));
   }
 
   function test_it_can_change_options_on_non_loaded_store() {
@@ -119,19 +118,19 @@ class OptionsStoreTest extends \WP_UnitTestCase {
     $this->store->setOption('b', 2);
 
     $this->store->save();
-    $this->assertEquals('{"a":1,"b":2}', get_option('options-store-plugin'));
+    $this->assertEquals('{"a":1,"b":2}', get_option('store-plugin-options'));
   }
 
   function test_it_can_change_options_on_loaded_store() {
     $json = '{"foo": 0, "bar": 0}';
-    update_option('options-store-plugin', $json);
+    update_option('store-plugin-options', $json);
 
     $this->store->load();
     $this->store->setOption('foo', 1);
     $this->store->setOption('bar', 2);
 
     $this->store->save();
-    $this->assertEquals('{"foo":1,"bar":2}', get_option('options-store-plugin'));
+    $this->assertEquals('{"foo":1,"bar":2}', get_option('store-plugin-options'));
   }
 
   function test_it_can_change_options_in_memory() {
