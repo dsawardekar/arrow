@@ -17,7 +17,7 @@ class PageTest extends \WP_UnitTestCase {
 
     $this->container = new Container();
     $this->container
-      ->object('pluginMeta', new \Arrow\PluginMeta('my-plugin.php'))
+      ->object('pluginMeta', new \Arrow\PluginMeta('test/my-plugin.php'))
       ->packager('assetPackager', 'Arrow\Asset\Packager')
       ->singleton('optionsStore', 'Arrow\Options\Store')
       ->singleton('optionsPage', 'Arrow\Options\Page');
@@ -68,7 +68,7 @@ class PageTest extends \WP_UnitTestCase {
 
   function test_it_has_template_path() {
     $actual = $this->page->getTemplatePath();
-    $this->assertEquals('./templates/options.html', $actual);
+    $this->assertEquals('test/templates/options.html', $actual);
   }
 
   function test_it_has_new_nonce_value() {
