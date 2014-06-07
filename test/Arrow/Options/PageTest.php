@@ -111,23 +111,23 @@ class PageTest extends \WP_UnitTestCase {
     $this->page->loadScripts();
     $this->assertEquals(
       array('jquery'),
-      $this->scriptLoader->getScheduled('handlebars')->dependencies
+      $this->scriptLoader->find('handlebars')->dependencies
     );
     $this->assertEquals(
       array('handlebars'),
-      $this->scriptLoader->getScheduled('ember')->dependencies
+      $this->scriptLoader->find('ember')->dependencies
     );
     $this->assertEquals(
       array('ember'),
-      $this->scriptLoader->getScheduled('ember-validations')->dependencies
+      $this->scriptLoader->find('ember-validations')->dependencies
     );
     $this->assertEquals(
       array('ember-validations'),
-      $this->scriptLoader->getScheduled('ember-easyForm')->dependencies
+      $this->scriptLoader->find('ember-easyForm')->dependencies
     );
     $this->assertEquals(
       array('ember-easyForm'),
-      $this->scriptLoader->getScheduled('my-plugin-app')->dependencies
+      $this->scriptLoader->find('my-plugin-app')->dependencies
     );
   }
 

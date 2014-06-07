@@ -105,6 +105,23 @@ class AssetLoaderTest extends \WP_UnitTestCase {
     $this->assertTrue(wp_script_is('foo', 'enqueued'));
   }
 
+  function test_it_can_find_scheduled_scripts() {
+    $this->loader->schedule('foo', array('foo' => 1));
+    $asset = $this->loader->find('foo');
+    $this->assertEquals(1, $asset->options['foo']);
+  }
+
+  function test_it_can_find_streamed_scripts() {
+    $this->loader->stream('foo', array('foo' => 1));
+    $asset = $this->loader->find('foo');
+    $this->assertEquals(1, $asset->options['foo']);
+  }
+
+  function test_it_wont_find_unknown_scripts() {
+    $actual = $this->loader->find('foo');
+    $this->assertFalse($actual);
+  }
+
   function test_it_knows_if_stream_was_previously_streamed() {
     $this->loader->stream('foo');
     $this->assertTrue(wp_script_is('foo', 'enqueued'));
@@ -113,6 +130,13 @@ class AssetLoaderTest extends \WP_UnitTestCase {
 
   function test_it_knows_if_script_is_not_streamed() {
     $this->assertFalse($this->loader->isStreamed('foo'));
+  }
+
+  function test_it_wont_stream_same_slug_twice() {
+    $this->loader->stream('foo');
+    $this->loader->stream('foo');
+    $this->assertTrue(wp_script_is('foo', 'enqueued'));
+    $this->assertTrue($this->loader->isStreamed('foo'));
   }
 
   function test_it_can_schedule_and_stream_at_the_time() {
@@ -124,6 +148,15 @@ class AssetLoaderTest extends \WP_UnitTestCase {
 
     $this->assertTrue(wp_script_is('foo', 'enqueued'));
     $this->assertTrue(wp_script_is('bar', 'enqueued'));
+  }
+
+  function test_it_will_only_load_once_with_schedule() {
+    $this->loader->schedule('foo', array('foo' => 1));
+    $this->loader->load();
+    $this->loader->load();
+
+    $asset = $this->loader->find('foo');
+    $this->assertEquals(1, $asset->options['foo']);
   }
 
 }

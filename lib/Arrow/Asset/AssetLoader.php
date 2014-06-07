@@ -41,7 +41,7 @@ class AssetLoader {
     $asset->register();
     $asset->enqueue();
 
-    $this->streamed[$slug] = true;
+    $this->streamed[$slug] = $asset;
   }
 
   public function dependency($slug, $dependencies) {
@@ -88,20 +88,18 @@ class AssetLoader {
     return array_key_exists($key, $this->scheduled);
   }
 
-  public function getScheduled($key) {
-    return $this->scheduled[$key];
-  }
-
   public function isStreamed($key) {
     return array_key_exists($key, $this->streamed);
   }
 
-  public function getStreamed($key) {
-    return $this->streamed[$key];
-  }
-
   public function find($key) {
-    return $this->scheduled[$key];
+    if ($this->isScheduled($key)) {
+      return $this->scheduled[$key];
+    } elseif ($this->isStreamed($key)) {
+      return $this->streamed[$key];
+    } else {
+      return false;
+    }
   }
 
   function enqueue() {
