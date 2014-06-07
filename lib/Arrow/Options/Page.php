@@ -9,7 +9,6 @@ class Page {
   public $optionsStore;
   public $adminScriptLoader;
   public $adminStylesheetLoader;
-  public $autoRegister = true;
   public $didEnable    = false;
 
   function needs() {
@@ -43,10 +42,6 @@ class Page {
 
     $this->loadStyles();
     $this->loadScripts();
-  }
-
-  function getAutoRegister() {
-    return $this->autoRegister;
   }
 
   function getTemplateName() {

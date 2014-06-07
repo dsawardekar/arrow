@@ -23,7 +23,7 @@ class Validator {
   }
 
   public $validator;
-  public $options;
+  public $params;
   public $pluginMeta;
 
   function needs() {
@@ -33,16 +33,16 @@ class Validator {
   function build() {
     $this->loadCustomRules();
 
-    $this->validator = new \Valitron\Validator($this->options);
+    $this->validator = new \Valitron\Validator($this->params);
     $this->loadRules($this->validator);
   }
 
-  function validate($options = null) {
-    if (is_null($options)) {
-      $options = $_POST;
+  function validate($params = null) {
+    if (is_null($params)) {
+      $params = $_POST;
     }
 
-    $this->options = $options;
+    $this->params = $params;
     $this->build();
 
     return $this->validator->validate();
@@ -54,7 +54,6 @@ class Validator {
 
   /* abstract */
   function loadRules($validator) {
-    return;
   }
 
   function loadCustomRules() {

@@ -140,4 +140,23 @@ class StoreTest extends \WP_UnitTestCase {
     $this->assertEquals(1, $this->store->getOption('foo'));
     $this->assertEquals(2, $this->store->getOption('bar'));
   }
+
+  function test_it_wont_load_if_already_loaded() {
+    $json = '{"foo":"one", "bar":"two"}';
+    update_option('store-plugin-options', $json);
+
+    $this->store->load();
+    $json = '{"foo":"three", "bar":"two"}';
+    update_option('store-plugin-options', $json);
+
+    $this->assertEquals('one', $this->store->getOption('foo'));
+  }
+
+  function test_it_returns_null_if_key_not_stored_and_not_in_defaults() {
+    $json = '{"foo":"one", "bar":"two"}';
+    update_option('store-plugin-options', $json);
+    $this->store->load();
+
+    $this->assertNull($this->store->getOption('unknown'));
+  }
 }

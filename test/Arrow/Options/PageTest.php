@@ -152,4 +152,11 @@ class PageTest extends \WP_UnitTestCase {
     $this->assertContains('<p>options.html</p>', $html);
   }
 
+  function test_it_wont_enable_if_already_enabled() {
+    $this->page->enable();
+    $this->page->enable();
+
+    $this->assertTrue($this->page->didEnable);
+  }
+
 }

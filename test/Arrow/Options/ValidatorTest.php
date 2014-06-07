@@ -14,6 +14,20 @@ class ValidatorTest extends \WP_UnitTestCase {
     $this->validator = new MyOptionsValidator();
   }
 
+  function test_it_uses_post_as_options_if_not_specified() {
+    $_POST['foo'] = 1;
+    $_POST['bar'] = 2;
+    $this->validator->rules = array(
+        'required' => array(
+            array('foo'),
+            array('bar')
+        )
+    );
+
+    $actual = $this->validator->validate();
+    $this->assertTrue($actual);
+  }
+
   function test_it_knows_if_input_is_not_valid() {
     $rules = array(
         'required' => array(
