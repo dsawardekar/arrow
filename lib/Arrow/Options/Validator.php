@@ -57,8 +57,8 @@ class Validator {
   }
 
   function loadCustomRules() {
-    if (!Validator::$staticRulesLoaded) {
-      Validator::loadStaticRules();
+    if (!self::$staticRulesLoaded) {
+      self::loadStaticRules();
     }
   }
 

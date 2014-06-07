@@ -6,6 +6,8 @@ class Router {
 
   public $container;
   public $pluginMeta;
+  public $ajaxSentry;
+
   public $allowPublic = false;
   public $didRegister = false;
   public $didEnable   = false;

@@ -84,6 +84,7 @@ class Page {
 
   function scheduleAssets($loader, $assets, $options, $parent = null) {
     $total = count($assets);
+    $asset = null;
 
     for ($i = 0; $i < $total; $i++) {
       $asset  = $assets[$i];

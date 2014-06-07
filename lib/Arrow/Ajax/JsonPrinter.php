@@ -66,8 +66,6 @@ class JsonPrinter {
 
     if (function_exists('http_response_code')) {
       http_response_code($value);
-    } else {
-      // TODO: write status headers for older PHP
     }
   }
 

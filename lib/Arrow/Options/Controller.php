@@ -4,7 +4,10 @@ namespace Arrow\Options;
 
 class Controller extends \Arrow\Ajax\Controller {
 
+  public $container;
+  public $pluginMeta;
   public $optionsStore;
+  public $optionsValidator;
 
   function needs() {
     return array_merge(
