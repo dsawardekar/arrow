@@ -131,6 +131,29 @@ class PageTest extends \WP_UnitTestCase {
     );
   }
 
+  function test_it_can_load_options_scripts_without_parent() {
+    $this->page->scheduleAssets(
+      $this->scriptLoader,
+      array(
+        'foo',
+        'bar'
+      ),
+      array()
+    );
+
+    $this->assertEquals(
+      false,
+      $this->scriptLoader->find('foo')->dependencies
+    );
+    $this->assertEquals(
+      array('foo'),
+      $this->scriptLoader->find('bar')->dependencies
+    );
+
+    $this->assertTrue($this->scriptLoader->isScheduled('foo'));
+    $this->assertTrue($this->scriptLoader->isScheduled('bar'));
+  }
+
   function test_it_can_load_options_scripts() {
     $this->page->loadScripts();
     $this->assertTrue($this->scriptLoader->isScheduled('handlebars'));

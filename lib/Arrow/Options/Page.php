@@ -89,7 +89,9 @@ class Page {
     for ($i = 0; $i < $total; $i++) {
       $asset  = $assets[$i];
       if ($i === 0) {
-        $options['dependencies'] = array($parent);
+        if (!is_null($parent)) {
+          $options['dependencies'] = array($parent);
+        }
       } else {
         $options['dependencies'] = array($assets[$i - 1]);
       }
