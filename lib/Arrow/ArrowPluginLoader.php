@@ -41,7 +41,9 @@ if (class_exists('ArrowPluginLoader') === false) {
         if (array_key_exists('requirements', $this->options)) {
           $this->requirements = $this->options['requirements'];
         } else {
-          $this->requirements = new WP_Min_Requirements();
+          //$this->requirements = new WP_Min_Requirements();
+          $this->requirements = new ArrowMinRequirements();
+          $this->requirements->options = $this->options;
         }
       }
 
@@ -99,14 +101,18 @@ if (class_exists('ArrowPluginLoader') === false) {
     }
 
     function run() {
-      $pluginClass = $this->pluginMeta->getPlugin();
-      $plugin      = $pluginClass::create($this->pluginMeta->getFile());
-      $name        = $this->pluginMeta->getName();
+      try {
+        $pluginClass = $this->pluginMeta->getPlugin();
+        $plugin      = $pluginClass::create($this->pluginMeta->getFile());
+        $name        = $this->pluginMeta->getName();
 
-      $plugin->enable();
+        $plugin->enable();
 
-      $this->sendPluginEvent($name, 'ready');
-      return $plugin;
+        $this->sendPluginEvent($name, 'ready');
+        return $plugin;
+      } catch (\Exception $e) {
+        error_log($e->getMessage());
+      }
     }
 
     function sendPluginEvent($name, $eventType) {
@@ -235,6 +241,44 @@ if (class_exists('ArrowPluginLoader') === false) {
       } else {
         return 0;
       }
+    }
+
+  }
+
+  class ArrowPluginRequirement {
+
+    public $plugin;
+
+    function check() {
+      return false;
+    }
+
+    function message() {
+      return "ArrowPluginRequirement not met. #{$this->plugin}";
+    }
+
+  }
+
+  class ArrowMinRequirements {
+
+    public $options;
+
+    function getRequirements() {
+      $requirements = array();
+
+      $requirement = new WP_PHP_Requirement();
+      $requirement->minimumVersion = '5.3.3';
+      array_push($requirements, $requirement);
+
+      $requirement = new WP_WordPress_Requirement();
+      $requirement->minimumVersion = '3.8.0';
+      array_push($requirements, $requirement);
+
+      $requirement = new ArrowPluginRequirement();
+      $requirement->plugin = $this->options['plugin'];
+      array_push($requirements, $requirement);
+
+      return $requirements;
     }
 
   }
