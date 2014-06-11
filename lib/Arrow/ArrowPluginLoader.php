@@ -259,7 +259,7 @@ if (class_exists('ArrowPluginLoader') === false) {
 
   }
 
-  class ArrowMinRequirements {
+  class ArrowMinRequirements extends WP_Requirements {
 
     public $options;
 
