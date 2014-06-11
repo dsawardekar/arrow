@@ -1,9 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
     ],
-    "hash": "9e4ee1c6928e7a7e7c7eb6b55c5161f1",
+    "hash": "c5cf3bab19e20176b3d25d8d41da29ed",
     "packages": [
         {
             "name": "dsawardekar/encase-php",
