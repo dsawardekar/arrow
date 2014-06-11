@@ -41,9 +41,7 @@ if (class_exists('ArrowPluginLoader') === false) {
         if (array_key_exists('requirements', $this->options)) {
           $this->requirements = $this->options['requirements'];
         } else {
-          //$this->requirements = new WP_Min_Requirements();
-          $this->requirements = new ArrowMinRequirements();
-          $this->requirements->options = $this->options;
+          $this->requirements = new WP_Min_Requirements();
         }
       }
 
@@ -244,45 +242,5 @@ if (class_exists('ArrowPluginLoader') === false) {
     }
 
   }
-
-  class ArrowPluginRequirement {
-
-    public $plugin;
-
-    function check() {
-      return false;
-    }
-
-    function message() {
-      return "ArrowPluginRequirement not met. #{$this->plugin}";
-    }
-
-  }
-
-  class ArrowMinRequirements extends WP_Requirements {
-
-    public $options;
-
-    function getRequirements() {
-      $requirements = array();
-
-      $requirement = new WP_PHP_Requirement();
-      $requirement->minimumVersion = '5.3.3';
-      array_push($requirements, $requirement);
-
-      $requirement = new WP_WordPress_Requirement();
-      $requirement->minimumVersion = '3.8.0';
-      array_push($requirements, $requirement);
-
-      $requirement = new ArrowPluginRequirement();
-      $requirement->plugin = $this->options['plugin'];
-      array_push($requirements, $requirement);
-
-      return $requirements;
-    }
-
-  }
-
-
 
 }
