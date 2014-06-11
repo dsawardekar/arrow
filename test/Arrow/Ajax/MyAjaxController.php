@@ -9,29 +9,37 @@ class MyAjaxController extends Controller {
   }
 
   function index() {
-    $this->sendSuccess('index');
+    return 'index';
   }
 
   function create() {
-    $this->sendSuccess('create');
+    return 'create';
   }
 
   function update() {
-    $this->sendSuccess('update');
+    return 'update';
   }
 
   function show() {
-    $this->sendSuccess('show');
+    return 'show';
   }
 
   function delete() {
-    $this->sendSuccess('delete');
+    return 'delete';
+  }
+
+  function helloError() {
+    return $this->error('helloError');
   }
 
   function hello() {
     $this->sendSuccess(
       array('message' => 'Hello ' . $this->params['name'])
     );
+  }
+
+  function helloException() {
+    throw new \Exception('helloException');
   }
 }
 

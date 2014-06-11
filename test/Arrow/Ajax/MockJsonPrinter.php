@@ -4,8 +4,8 @@ namespace Arrow\Ajax;
 
 class MockJsonPrinter {
 
-  public $data;
-  public $statusCode;
+  public $data       = null;
+  public $statusCode = null;
 
   function sendSuccess($data, $statusCode = '200 OK') {
     $this->data = $data;

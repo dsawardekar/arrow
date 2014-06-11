@@ -99,14 +99,18 @@ if (class_exists('ArrowPluginLoader') === false) {
     }
 
     function run() {
-      $pluginClass = $this->pluginMeta->getPlugin();
-      $plugin      = $pluginClass::create($this->pluginMeta->getFile());
-      $name        = $this->pluginMeta->getName();
+      try {
+        $pluginClass = $this->pluginMeta->getPlugin();
+        $plugin      = $pluginClass::create($this->pluginMeta->getFile());
+        $name        = $this->pluginMeta->getName();
 
-      $plugin->enable();
+        $plugin->enable();
 
-      $this->sendPluginEvent($name, 'ready');
-      return $plugin;
+        $this->sendPluginEvent($name, 'ready');
+        return $plugin;
+      } catch (\Exception $e) {
+        error_log($e->getMessage());
+      }
     }
 
     function sendPluginEvent($name, $eventType) {
@@ -238,7 +242,5 @@ if (class_exists('ArrowPluginLoader') === false) {
     }
 
   }
-
-
 
 }

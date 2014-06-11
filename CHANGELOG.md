@@ -1,5 +1,18 @@
 # Changelog
 
+### 1.0.0
+
+* Major reorganization of APIs.
+* Upgrades to Encase and adds Packagers for each feature.
+* Refactored Arrow\Twig to use packagers.
+* Arrow\Ajax\Packager bundles all ajax functionality except the custom
+  controllers.
+* Ajax\Options is the new Options API.
+  * now only needs Validator rules
+  * default empty validator is bundled so rules are optional.
+  * Options API is currently based on Ember, but can be modified to use
+    any frontend framework by overridding the PluginMeta.
+
 ### 0.8.2
 
 * Fixes json_last_error() for PHP 5.5.

@@ -8,31 +8,31 @@
     "alternate": "lib/Arrow/%s.php"
   },
 
-  "lib/Arrow/AssetManager/*.php": {
+  "lib/Arrow/Asset/*.php": {
     "type": "asset",
-    "test": "test/Arrow/AssetManager/%sTest.php"
+    "test": "test/Arrow/Asset/%sTest.php"
   },
-  "test/Arrow/AssetManager/*Test.php": {
+  "test/Arrow/Asset/*Test.php": {
     "type": "test",
-    "alternate": "lib/Arrow/AssetManager/%s.php"
+    "alternate": "lib/Arrow/Asset/%s.php"
   },
 
-  "lib/Arrow/TwigHelper/*.php": {
+  "lib/Arrow/Twig/*.php": {
     "type": "twig",
-    "test": "test/Arrow/TwigHelper/%sTest.php"
+    "test": "test/Arrow/Twig/%sTest.php"
   },
-  "test/Arrow/TwigHelper/*Test.php": {
+  "test/Arrow/Twig/*Test.php": {
     "type": "test",
-    "alternate": "lib/Arrow/TwigHelper/%s.php"
+    "alternate": "lib/Arrow/Twig/%s.php"
   },
 
-  "lib/Arrow/OptionsManager/*.php": {
+  "lib/Arrow/Options/*.php": {
     "type": "options",
-    "test": "test/Arrow/OptionsManager/%sTest.php"
+    "test": "test/Arrow/Options/%sTest.php"
   },
-  "test/Arrow/OptionsManager/*Test.php": {
+  "test/Arrow/Options/*Test.php": {
     "type": "test",
-    "alternate": "lib/Arrow/OptionsManager/%s.php"
+    "alternate": "lib/Arrow/Options/%s.php"
   },
 
   "lib/Arrow/Ajax/*.php": {

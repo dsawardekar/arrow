@@ -46,11 +46,13 @@ class JsonPrinter {
 
   function header($name, $value) {
     if (!$this->isPHPUnit()) {
+      // @codeCoverageIgnoreStart
       if ($name === 'Status') {
         $this->statusHeader($value);
       } else {
         header("$name: $value");
       }
+      // @codeCoverageIgnoreEnd
     } else {
       if ($name === 'Status') {
         $this->status = $value;
@@ -64,15 +66,15 @@ class JsonPrinter {
 
     if (function_exists('http_response_code')) {
       http_response_code($value);
-    } else {
-      // TODO: write status headers for older PHP
     }
   }
 
   function quit() {
     $this->didQuit = true;
     if (!$this->isPHPUnit()) {
+      // @codeCoverageIgnoreStart
       die();
+      // @codeCoverageIgnoreEnd
     }
   }
 

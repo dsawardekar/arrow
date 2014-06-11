@@ -3,7 +3,7 @@
 
 require_once basename(__FILE__) . '/../vendor/autoload.php';
 
-use Arrow\TwigHelper\TwigPrecompilerApp;
+use Arrow\Twig\Cli;
 
-$app = new TwigPrecompilerApp();
-$app->run();
+$cli = new Cli();
+$cli->run();

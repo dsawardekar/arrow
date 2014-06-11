@@ -94,6 +94,34 @@ class RouterTest extends \WP_UnitTestCase {
     $this->assertTrue(has_action('wp_ajax_no_priv_my_plugin'));
   }
 
+  function test_it_will_not_register_if_already_registered() {
+    $this->router->register(true);
+    $this->router->register();
+
+    $this->assertTrue($this->router->allowPublic);
+  }
+
+  function test_it_will_not_reenable_if_already_enabled() {
+    $this->router->enable(true);
+    $this->router->enable();
+
+    $this->assertTrue($this->router->didEnable);
+  }
+
+  function test_it_does_not_process_unauthorized_request() {
+    $this->sentry->authorizeResult = false;
+    $actual = $this->router->process();
+
+    $this->assertFalse($actual);
+  }
+
+  function test_it_does_not_process_unauthorized_public_request() {
+    $this->sentry->authorizePublicResult = false;
+    $actual = $this->router->processPublic();
+
+    $this->assertFalse($actual);
+  }
+
   function test_it_uses_public_sentry_authorization_if_public() {
     $this->sentry->authorizePublicResult = 'public';
     $actual = $this->router->authorize(true);
@@ -162,6 +190,45 @@ class RouterTest extends \WP_UnitTestCase {
     $this->sentry->action = 'index';
     $this->router->register();
 
+    do_action('wp_ajax_my_plugin');
+
+    $this->assertEquals('index', $this->printer->data);
+    $this->assertEquals(200, $this->printer->statusCode);
+  }
+
+  /* The admin_init hook makes these tests quite slow.
+   * The hooks are only supposed to invoke the corresponding register
+   * method. So we directly call register here.
+   *
+   * Should be good enough. Revisit if not working.
+   * TODO: figure out why 'admin_init' is slow?
+   */
+  function test_it_can_be_enabled_for_admin_access() {
+    $this->router->enable(false);
+
+    $_GET['admin'] = '1';
+    $this->sentry->authorizeResult = true;
+    $this->sentry->controller = 'foo';
+    $this->sentry->action = 'create';
+
+    //do_action('admin_init');
+    $this->router->register(false);
+    do_action('wp_ajax_my_plugin');
+
+    $this->assertEquals('create', $this->printer->data);
+    $this->assertEquals(200, $this->printer->statusCode);
+  }
+
+  function test_it_can_be_enabled_for_public_access() {
+    $this->router->enable(true);
+
+    $_GET['admin'] = '0';
+    $this->sentry->authorizeResult = true;
+    $this->sentry->controller = 'foo';
+    $this->sentry->action = 'index';
+
+    //do_action('admin_init');
+    $this->router->register(true);
     do_action('wp_ajax_my_plugin');
 
     $this->assertEquals('index', $this->printer->data);

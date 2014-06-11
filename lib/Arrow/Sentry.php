@@ -21,10 +21,6 @@ class Sentry {
   }
 
   function authorize($params = null) {
-    if (is_null($params)) {
-      $params = $this->getRequestParams();
-    }
-
     if (!$this->isValidMethod()) {
       return $this->deny('invalid_method');
     }
