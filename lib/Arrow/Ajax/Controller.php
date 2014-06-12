@@ -79,6 +79,7 @@ class Controller {
   }
 
   function getValidator() {
+    \Arrow\Options\Validator::loadStaticRules();
     return new \Valitron\Validator($this->params);
   }
 
