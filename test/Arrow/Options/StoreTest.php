@@ -22,10 +22,15 @@ class StoreTest extends \WP_UnitTestCase {
     $container = new Container();
     $container
       ->object('pluginMeta', $this->pluginMeta)
-      ->singleton('store', 'Arrow\Options\Store');
+      ->factory('store', 'Arrow\Options\Store');
 
     $this->container = $container;
     $this->store = $container->lookup('store');
+  }
+
+  function tearDown() {
+    delete_option('store-plugin-options');
+    parent::tearDown();
   }
 
   function test_it_has_plugin_meta() {
@@ -118,7 +123,12 @@ class StoreTest extends \WP_UnitTestCase {
     $this->store->setOption('b', 2);
 
     $this->store->save();
-    $this->assertEquals('{"a":1,"b":2}', get_option('store-plugin-options'));
+
+    $json = get_option('store-plugin-options');
+    $actual = json_decode($json, true);
+
+    $this->assertEquals(1, $actual['a']);
+    $this->assertEquals(2, $actual['b']);
   }
 
   function test_it_can_change_options_on_loaded_store() {
@@ -159,5 +169,78 @@ class StoreTest extends \WP_UnitTestCase {
     $this->store->load();
 
     $this->assertNull($this->store->getOption('unknown'));
+  }
+
+  function test_it_wont_overwrite_store_options_after_changes() {
+    $json = '{"foo": "a1", "bar":"a2"}';
+    update_option('store-plugin-options', $json);
+
+    $this->store->setOption('foo', 'b1');
+    $this->store->save();
+
+    $this->store = $this->container->lookup('store');
+    $actual = $this->store->getOption('bar');
+
+    $this->assertEquals('a2', $actual);
+  }
+
+  function test_it_uses_default_options_when_setting_options_if_no_stored_options() {
+    delete_option('store-plugin-options');
+    $this->store->setOption('foo', 'z1');
+    $this->store->setOption('custom1', 'y1');
+
+    $this->store->save();
+
+    $this->store = $this->container->lookup('store');
+    $this->store->setOption('custom2', 'y2');
+
+    $this->assertEquals('z1', $this->store->getOption('foo'));
+    $this->assertEquals('two', $this->store->getOption('bar'));
+    $this->assertEquals('y1', $this->store->getOption('custom1'));
+    $this->assertEquals('y2', $this->store->getOption('custom2'));
+  }
+
+  function test_it_can_reload_store() {
+    $this->store->setOption('foo', 100);
+    $this->store->setOption('bar', 200);
+
+    $json = '{"foo": 1000, "bar": 2000}';
+    update_option('store-plugin-options', $json);
+
+    $this->store->reload();
+
+    $this->assertEquals(1000, $this->store->getOption('foo'));
+    $this->assertEquals(2000, $this->store->getOption('bar'));
+  }
+
+  function test_it_wont_save_if_nothing_changed() {
+    $json = '{"foo": 1000, "bar": 2000}';
+    update_option('store-plugin-options', $json);
+
+    $this->store->load();
+
+    $this->assertFalse($this->store->save());
+  }
+
+  function test_it_will_save_after_changes_to_options() {
+    $json = '{"foo": 1000, "bar": 2000}';
+    update_option('store-plugin-options', $json);
+
+    $this->store->setOption('foo', 'f1');
+
+    $actual = $this->store->save();
+    $this->assertTrue($actual);
+    $this->assertEquals('f1', $this->store->getOption('foo'));
+    $this->assertEquals(2000, $this->store->getOption('bar'));
+  }
+
+  function test_it_will_use_default_option_after_store_has_been_cleared() {
+    $json = '{"foo": 1000, "bar": 2000}';
+    update_option('store-plugin-options', $json);
+
+    $this->store->clear();
+
+    $this->assertEquals(1, $this->store->getOption('foo'));
+    $this->assertEquals('two', $this->store->getOption('bar'));
   }
 }

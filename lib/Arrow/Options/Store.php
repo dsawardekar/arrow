@@ -7,7 +7,8 @@ class Store {
   public $container;
   public $pluginMeta;
 
-  protected $didLoad = false;
+  public $didLoad   = false;
+  public $didChange = false;
   protected $options;
 
   function needs() {
@@ -18,19 +19,38 @@ class Store {
     return $this->didLoad;
   }
 
+  function changed() {
+    return $this->didChange;
+  }
+
   function load() {
     if ($this->loaded()) {
       return;
     }
 
-    $json = get_option($this->getOptionsKey());
-    $this->options = $this->parse($json);
-    $this->didLoad = true;
+    $json            = get_option($this->getOptionsKey());
+    $this->options   = $this->parse($json);
+    $this->didLoad   = true;
+    $this->didChange = false;
   }
 
   function save() {
+    if (!$this->changed()) {
+      return false;
+    }
+
     $json = $this->toJSON($this->options);
     update_option($this->getOptionsKey(), $json);
+    $this->didChange = false;
+
+    return true;
+  }
+
+  function reload() {
+    $this->options = null;
+    $this->didLoad = false;
+
+    $this->load();
   }
 
   function clear() {
@@ -67,11 +87,12 @@ class Store {
   }
 
   function setOption($name, $value) {
-    if (!$this->loaded() && is_null($this->options)) {
-      $this->options = array();
+    if (!$this->loaded()) {
+      $this->load();
     }
 
     $this->options[$name] = $value;
+    $this->didChange = true;
   }
 
   function parse($json) {
@@ -92,7 +113,12 @@ class Store {
   }
 
   function toOptions($json) {
-    return json_decode($json, true);
+    $options = json_decode($json, true);
+    if (!is_array($options)) {
+      $options = null;
+    }
+
+    return $options;
   }
 
   function getDefaultOptions() {
