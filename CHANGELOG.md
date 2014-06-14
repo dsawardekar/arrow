@@ -1,5 +1,11 @@
 # Changelog
 
+### 1.1.0
+
+* Adds auto initialization of custom rules for Validator used with Ajax.
+* Fixes bug in OptionsStore, setOption does not clobber other options on
+  non-preloaded store.
+
 ### 1.0.0
 
 * Major reorganization of APIs.
