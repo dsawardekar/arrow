@@ -1,0 +1,55 @@
+<?php
+
+namespace Arrow\Asset\Manifest;
+
+class DirScanner {
+
+  public $container;
+  public $manifestFileCollector;
+
+  function needs() {
+    return array('manifestFileCollector');
+  }
+
+  function scan($dir, $extension, $recursive = true) {
+    $this->collectFiles($dir, $extension);
+
+    if ($recursive) {
+      $this->scanSubDirs($dir, $extension);
+    }
+  }
+
+  function scanSubDirs($dir, $extension) {
+    $dirs = $this->globForDirs($dir);
+
+    foreach ($dirs as $subdir) {
+      $scanner = $this->getScanner();
+      $scanner->scan($subdir, $extension, true);
+    }
+  }
+
+  function collectFiles($dir, $extension) {
+    $files = $this->globForFiles($dir, $extension);
+
+    if ($files !== false) {
+      $this->manifestFileCollector->collect(
+        $dir, $files
+      );
+    }
+  }
+
+  function globForFiles($dir, $extension) {
+    $pattern = "$dir/*.$extension";
+    return glob($pattern);
+  }
+
+  function globForDirs($dir) {
+    $pattern = "$dir/*";
+    return glob($pattern, GLOB_ONLYDIR);
+  }
+
+  function getScanner() {
+    return $this->container->lookup('manifestDirScanner');
+  }
+
+}
