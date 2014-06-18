@@ -118,6 +118,33 @@ class PluginMetaTest extends \WP_UnitTestCase {
     $this->assertFalse($this->meta->getMinifyChecks());
   }
 
+  function test_it_does_not_have_ajax_debug_enabled_by_default() {
+    $this->assertFalse($this->meta->ajaxDebug);
+  }
+
+  function test_it_ignores_ajax_debug_flag_if_debugging_mode_is_off() {
+    $mock = \Mockery::mock('Arrow\PluginMeta[getDebug]', array('my-plugin.php'));
+    $mock->shouldReceive('getDebug')->withNoArgs()->andReturn(false);
+
+    $this->assertFalse($mock->getAjaxDebug());
+  }
+
+  function test_it_uses_ajax_debug_flag_when_debugging_is_on() {
+    $mock = \Mockery::mock('Arrow\PluginMeta[getDebug]', array('my-plugin.php'));
+    $mock->shouldReceive('getDebug')->withNoArgs()->andReturn(true);
+
+    $mock->ajaxDebug = false;
+    $this->assertFalse($mock->getAjaxDebug());
+  }
+
+  function test_it_uses_ajax_debug_flag_when_debugging_is_off() {
+    $mock = \Mockery::mock('Arrow\PluginMeta[getDebug]', array('my-plugin.php'));
+    $mock->shouldReceive('getDebug')->withNoArgs()->andReturn(true);
+
+    $mock->ajaxDebug = true;
+    $this->assertTrue($mock->getAjaxDebug());
+  }
+
   // how to test if_exists case that will work over travis?
   // TODO: travis permissions
 

@@ -16,6 +16,7 @@ class PluginMeta {
   public $stylesheetOptions = array('media' => 'all');
   public $minify;
   public $minifyChecks = true;
+  public $ajaxDebug    = false;
 
   function __construct($file) {
     $this->file = $file;
@@ -52,6 +53,14 @@ class PluginMeta {
 
   function getDebug() {
     return defined('WP_DEBUG') && WP_DEBUG === true;
+  }
+
+  function getAjaxDebug() {
+    if ($this->getDebug()) {
+      return $this->ajaxDebug;
+    } else {
+      return false;
+    }
   }
 
   function getOptionsKey() {
