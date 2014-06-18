@@ -17,6 +17,15 @@
     "alternate": "lib/Arrow/Asset/%s.php"
   },
 
+  "lib/Arrow/Asset/Manifest/*.php": {
+    "type": "manifest",
+    "test": "test/Arrow/Asset/Manifest/%sTest.php"
+  },
+  "test/Arrow/Asset/Manifest/*Test.php": {
+    "type": "test",
+    "alternate": "lib/Arrow/Asset/Manifest/%s.php"
+  },
+
   "lib/Arrow/Twig/*.php": {
     "type": "twig",
     "test": "test/Arrow/Twig/%sTest.php"
