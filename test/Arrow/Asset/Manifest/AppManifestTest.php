@@ -147,10 +147,10 @@ class AppManifestTest extends \WP_UnitTestCase {
     $templates = $this->manifest->getTemplates();
 
     $expected = array(
+      'test/plugins/sample/js/app/templates/posts/_partial.hbs',
       'test/plugins/sample/js/app/templates/application.hbs',
       'test/plugins/sample/js/app/templates/comments.hbs',
       'test/plugins/sample/js/app/templates/posts.hbs',
-      'test/plugins/sample/js/app/templates/posts/_partial.hbs',
     );
 
     $this->assertEquals($expected, $templates);

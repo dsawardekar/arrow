@@ -12,11 +12,11 @@ class DirScanner {
   }
 
   function scan($dir, $extension, $recursive = true) {
-    $this->collectFiles($dir, $extension);
-
     if ($recursive) {
       $this->scanSubDirs($dir, $extension);
     }
+
+    $this->collectFiles($dir, $extension);
   }
 
   function scanSubDirs($dir, $extension) {
