@@ -8,7 +8,7 @@ class DirScanner {
   public $manifestFileCollector;
 
   function needs() {
-    return array('manifestFileCollector');
+    return array('manifestFileCollector', 'manifestRanker');
   }
 
   function scan($dir, $extension, $recursive = true) {
@@ -20,7 +20,9 @@ class DirScanner {
   }
 
   function scanSubDirs($dir, $extension) {
-    $dirs = $this->globForDirs($dir);
+    $dirs = $this->manifestRanker->rank(
+      $dir, $this->globForDirs($dir)
+    );
 
     foreach ($dirs as $subdir) {
       $scanner = $this->getScanner();
@@ -29,7 +31,9 @@ class DirScanner {
   }
 
   function collectFiles($dir, $extension) {
-    $files = $this->globForFiles($dir, $extension);
+    $files = $this->manifestRanker->rank(
+      $dir, $this->globForFiles($dir, $extension)
+    );
 
     if ($files !== false) {
       $this->manifestFileCollector->collect(
