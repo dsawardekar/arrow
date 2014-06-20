@@ -178,6 +178,7 @@ class ManifestTest extends \WP_UnitTestCase {
 
     $GLOBALS['MANIFEST_TEMPLATES'] = array();
     $this->manifest->load();
+    $this->manifest->loadTemplates();
 
     $this->assertTrue($this->scriptLoader->isScheduled('a'));
     $this->assertTrue($this->scriptLoader->isScheduled('b'));

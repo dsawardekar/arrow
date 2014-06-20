@@ -23,6 +23,11 @@ class Packager {
       $container->packager('ajaxPackager', 'Arrow\Ajax\Packager');
     }
 
+    if (!$container->contains('manifestPackager')) {
+      /* options brings in asset manifest, used by OptionsPage */
+      $container->packager('manifestPackager', 'Arrow\Asset\Manifest\Packager');
+    }
+
     $container
       ->singleton('optionsStore'      , 'Arrow\Options\Store')
       ->singleton('optionsValidator'  , 'Arrow\Options\Validator')

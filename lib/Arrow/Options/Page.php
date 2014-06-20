@@ -6,17 +6,11 @@ class Page {
 
   public $container;
   public $pluginMeta;
-  public $optionsStore;
-  public $adminScriptLoader;
-  public $adminStylesheetLoader;
-  public $didEnable    = false;
+  public $didEnable = false;
 
   function needs() {
     return array(
-      'pluginMeta',
-      'optionsStore',
-      'adminScriptLoader',
-      'adminStylesheetLoader'
+      'pluginMeta', 'appManifest'
     );
   }
 
@@ -40,78 +34,12 @@ class Page {
       array($this, 'show')
     );
 
-    $this->loadStyles();
-    $this->loadScripts();
-  }
-
-  function getTemplateName() {
-    return 'options';
-  }
-
-  function getTemplatePath() {
-    return $this->pluginMeta->getDir() . '/templates/' . $this->getTemplateName() . '.html';
+    $this->appManifest->load();
   }
 
   function show() {
     include($this->getTemplatePath());
-  }
-
-  function loadScripts() {
-    $this->scheduleAssets(
-      $this->adminScriptLoader,
-      $this->getOptionsScripts(),
-      $this->pluginMeta->getScriptOptions(),
-      'jquery'
-    );
-
-    $this->adminScriptLoader->localize(
-      $this->pluginMeta->getOptionsApp(),
-      array($this, 'getPageContext')
-    );
-
-    $this->adminScriptLoader->load();
-  }
-
-  function loadStyles() {
-    $this->scheduleAssets(
-      $this->adminStylesheetLoader,
-      $this->getOptionsStyles(),
-      $this->pluginMeta->getStylesheetOptions()
-    );
-
-    $this->adminStylesheetLoader->load();
-  }
-
-  function scheduleAssets($loader, $assets, $options, $parent = null) {
-    $total = count($assets);
-    $asset = null;
-
-    for ($i = 0; $i < $total; $i++) {
-      $asset  = $assets[$i];
-      if ($i === 0) {
-        if (!is_null($parent)) {
-          $options['dependencies'] = array($parent);
-        }
-      } else {
-        $options['dependencies'] = array($assets[$i - 1]);
-      }
-
-      $loader->schedule($asset, $options);
-    }
-
-    if ($total > 0) {
-      $options['dependencies'] = array($asset);
-    }
-
-    $loader->schedule($this->pluginMeta->getOptionsApp(), $options);
-  }
-
-  function getOptionsScripts() {
-    return $this->pluginMeta->getOptionsScripts();
-  }
-
-  function getOptionsStyles() {
-    return $this->pluginMeta->getOptionsStyles();
+    $this->appManifest->loadTemplates();
   }
 
   function getPageContext($script) {
@@ -119,6 +47,15 @@ class Page {
       'apiEndpoint' => $this->getApiEndpoint(),
       'nonce' => $this->getNonceValue()
     );
+  }
+
+  /* helpers */
+  function getTemplateName() {
+    return 'options';
+  }
+
+  function getTemplatePath() {
+    return $this->pluginMeta->getDir() . '/templates/' . $this->getTemplateName() . '.html';
   }
 
   function getApiEndpoint() {
@@ -133,5 +70,6 @@ class Page {
   function getNonceValue() {
     return wp_create_nonce($this->pluginMeta->getSlug());
   }
+
 
 }

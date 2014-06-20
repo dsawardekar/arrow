@@ -198,6 +198,7 @@ class AppManifestTest extends \WP_UnitTestCase {
   function test_it_works_in_debug_mode() {
     ob_start();
     $this->manifest->load();
+    $this->manifest->loadTemplates();
     $html = ob_get_clean();
 
     $scriptLoader = $this->container->lookup('adminScriptLoader');
@@ -228,6 +229,7 @@ class AppManifestTest extends \WP_UnitTestCase {
 
     ob_start();
     $this->manifest->load();
+    $this->manifest->loadTemplates();
     $html = ob_get_clean();
 
     $scriptLoader = $this->container->lookup('adminScriptLoader');

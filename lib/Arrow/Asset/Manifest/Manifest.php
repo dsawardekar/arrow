@@ -32,7 +32,6 @@ class Manifest {
 
     $this->admin = $admin;
 
-    $this->loadTemplates();
     $this->loadStyles();
     $this->loadScripts();
     $this->didLoad = true;
