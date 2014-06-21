@@ -55,6 +55,11 @@ class PackagerTest extends \WP_UnitTestCase {
     $this->assertInstanceOf('Arrow\Options\Controller', $this->container->lookup('optionsController'));
   }
 
+  function test_it_registers_options_manifest() {
+    $this->container->packager('optionsPackager', 'Arrow\Options\Packager');
+    $this->assertInstanceOf('Arrow\Options\Manifest', $this->container->lookup('optionsManifest'));
+  }
+
   function test_it_can_be_auto_enabled_by_default() {
     $this->container->packager('optionsPackager', 'Arrow\Options\Packager');
     $packager = $this->container->lookup('optionsPackager');
