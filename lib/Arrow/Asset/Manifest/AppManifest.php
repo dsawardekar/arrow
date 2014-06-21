@@ -52,7 +52,6 @@ class AppManifest extends Manifest {
   }
 
   function includeTemplate($template) {
-    var_dump("include: $template");
     $slug = $this->toTemplateSlug($template);
 
     echo "<script type='text/x-handlebars' data-template-name='$slug'>\n";
