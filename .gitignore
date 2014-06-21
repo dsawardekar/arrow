@@ -12,3 +12,5 @@ dist/*
 test/dist/templates/*
 !test/dist/templates/.gitadd
 tmptests
+clover.xml
+.coveralls.yml
