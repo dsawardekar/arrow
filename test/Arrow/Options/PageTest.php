@@ -19,7 +19,7 @@ class PageTest extends \WP_UnitTestCase {
     $this->container
       ->object('pluginMeta', new \Arrow\PluginMeta('test/plugins/sample/sample.php'))
       ->packager('assetPackager', 'Arrow\Asset\Packager')
-      ->packager('manifestPackager', 'Arrow\Asset\Manifest\Packager')
+      ->packager('optionsManifest', 'Arrow\Options\Manifest')
       ->singleton('optionsStore', 'Arrow\Options\Store')
       ->singleton('optionsPage', 'Arrow\Options\Page');
 
@@ -68,15 +68,19 @@ class PageTest extends \WP_UnitTestCase {
 
   function test_it_can_add_options_page() {
     $this->page->register();
-    $this->assertTrue($this->scriptLoader->isScheduled('app/models/a'));
-    $this->assertTrue($this->stylesheetLoader->isScheduled('app/styles/a'));
+
+    $this->assertTrue($this->scriptLoader->isScheduled('sample/dist/assets/vendor'));
+    $this->assertTrue($this->scriptLoader->isScheduled('sample/dist/assets/sample'));
+
+    $this->assertTrue($this->stylesheetLoader->isScheduled('sample/dist/assets/vendor'));
+    $this->assertTrue($this->stylesheetLoader->isScheduled('sample/dist/assets/sample'));
   }
 
   function test_it_can_be_auto_registered() {
     $this->container->singleton('optionsPage', 'Arrow\Options\Page');
     $this->container->initializer('optionsPage', array($this, 'onPageInit'));
     $page = $this->container->lookup('optionsPage');
-    $this->assertTrue($this->scriptLoader->isScheduled('app/models/a'));
+    $this->assertTrue($this->scriptLoader->isScheduled('sample/dist/assets/sample'));
   }
 
   function onPageInit($page, $container) {
@@ -90,10 +94,6 @@ class PageTest extends \WP_UnitTestCase {
     $html = ob_get_clean();
 
     $this->assertContains('<p>options.html</p>', $html);
-    $this->assertContains("data-template-name='application'", $html);
-    $this->assertContains("data-template-name='posts'", $html);
-    $this->assertContains("data-template-name='comments'", $html);
-    $this->assertContains("data-template-name='posts/_partial'", $html);
   }
 
   function test_it_wont_enable_if_already_enabled() {
