@@ -145,7 +145,4 @@ class PluginMetaTest extends \WP_UnitTestCase {
     $this->assertTrue($mock->getAjaxDebug());
   }
 
-  // how to test if_exists case that will work over travis?
-  // TODO: travis permissions
-
 }

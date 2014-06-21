@@ -115,32 +115,6 @@ class PluginMeta {
     );
   }
 
-  function getOptionsScripts() {
-    return array_merge(
-      array('handlebars', 'ember'),
-      $this->getOptionsSupportScripts()
-    );
-  }
-
-  function getOptionsSupportScripts() {
-    return array(
-      'ember-validations',
-      'ember-easyForm'
-    );
-  }
-
-  function getOptionsStyles() {
-    return $this->getOptionsSupportStyles();
-  }
-
-  function getOptionsSupportStyles() {
-    return array();
-  }
-
-  function getOptionsApp() {
-    return $this->getSlug() . '-app';
-  }
-
   function getScriptOptions() {
     if (!array_key_exists('version', $this->scriptOptions)) {
       $this->scriptOptions['version'] = $this->getVersion();
