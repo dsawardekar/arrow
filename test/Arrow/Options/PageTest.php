@@ -80,11 +80,11 @@ class PageTest extends \WP_UnitTestCase {
   function test_it_can_add_options_page() {
     $this->page->register();
 
-    $this->assertTrue($this->scriptLoader->isScheduled('sample/dist/assets/vendor'));
-    $this->assertTrue($this->scriptLoader->isScheduled('sample/dist/assets/sample'));
+    $this->assertTrue($this->scriptLoader->isScheduled('sample-vendor'));
+    $this->assertTrue($this->scriptLoader->isScheduled('sample-app'));
 
-    $this->assertTrue($this->stylesheetLoader->isScheduled('sample/dist/assets/vendor'));
-    $this->assertTrue($this->stylesheetLoader->isScheduled('sample/dist/assets/sample'));
+    $this->assertTrue($this->stylesheetLoader->isScheduled('sample-vendor'));
+    $this->assertTrue($this->stylesheetLoader->isScheduled('sample-app'));
   }
 
   function test_it_configures_manifest_context_on_register() {
@@ -98,7 +98,7 @@ class PageTest extends \WP_UnitTestCase {
     $this->container->singleton('optionsPage', 'Arrow\Options\Page');
     $this->container->initializer('optionsPage', array($this, 'onPageInit'));
     $page = $this->container->lookup('optionsPage');
-    $this->assertTrue($this->scriptLoader->isScheduled('sample/dist/assets/sample'));
+    $this->assertTrue($this->scriptLoader->isScheduled('sample-app'));
   }
 
   function onPageInit($page, $container) {

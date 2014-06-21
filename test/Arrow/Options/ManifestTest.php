@@ -34,6 +34,7 @@ class ManifestTest extends \WP_UnitTestCase {
   }
 
   function test_it_has_correct_asset_slugs_in_debug_mode() {
+    $this->mockDevAssets();
     $actual = $this->manifest->getAssetSlugs();
     $expected = array(
       'my-plugin/dist/assets/vendor',
@@ -82,7 +83,19 @@ class ManifestTest extends \WP_UnitTestCase {
     $this->assertEmpty($this->manifest->getTemplates());
   }
 
+  function test_it_knows_if_it_does_not_have_dev_assets() {
+    $this->assertFalse($this->manifest->hasDevAssets());
+  }
+
+  function mockDevAssets($value = true) {
+    $this->manifest = \Mockery::mock('Arrow\Options\Manifest[hasDevAssets]');
+    $this->manifest->shouldReceive('hasDevAssets')->andReturn($value);
+    $this->container->inject($this->manifest);
+  }
+
   function test_it_has_correct_scripts_in_debug_mode() {
+    $this->mockDevAssets();
+
     $actual = $this->manifest->getScripts();
     $expected = array(
       'my-plugin/dist/assets/vendor',
@@ -110,6 +123,7 @@ class ManifestTest extends \WP_UnitTestCase {
   }
 
   function test_it_has_correct_styles_in_debug_mode() {
+    $this->mockDevAssets();
     $actual = $this->manifest->getStyles();
     $expected = array(
       'my-plugin/dist/assets/vendor',

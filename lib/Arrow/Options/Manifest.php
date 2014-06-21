@@ -43,7 +43,7 @@ class Manifest extends \Arrow\Asset\Manifest\Manifest {
   function getAssetSlugs() {
     $slug = $this->pluginMeta->getSlug();
 
-    if ($this->getDebug()) {
+    if ($this->getDebug() && $this->hasDevAssets()) {
       $prefix = $slug . '/dist/assets/';
 
       return array(
@@ -56,6 +56,13 @@ class Manifest extends \Arrow\Asset\Manifest\Manifest {
         $slug . '-app'
       );
     }
+  }
+
+  function hasDevAssets() {
+    $dir  = $this->pluginMeta->getDir();
+    $slug = $this->pluginMeta->getSlug();
+
+    return is_dir($dir . '/js/' . $slug . '/dist/assets');
   }
 
 }
