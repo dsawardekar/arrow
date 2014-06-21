@@ -35,6 +35,7 @@ class Page {
       array($this, 'show')
     );
 
+    $this->optionsManifest->setContext(array($this, 'getPageContext'));
     $this->optionsManifest->load();
   }
 
@@ -46,7 +47,8 @@ class Page {
   function getPageContext($script) {
     return array(
       'apiEndpoint' => $this->getApiEndpoint(),
-      'nonce' => $this->getNonceValue()
+      'nonce'       => $this->getNonceValue(),
+      'debug'       => $this->pluginMeta->getDebug()
     );
   }
 
@@ -71,6 +73,5 @@ class Page {
   function getNonceValue() {
     return wp_create_nonce($this->pluginMeta->getSlug());
   }
-
 
 }

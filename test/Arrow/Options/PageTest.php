@@ -64,6 +64,17 @@ class PageTest extends \WP_UnitTestCase {
     $this->assertContains('admin-ajax.php', $apiEndpoint);
     $this->assertContains('action=sample', $apiEndpoint);
     $this->assertContains('admin=1', $apiEndpoint);
+    $this->assertTrue($config['debug']);
+  }
+
+  function test_it_does_not_have_debug_true_in_production() {
+    $mockMeta = $this->getMock('Arrow\PluginMeta', array(), array('foo.php'));
+    $mockMeta->expects($this->once())->method('getDebug')->will($this->returnValue(false));
+
+    $this->page->pluginMeta = $mockMeta;
+    $actual = $this->page->getPageContext(null);
+
+    $this->assertFalse($actual['debug']);
   }
 
   function test_it_can_add_options_page() {
@@ -74,6 +85,13 @@ class PageTest extends \WP_UnitTestCase {
 
     $this->assertTrue($this->stylesheetLoader->isScheduled('sample/dist/assets/vendor'));
     $this->assertTrue($this->stylesheetLoader->isScheduled('sample/dist/assets/sample'));
+  }
+
+  function test_it_configures_manifest_context_on_register() {
+    $this->page->register();
+    $actual = is_callable($this->page->optionsManifest->getContext());
+
+    $this->assertTrue($actual);
   }
 
   function test_it_can_be_auto_registered() {
