@@ -6,11 +6,12 @@ class Page {
 
   public $container;
   public $pluginMeta;
+  public $optionsManifest;
   public $didEnable = false;
 
   function needs() {
     return array(
-      'pluginMeta', 'appManifest'
+      'pluginMeta', 'optionsManifest'
     );
   }
 
@@ -34,12 +35,12 @@ class Page {
       array($this, 'show')
     );
 
-    $this->appManifest->load();
+    $this->optionsManifest->load();
   }
 
   function show() {
     include($this->getTemplatePath());
-    $this->appManifest->loadTemplates();
+    $this->optionsManifest->loadTemplates();
   }
 
   function getPageContext($script) {
