@@ -5,6 +5,8 @@ namespace Arrow\Asset\Manifest;
 class AppManifest extends Manifest {
 
   public $manifestDirScanner;
+  public $manifestFileCollector;
+  public $pluginMeta;
 
   function needs() {
     return array_merge(

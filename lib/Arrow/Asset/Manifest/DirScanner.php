@@ -6,6 +6,7 @@ class DirScanner {
 
   public $container;
   public $manifestFileCollector;
+  public $manifestRanker;
 
   function needs() {
     return array('manifestFileCollector', 'manifestRanker');

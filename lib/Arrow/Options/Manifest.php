@@ -51,8 +51,6 @@ class Manifest extends \Arrow\Asset\Manifest\Manifest {
         $prefix . $slug,
       );
     } else {
-      $prefix = '';
-
       return array(
         $slug . '-vendor',
         $slug . '-app'
