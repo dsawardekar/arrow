@@ -65,7 +65,7 @@ class AssetTest extends \WP_UnitTestCase {
   }
 
   function test_it_can_detect_app_slug() {
-    $this->asset->slug = 'app/models/foo';
+    $this->asset->slug = 'my-plugin/dist/assets/foo';
     $this->assertTrue($this->asset->isAppSlug());
   }
 
@@ -128,10 +128,10 @@ class AssetTest extends \WP_UnitTestCase {
   }
 
   function test_it_can_build_unique_app_slug() {
-    $this->asset->slug = 'app/models/foo';
+    $this->asset->slug = 'my-plugin/dist/assets/foo';
     $actual = $this->asset->uniqueSlug();
 
-    $this->assertEquals('my-plugin/models/foo', $actual);
+    $this->assertEquals('my-plugin/dist/assets/foo', $actual);
   }
 
   function test_it_can_build_asset_filepath() {
