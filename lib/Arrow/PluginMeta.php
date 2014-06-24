@@ -4,6 +4,7 @@ namespace Arrow;
 
 class PluginMeta {
 
+  public $container;
   public $version           = '0.0.0';
   public $file              = null;
   public $slug              = null;
@@ -20,6 +21,10 @@ class PluginMeta {
 
   function __construct($file) {
     $this->file = $file;
+  }
+
+  function needs() {
+    return array();
   }
 
   function getVersion() {

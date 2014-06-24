@@ -2,14 +2,24 @@
 
 namespace Arrow;
 
+use Encase\Container;
+
 class PluginMetaTest extends \WP_UnitTestCase {
 
+  public $container;
   public $meta;
 
   function setUp() {
     parent::setUp();
 
-    $this->meta = new PluginMeta(getcwd() . '/my-plugin.php');
+    $this->container = new Container();
+    $this->container->object('pluginMeta', new PluginMeta(getcwd() . '/my-plugin.php'));
+
+    $this->meta = $this->container->lookup('pluginMeta');
+  }
+
+  function test_it_has_a_container() {
+    $this->assertSame($this->container, $this->meta->container);
   }
 
   function test_it_store_path_to_main_plugin_file() {
