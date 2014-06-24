@@ -145,4 +145,9 @@ class PluginMetaTest extends \WP_UnitTestCase {
     $this->assertTrue($mock->getAjaxDebug());
   }
 
+  function test_it_has_empty_options_context_by_default() {
+    $context = $this->meta->getOptionsContext();
+    $this->assertEmpty($context);
+  }
+
 }

@@ -45,11 +45,14 @@ class Page {
   }
 
   function getPageContext($script) {
-    return array(
+    $baseContext = $this->pluginMeta->getOptionsContext();
+    $context = array(
       'apiEndpoint' => $this->getApiEndpoint(),
       'nonce'       => $this->getNonceValue(),
       'debug'       => $this->pluginMeta->getDebug()
     );
+
+    return array_merge($baseContext, $context);
   }
 
   /* helpers */

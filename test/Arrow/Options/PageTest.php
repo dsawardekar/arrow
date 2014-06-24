@@ -70,11 +70,28 @@ class PageTest extends \WP_UnitTestCase {
   function test_it_does_not_have_debug_true_in_production() {
     $mockMeta = $this->getMock('Arrow\PluginMeta', array(), array('foo.php'));
     $mockMeta->expects($this->once())->method('getDebug')->will($this->returnValue(false));
+    $mockMeta->expects($this->once())->method('getOptionsContext')->will($this->returnValue(array()));
 
     $this->page->pluginMeta = $mockMeta;
     $actual = $this->page->getPageContext(null);
 
     $this->assertFalse($actual['debug']);
+  }
+
+  function test_it_uses_plugin_meta_options_context_if_present() {
+    $context = array(
+      'foo' => '123',
+      'bar' => '456'
+    );
+    $mockMeta = $this->getMock('Arrow\PluginMeta', array(), array('foo.php'));
+    $mockMeta->expects($this->once())->method('getDebug')->will($this->returnValue(false));
+    $mockMeta->expects($this->once())->method('getOptionsContext')->will($this->returnValue($context));
+
+    $this->page->pluginMeta = $mockMeta;
+    $actual = $this->page->getPageContext(null);
+
+    $this->assertEquals('123', $actual['foo']);
+    $this->assertEquals('456', $actual['bar']);
   }
 
   function test_it_can_add_options_page() {

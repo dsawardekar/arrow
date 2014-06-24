@@ -105,6 +105,10 @@ class PluginMeta {
     return $this->getSlug();
   }
 
+  function getOptionsContext() {
+    return array();
+  }
+
   function getDefaultOptions() {
     return $this->defaultOptions;
   }
