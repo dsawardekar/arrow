@@ -139,10 +139,10 @@ class RouterTest extends \WP_UnitTestCase {
   function test_it_can_process_valid_public_ajax_request() {
     $this->sentry->authorizePublicResult = true;
     $this->sentry->controller = 'foo';
-    $this->sentry->action = 'index';
+    $this->sentry->action = 'all';
     $this->router->processPublic();
 
-    $this->assertEquals('index', $this->printer->data);
+    $this->assertEquals('all', $this->printer->data);
     $this->assertEquals(200, $this->printer->statusCode);
   }
 
@@ -150,10 +150,10 @@ class RouterTest extends \WP_UnitTestCase {
     $_GET['admin'] = '1';
     $this->sentry->authorizeResult = true;
     $this->sentry->controller = 'foo';
-    $this->sentry->action = 'create';
+    $this->sentry->action = 'post';
     $this->router->process();
 
-    $this->assertEquals('create', $this->printer->data);
+    $this->assertEquals('post', $this->printer->data);
     $this->assertEquals(200, $this->printer->statusCode);
   }
 
@@ -161,12 +161,12 @@ class RouterTest extends \WP_UnitTestCase {
   function test_it_can_respond_to_valid_public_ajax_request() {
     $this->sentry->authorizePublicResult = true;
     $this->sentry->controller = 'foo';
-    $this->sentry->action = 'index';
+    $this->sentry->action = 'all';
     $this->router->register(true);
 
     do_action('wp_ajax_no_priv_my_plugin');
 
-    $this->assertEquals('index', $this->printer->data);
+    $this->assertEquals('all', $this->printer->data);
     $this->assertEquals(200, $this->printer->statusCode);
   }
 
@@ -174,12 +174,12 @@ class RouterTest extends \WP_UnitTestCase {
     $_GET['admin'] = '1';
     $this->sentry->authorizeResult = true;
     $this->sentry->controller = 'foo';
-    $this->sentry->action = 'create';
+    $this->sentry->action = 'post';
     $this->router->register();
 
     do_action('wp_ajax_my_plugin');
 
-    $this->assertEquals('create', $this->printer->data);
+    $this->assertEquals('post', $this->printer->data);
     $this->assertEquals(200, $this->printer->statusCode);
   }
 
@@ -187,12 +187,12 @@ class RouterTest extends \WP_UnitTestCase {
     $_GET['admin'] = '0';
     $this->sentry->authorizeResult = true;
     $this->sentry->controller = 'foo';
-    $this->sentry->action = 'index';
+    $this->sentry->action = 'all';
     $this->router->register();
 
     do_action('wp_ajax_my_plugin');
 
-    $this->assertEquals('index', $this->printer->data);
+    $this->assertEquals('all', $this->printer->data);
     $this->assertEquals(200, $this->printer->statusCode);
   }
 
@@ -209,13 +209,13 @@ class RouterTest extends \WP_UnitTestCase {
     $_GET['admin'] = '1';
     $this->sentry->authorizeResult = true;
     $this->sentry->controller = 'foo';
-    $this->sentry->action = 'create';
+    $this->sentry->action = 'post';
 
     //do_action('admin_init');
     $this->router->register(false);
     do_action('wp_ajax_my_plugin');
 
-    $this->assertEquals('create', $this->printer->data);
+    $this->assertEquals('post', $this->printer->data);
     $this->assertEquals(200, $this->printer->statusCode);
   }
 
@@ -225,13 +225,13 @@ class RouterTest extends \WP_UnitTestCase {
     $_GET['admin'] = '0';
     $this->sentry->authorizeResult = true;
     $this->sentry->controller = 'foo';
-    $this->sentry->action = 'index';
+    $this->sentry->action = 'all';
 
     //do_action('admin_init');
     $this->router->register(true);
     do_action('wp_ajax_my_plugin');
 
-    $this->assertEquals('index', $this->printer->data);
+    $this->assertEquals('all', $this->printer->data);
     $this->assertEquals(200, $this->printer->statusCode);
   }
 
