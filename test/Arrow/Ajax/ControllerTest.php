@@ -36,7 +36,44 @@ class ControllerTest extends \WP_UnitTestCase {
   }
 
   function test_it_has_rest_admin_actions() {
-    $this->assertNotEmpty($this->controller->adminActions());
+    $actual = $this->controller->adminActions();
+
+    $this->assertContains('all', $actual);
+    $this->assertContains('get', $actual);
+    $this->assertContains('post', $actual);
+    $this->assertContains('put', $actual);
+    $this->assertContains('patch', $actual);
+    $this->assertContains('delete', $actual);
+  }
+
+  function test_it_has_valid_action_method_for_all_request() {
+    $actual = $this->controller->actionMethods();
+    $this->assertEquals(array('GET'), $actual['all']);
+  }
+
+  function test_it_has_valid_action_method_for_get_request() {
+    $actual = $this->controller->actionMethods();
+    $this->assertEquals(array('GET'), $actual['get']);
+  }
+
+  function test_it_has_valid_action_method_for_post_request() {
+    $actual = $this->controller->actionMethods();
+    $this->assertEquals(array('POST'), $actual['post']);
+  }
+
+  function test_it_has_valid_action_method_for_put_request() {
+    $actual = $this->controller->actionMethods();
+    $this->assertEquals(array('PUT', 'POST'), $actual['put']);
+  }
+
+  function test_it_has_valid_action_method_for_patch_request() {
+    $actual = $this->controller->actionMethods();
+    $this->assertEquals(array('PATCH', 'POST'), $actual['patch']);
+  }
+
+  function test_it_has_valid_action_method_for_delete_request() {
+    $actual = $this->controller->actionMethods();
+    $this->assertEquals(array('DELETE', 'GET', 'POST'), $actual['delete']);
   }
 
   function test_it_has_default_capability() {
@@ -56,8 +93,8 @@ class ControllerTest extends \WP_UnitTestCase {
   }
 
   function test_it_can_process_an_action_without_params() {
-    $this->controller->process('index');
-    $this->assertEquals('index', $this->printer->data);
+    $this->controller->process('get');
+    $this->assertEquals('get', $this->printer->data);
     $this->assertEquals(200, $this->printer->statusCode);
   }
 
@@ -90,8 +127,8 @@ class ControllerTest extends \WP_UnitTestCase {
   }
 
   function test_it_sends_success_for_result_returning_action() {
-    $this->controller->doAction('index');
-    $this->assertEquals('index', $this->printer->data);
+    $this->controller->doAction('get');
+    $this->assertEquals('get', $this->printer->data);
     $this->assertEquals(200, $this->printer->statusCode);
   }
 
@@ -101,18 +138,26 @@ class ControllerTest extends \WP_UnitTestCase {
     $this->assertEquals(403, $this->printer->statusCode);
   }
 
-  function test_it_does_not_send_success_if_did_success() {
-    $this->controller->didSuccess = true;
-    $this->controller->doAction('index');
+  function test_it_prints_send_success_argument_if_called_ignoring_returned_value_of_action() {
+    $this->controller->params = array('name' => 'Darshan');
+    $this->controller->doAction('hello');
 
-    $this->assertNull($this->printer->data);
+    $this->assertEquals(array('message' => 'Hello Darshan'), $this->printer->data);
   }
 
-  function test_it_does_not_send_error_if_did_error() {
-    $this->controller->didError = true;
-    $this->controller->doAction('index');
+  function test_it_prints_send_error_argument_if_called_ignoring_returned_value_of_action() {
+    $this->controller->doAction('helloError');
+    $this->assertEquals('helloError', $this->printer->data);
+  }
 
-    $this->assertNull($this->printer->data);
+  function test_it_sends_true_result_of_action_to_printer() {
+    $this->controller->doAction('doTrue');
+    $this->assertTrue($this->printer->data);
+  }
+
+  function test_it_sends_false_result_of_action_to_printer() {
+    $this->controller->doAction('doFalse');
+    $this->assertFalse($this->printer->data);
   }
 
   function test_it_trap_and_sends_exception_inside_actions() {
@@ -120,4 +165,5 @@ class ControllerTest extends \WP_UnitTestCase {
     $this->assertEquals('helloException', $this->printer->data);
     $this->assertEquals(500, $this->printer->statusCode);
   }
+
 }
