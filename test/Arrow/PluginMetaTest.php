@@ -22,6 +22,11 @@ class PluginMetaTest extends \WP_UnitTestCase {
     $this->assertSame($this->container, $this->meta->container);
   }
 
+  function test_it_can_lookup_items_in_container() {
+    $this->container->object('bar', 'foo');
+    $this->assertEquals('foo', $this->meta->lookup('bar'));
+  }
+
   function test_it_store_path_to_main_plugin_file() {
     $actual = $this->meta->getFile();
     $this->assertEquals(getcwd() . '/my-plugin.php', $actual);

@@ -27,6 +27,10 @@ class PluginMeta {
     return array();
   }
 
+  function lookup($key) {
+    return $this->container->lookup($key);
+  }
+
   function getVersion() {
     if ($this->getDebug()) {
       /* for cache busting in development */
