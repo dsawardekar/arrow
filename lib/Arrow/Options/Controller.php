@@ -16,15 +16,15 @@ class Controller extends \Arrow\Ajax\Controller {
     );
   }
 
-  function index() {
-    $this->sendSuccess($this->optionsStore->getOptions());
+  // By default only sends options that were whitelisted
+  function all() {
+    return $this->pluginMeta->getOptionsContext();
   }
 
-  function update() {
+  function patch() {
     $valid = $this->optionsValidator->validate($this->params);
     if (!$valid) {
-      $this->sendError($this->optionsValidator->errors(), 422);
-      return;
+      return $this->error($this->optionsValidator->errors());
     }
 
     $options = $this->pluginMeta->getDefaultOptions();
@@ -35,12 +35,12 @@ class Controller extends \Arrow\Ajax\Controller {
     }
 
     $this->optionsStore->save();
-    $this->index();
+    return $this->all();
   }
 
   function delete() {
     $this->optionsStore->clear();
-    $this->index();
+    return $this->all();
   }
 
 }
