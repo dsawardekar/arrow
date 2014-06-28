@@ -1,5 +1,13 @@
 # Changelog
 
+### 1.2.0
+
+* Adds Manifests.
+  * Manifests describe, scripts, styles and optionally templates for a
+    page.
+* Makes the Ajax API more Restful.
+* Various bugfixes.
+
 ### 1.1.0
 
 * Adds auto initialization of custom rules for Validator used with Ajax.
