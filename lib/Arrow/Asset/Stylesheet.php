@@ -7,7 +7,11 @@ class Stylesheet extends Asset {
   public $options = array('media' => 'all');
 
   public function dirname() {
-    return 'css';
+    if ($this->isAppSlug()) {
+      return 'js';
+    } else {
+      return 'css';
+    }
   }
 
   public function extension() {

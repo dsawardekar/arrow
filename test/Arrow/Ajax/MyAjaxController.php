@@ -4,24 +4,24 @@ namespace Arrow\Ajax;
 
 class MyAjaxController extends Controller {
 
-  function publicActions() {
-    return array('create', 'update', 'delete');
+  function all() {
+    return 'all';
   }
 
-  function index() {
-    return 'index';
+  function get() {
+    return 'get';
   }
 
-  function create() {
-    return 'create';
+  function post() {
+    return 'post';
   }
 
-  function update() {
-    return 'update';
+  function put() {
+    return 'put';
   }
 
-  function show() {
-    return 'show';
+  function patch() {
+    return 'patch';
   }
 
   function delete() {
@@ -40,6 +40,14 @@ class MyAjaxController extends Controller {
 
   function helloException() {
     throw new \Exception('helloException');
+  }
+
+  function doTrue() {
+    return true;
+  }
+
+  function doFalse() {
+    return false;
   }
 }
 

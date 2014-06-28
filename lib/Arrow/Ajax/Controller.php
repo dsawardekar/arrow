@@ -20,18 +20,19 @@ class Controller {
 
   function adminActions() {
     return array(
-      'index', 'create', 'update', 'show', 'delete'
+      'all', 'get', 'post', 'put', 'patch', 'delete'
     );
   }
 
   /* not strictly REST to allow for older PHP */
   function actionMethods() {
     return array(
-      'index'  => array('GET'),
-      'create' => array('POST'),
-      'update' => array('POST', 'PUT', 'PATCH'),
-      'show'   => array('GET'),
-      'delete' => array('GET', 'DELETE')
+      'all'  => array('GET'),
+      'get'  => array('GET'),
+      'post' => array('POST'),
+      'put' => array('PUT', 'POST'),
+      'patch' => array('PATCH', 'POST'),
+      'delete' => array('DELETE', 'GET', 'POST')
     );
   }
 
@@ -85,22 +86,32 @@ class Controller {
 
   /* abstract */
   // @codeCoverageIgnoreStart
-  function index() {
+  // api.get('foo') -> return all
+  function all() {
 
   }
 
-  function create() {
+  // api.get('foo', params) -> return specific item
+  function get() {
 
   }
 
-  function update() {
+  // api.post('foo', params) -> return new object
+  function post() {
 
   }
 
-  function show() {
+  // api.put('foo', params) -> returns full object
+  function put() {
 
   }
 
+  // api.patch('foo', params) -> returns partial or just true
+  function patch() {
+
+  }
+
+  // api.delete('foo', params)
   function delete() {
 
   }

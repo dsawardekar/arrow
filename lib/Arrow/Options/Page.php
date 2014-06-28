@@ -6,17 +6,12 @@ class Page {
 
   public $container;
   public $pluginMeta;
-  public $optionsStore;
-  public $adminScriptLoader;
-  public $adminStylesheetLoader;
-  public $didEnable    = false;
+  public $optionsManifest;
+  public $didEnable = false;
 
   function needs() {
     return array(
-      'pluginMeta',
-      'optionsStore',
-      'adminScriptLoader',
-      'adminStylesheetLoader'
+      'pluginMeta', 'optionsManifest'
     );
   }
 
@@ -40,85 +35,33 @@ class Page {
       array($this, 'show')
     );
 
-    $this->loadStyles();
-    $this->loadScripts();
+    $this->optionsManifest->setContext(array($this, 'getPageContext'));
+    $this->optionsManifest->load();
   }
 
+  function show() {
+    include($this->getTemplatePath());
+    $this->optionsManifest->loadTemplates();
+  }
+
+  function getPageContext($script) {
+    $baseContext = $this->pluginMeta->getOptionsContext();
+    $context = array(
+      'apiEndpoint' => $this->getApiEndpoint(),
+      'nonce'       => $this->getNonceValue(),
+      'debug'       => $this->pluginMeta->getDebug()
+    );
+
+    return array_merge($baseContext, $context);
+  }
+
+  /* helpers */
   function getTemplateName() {
     return 'options';
   }
 
   function getTemplatePath() {
     return $this->pluginMeta->getDir() . '/templates/' . $this->getTemplateName() . '.html';
-  }
-
-  function show() {
-    include($this->getTemplatePath());
-  }
-
-  function loadScripts() {
-    $this->scheduleAssets(
-      $this->adminScriptLoader,
-      $this->getOptionsScripts(),
-      $this->pluginMeta->getScriptOptions(),
-      'jquery'
-    );
-
-    $this->adminScriptLoader->localize(
-      $this->pluginMeta->getOptionsApp(),
-      array($this, 'getPageContext')
-    );
-
-    $this->adminScriptLoader->load();
-  }
-
-  function loadStyles() {
-    $this->scheduleAssets(
-      $this->adminStylesheetLoader,
-      $this->getOptionsStyles(),
-      $this->pluginMeta->getStylesheetOptions()
-    );
-
-    $this->adminStylesheetLoader->load();
-  }
-
-  function scheduleAssets($loader, $assets, $options, $parent = null) {
-    $total = count($assets);
-    $asset = null;
-
-    for ($i = 0; $i < $total; $i++) {
-      $asset  = $assets[$i];
-      if ($i === 0) {
-        if (!is_null($parent)) {
-          $options['dependencies'] = array($parent);
-        }
-      } else {
-        $options['dependencies'] = array($assets[$i - 1]);
-      }
-
-      $loader->schedule($asset, $options);
-    }
-
-    if ($total > 0) {
-      $options['dependencies'] = array($asset);
-    }
-
-    $loader->schedule($this->pluginMeta->getOptionsApp(), $options);
-  }
-
-  function getOptionsScripts() {
-    return $this->pluginMeta->getOptionsScripts();
-  }
-
-  function getOptionsStyles() {
-    return $this->pluginMeta->getOptionsStyles();
-  }
-
-  function getPageContext($script) {
-    return array(
-      'apiEndpoint' => $this->getApiEndpoint(),
-      'nonce' => $this->getNonceValue()
-    );
   }
 
   function getApiEndpoint() {

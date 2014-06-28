@@ -106,6 +106,11 @@ class Asset {
     return preg_match('/^theme-/', $this->slug) === 1;
   }
 
+  function isAppSlug() {
+    $slug = $this->pluginMeta->getSlug();
+    return preg_match('/^' . $slug . '\//', $this->slug) === 1;
+  }
+
   function underscorize($value) {
     return str_replace('_', '-', $value);
   }

@@ -30,6 +30,12 @@ class StylesheetTest extends \WP_UnitTestCase {
     $this->assertEquals('css', $actual);
   }
 
+  function test_it_has_js_dirname_for_app_slugs() {
+    $this->stylesheet->slug = 'stylesheet-plugin/dist/assets/foo';
+    $actual = $this->stylesheet->dirname();
+    $this->assertEquals('js', $actual);
+  }
+
   function test_it_has_css_extension() {
     $actual = $this->stylesheet->extension();
     $this->assertEquals('.css', $actual);

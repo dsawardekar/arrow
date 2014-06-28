@@ -4,6 +4,7 @@ namespace Arrow;
 
 class PluginMeta {
 
+  public $container;
   public $version           = '0.0.0';
   public $file              = null;
   public $slug              = null;
@@ -16,9 +17,18 @@ class PluginMeta {
   public $stylesheetOptions = array('media' => 'all');
   public $minify;
   public $minifyChecks = true;
+  public $ajaxDebug    = false;
 
   function __construct($file) {
     $this->file = $file;
+  }
+
+  function needs() {
+    return array();
+  }
+
+  function lookup($key) {
+    return $this->container->lookup($key);
   }
 
   function getVersion() {
@@ -52,6 +62,14 @@ class PluginMeta {
 
   function getDebug() {
     return defined('WP_DEBUG') && WP_DEBUG === true;
+  }
+
+  function getAjaxDebug() {
+    if ($this->getDebug()) {
+      return $this->ajaxDebug;
+    } else {
+      return false;
+    }
   }
 
   function getOptionsKey() {
@@ -96,6 +114,10 @@ class PluginMeta {
     return $this->getSlug();
   }
 
+  function getOptionsContext() {
+    return array();
+  }
+
   function getDefaultOptions() {
     return $this->defaultOptions;
   }
@@ -104,32 +126,6 @@ class PluginMeta {
     return admin_url(
       'options-general.php?page=' . $this->getOptionsMenuSlug()
     );
-  }
-
-  function getOptionsScripts() {
-    return array_merge(
-      array('handlebars', 'ember'),
-      $this->getOptionsSupportScripts()
-    );
-  }
-
-  function getOptionsSupportScripts() {
-    return array(
-      'ember-validations',
-      'ember-easyForm'
-    );
-  }
-
-  function getOptionsStyles() {
-    return $this->getOptionsSupportStyles();
-  }
-
-  function getOptionsSupportStyles() {
-    return array();
-  }
-
-  function getOptionsApp() {
-    return $this->getSlug() . '-app';
   }
 
   function getScriptOptions() {

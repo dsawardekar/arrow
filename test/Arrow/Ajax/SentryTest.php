@@ -244,7 +244,7 @@ class SentryTest extends \WP_UnitTestCase {
 
   function test_it_knows_if_create_request_is_valid() {
     $_GET['controller']        = 'standard';
-    $_GET['operation']            = 'create';
+    $_GET['operation']            = 'post';
     $_SERVER['REQUEST_METHOD'] = 'POST';
 
     $this->assertTrue($this->sentry->isValidMethod());
@@ -383,10 +383,10 @@ class SentryTest extends \WP_UnitTestCase {
   function test_it_will_allow_public_request_from_logged_in_user_without_admin_checks() {
     wp_set_current_user(1);
 
-    $_GET['controller']        = 'my';
-    $_GET['operation']         = 'delete';
+    $_GET['controller']        = 'public';
+    $_GET['operation']         = 'public_one';
     $_GET['admin']             = '0';
-    $_SERVER['REQUEST_METHOD'] = 'DELETE';
+    $_SERVER['REQUEST_METHOD'] = 'GET';
 
     $actual = $this->sentry->authorize();
     $this->assertTrue($actual);
@@ -407,7 +407,7 @@ class SentryTest extends \WP_UnitTestCase {
 
   function test_it_will_not_authorize_request_without_nonce() {
     $_GET['controller']        = 'standard';
-    $_GET['operation']            = 'index';
+    $_GET['operation']            = 'all';
     $_SERVER['REQUEST_METHOD'] = 'GET';
     $_GET['nonce'] = 'foo';
     $_GET['admin'] = '1';
@@ -418,7 +418,7 @@ class SentryTest extends \WP_UnitTestCase {
 
   function test_it_will_not_authorize_request_without_referer() {
     $_GET['controller']        = 'standard';
-    $_GET['operation']            = 'index';
+    $_GET['operation']            = 'all';
     $_SERVER['REQUEST_METHOD'] = 'GET';
     $_GET['nonce'] = wp_create_nonce($this->sentry->getNonceName());
     $_GET['admin'] = '1';
@@ -429,7 +429,7 @@ class SentryTest extends \WP_UnitTestCase {
 
   function test_it_will_not_authorize_request_for_non_logged_in_users() {
     $_GET['controller']        = 'standard';
-    $_GET['operation']            = 'index';
+    $_GET['operation']            = 'all';
     $_SERVER['REQUEST_METHOD'] = 'GET';
     $_GET['nonce'] = wp_create_nonce($this->sentry->getNonceName());
     $_GET['admin'] = '1';
@@ -444,7 +444,7 @@ class SentryTest extends \WP_UnitTestCase {
     wp_set_current_user($id);
 
     $_GET['controller']        = 'standard';
-    $_GET['operation']         = 'index';
+    $_GET['operation']         = 'all';
     $_SERVER['REQUEST_METHOD'] = 'GET';
     $_GET['nonce']             = wp_create_nonce($this->sentry->getNonceName());
     $_GET['admin'] = '1';
@@ -459,7 +459,7 @@ class SentryTest extends \WP_UnitTestCase {
     wp_set_current_user(1);
 
     $_GET['controller']                       = 'standard';
-    $_GET['operation']                           = 'index';
+    $_GET['operation']                           = 'all';
     $_SERVER['REQUEST_METHOD']                = 'GET';
     $_GET['nonce'] = wp_create_nonce($this->sentry->getNonceName());
     $_GET['admin'] = '1';

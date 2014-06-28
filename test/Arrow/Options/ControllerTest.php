@@ -56,34 +56,22 @@ class ControllerTest extends \WP_UnitTestCase {
   }
 
   function test_it_can_send_default_plugin_options() {
-    ob_start();
-    $this->controller->index();
-    $response = ob_get_clean();
-
-    $json = json_decode($response, true);
-    $this->assertEquals(200, $json['status']);
-    $this->assertTrue($json['success']);
-    $this->assertEquals(
-      array('name' => 'your name', 'email' => 'your@email.com'),
-      $json['data']
-    );
+    $result = $this->controller->all();
+    $this->assertEmpty($result);
   }
 
-  function test_it_can_send_stored_plugin_options() {
-    $stored = '{"name":"darshan", "email":"darshan@email.com"}';
-    update_option('my-plugin-options', $stored);
-
-    ob_start();
-    $this->controller->index();
-    $response = ob_get_clean();
-
-    $json = json_decode($response, true);
-    $this->assertEquals(200, $json['status']);
-    $this->assertTrue($json['success']);
-    $this->assertEquals(
-      array('name' => 'darshan', 'email' => 'darshan@email.com'),
-      $json['data']
+  function test_it_can_send_default_plugin_options_if_present() {
+    $options = array(
+      'a' => 1, 'b' => 2
     );
+
+    $meta = $this->getMock('Arrow\PluginMeta', array(), array('foo.php'));
+    $meta->expects($this->once())->method('getOptionsContext')->will($this->returnValue($options));
+
+    $this->controller->pluginMeta = $meta;
+    $actual = $this->controller->all();
+
+    $this->assertEquals($options, $actual);
   }
 
   function test_it_can_send_validation_errors_on_update() {
@@ -92,16 +80,10 @@ class ControllerTest extends \WP_UnitTestCase {
       'email' => 'foo'
     );
 
-    ob_start();
-    $this->controller->update();
-    $response = ob_get_clean();
+    $error = $this->controller->patch()->error;
 
-    $json = json_decode($response, true);
-    $error = $json['data']['error'];
     $this->assertEquals('Name is required', $error['name'][0]);
     $this->assertEquals('Email is not a valid email address', $error['email'][0]);
-    $this->assertEquals(422, $json['status']);
-    $this->assertFalse($json['success']);
   }
 
   function test_it_can_update_plugin_options_for_valid_input() {
@@ -110,16 +92,13 @@ class ControllerTest extends \WP_UnitTestCase {
       'email' => 'darshan@email.com'
     );
 
-    ob_start();
-    $this->controller->update();
-    $response = ob_get_clean();
-    $json     = json_decode($response, true);
+    $this->controller->patch();
+    $data = get_option('my-plugin-options');
+    $actual = json_decode($data, true);
 
-    $this->assertTrue($json['success']);
-    $this->assertEquals(200, $json['status']);
     $this->assertEquals(
       $this->controller->params,
-      $json['data']
+      $actual
     );
   }
 
@@ -127,12 +106,10 @@ class ControllerTest extends \WP_UnitTestCase {
     $stored = '{"name":"darshan", "email":"darshan@email.com"}';
     update_option('my-plugin-options', $stored);
 
-    ob_start();
     $this->controller->delete();
-    $response = ob_get_clean();
+    $data = get_option('my-plugin-options');
 
-    $json = json_decode($response, true);
-    $this->assertEquals($this->pluginMeta->defaultOptions, $json['data']);
+    $this->assertFalse($data);
   }
 
 }
