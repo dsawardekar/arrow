@@ -13,9 +13,10 @@ class Manifest {
   public $scriptOptions;
   public $stylesheetOptions;
 
-  public $context = null;
-  public $admin   = true;
-  public $didLoad = false;
+  public $context    = null;
+  public $admin      = true;
+  public $didLoad    = false;
+  public $loaderMode = 'schedule';
 
   function needs() {
     return array();
@@ -49,14 +50,6 @@ class Manifest {
     $this->scheduleAssets(
       $loader, $scripts, $this->getScriptOptions()
     );
-
-    $last    = $total - 1;
-    $script  = $scripts[$last];
-    $context = $this->getContext();
-
-    if (!is_null($context)) {
-      $loader->localize($script, $context);
-    }
 
     $loader->load();
   }
@@ -104,9 +97,16 @@ class Manifest {
       $asset  = $assets[$i];
       if ($i !== 0) {
         $options['dependencies'] = array($assets[$i - 1]);
+        if ($i === $total - 1 && $this->hasContext()) {
+          $options['localizer'] = $this->getContext();
+        }
       }
 
-      $loader->schedule($asset, $options);
+      if ($this->getLoaderMode() === 'schedule') {
+        $loader->schedule($asset, $options);
+      } else {
+        $loader->stream($asset, $options);
+      }
     }
   }
 
@@ -133,6 +133,14 @@ class Manifest {
 
   function includeTemplate($template) {
     include($template);
+  }
+
+  function getLoaderMode() {
+    return $this->loaderMode;
+  }
+
+  function setLoaderMode($loaderMode) {
+    $this->loaderMode = $loaderMode;
   }
 
   /* helpers */

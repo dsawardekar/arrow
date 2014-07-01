@@ -44,6 +44,16 @@ class ManifestTest extends \WP_UnitTestCase {
     $this->assertEquals('bar', $this->manifest->lookup('foo'));
   }
 
+  function test_it_store_loader_mode() {
+    $this->manifest->setLoaderMode('stream');
+    $mode = $this->manifest->getLoaderMode();
+    $this->assertEquals('stream', $mode);
+  }
+
+  function test_it_schedules_assets_by_default() {
+    $this->assertEquals('schedule', $this->manifest->getLoaderMode());
+  }
+
   function test_it_uses_admin_script_loader_for_admin() {
     $this->manifest->admin = true;
     $actual = $this->manifest->getScriptLoader();
@@ -95,6 +105,18 @@ class ManifestTest extends \WP_UnitTestCase {
 
     $this->assertTrue($this->scriptLoader->isScheduled('foo'));
     $this->assertTrue($this->scriptLoader->isScheduled('bar'));
+  }
+
+  function test_it_will_stream_scripts_if_valid() {
+    $this->manifest->scripts = array(
+      'foo', 'bar'
+    );
+
+    $this->manifest->setLoaderMode('stream');
+    $this->manifest->loadScripts();
+
+    $this->assertTrue($this->scriptLoader->isStreamed('foo'));
+    $this->assertTrue($this->scriptLoader->isStreamed('bar'));
   }
 
   function test_it_will_localize_the_last_script_if_context_is_valid() {
