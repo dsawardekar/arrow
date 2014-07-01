@@ -1,5 +1,11 @@
 # Changelog
 
+### 1.2.2
+
+* Adds support for streaming assets.
+* Makes the localization of the last script in place to support
+  streaming mode.
+
 ### 1.2.1
 
 * Composer version fix.
