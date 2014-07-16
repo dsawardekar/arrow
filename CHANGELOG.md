@@ -5,6 +5,7 @@
 * OptionsManifest now checks if the slugs being added exist before using
   them.
   * Fixed tests affected by this change.
+* Fixes script localization if only single script is to be loaded.
 
 ### 1.2.2
 

@@ -128,6 +128,15 @@ class ManifestTest extends \WP_UnitTestCase {
     $this->assertTrue(is_callable($script->localizer));
   }
 
+  function test_it_will_localize_the_only_script_if_context_is_valid() {
+    $this->manifest->setContext(array($this, 'getContext'));
+    $this->manifest->scripts = array('foo');
+    $this->manifest->loadScripts();
+
+    $script = $this->scriptLoader->find('foo');
+    $this->assertTrue(is_callable($script->localizer));
+  }
+
   function test_it_can_load_options_scripts_in_correct_order() {
     $this->manifest->scripts = array(
       'jquery',

@@ -95,11 +95,11 @@ class Manifest {
 
     for ($i = 0; $i < $total; $i++) {
       $asset  = $assets[$i];
-      if ($i !== 0) {
+      if (array_key_exists($i - 1, $assets)) {
         $options['dependencies'] = array($assets[$i - 1]);
-        if ($i === $total - 1 && $this->hasContext()) {
-          $options['localizer'] = $this->getContext();
-        }
+      }
+      if ($i === $total - 1 && $this->hasContext()) {
+        $options['localizer'] = $this->getContext();
       }
 
       if ($this->getLoaderMode() === 'schedule') {
