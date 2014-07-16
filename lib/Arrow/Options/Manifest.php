@@ -15,11 +15,12 @@ class Manifest extends \Arrow\Asset\Manifest\Manifest {
     $slugs = $this->getAssetSlugs();
     array_push($slugs, $slug . '-app-run');
 
-    return $slugs;
+    return $this->getValidSlugs($slugs, 'js');
   }
 
   function getStyles() {
-    return $this->getAssetSlugs();
+    $slugs = $this->getAssetSlugs();
+    return $this->getValidSlugs($slugs, 'css');
   }
 
   /* templates are precompiled to js */
@@ -63,6 +64,24 @@ class Manifest extends \Arrow\Asset\Manifest\Manifest {
     $slug = $this->pluginMeta->getSlug();
 
     return is_dir($dir . '/js/' . $slug . '/dist/assets');
+  }
+
+  function hasSlugAsset($slug, $type) {
+    $dir  = $this->pluginMeta->getDir();
+    $path = $dir . '/' . $type . '/' . $slug . '.' . $type;
+
+    return file_exists($path);
+  }
+
+  function getValidSlugs($slugs, $type) {
+    $validSlugs = array();
+    foreach ($slugs as $slug) {
+      if ($this->hasSlugAsset($slug, $type)) {
+        $validSlugs[] = $slug;
+      }
+    }
+
+    return $validSlugs;
   }
 
 }

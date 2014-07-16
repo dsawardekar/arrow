@@ -1,5 +1,11 @@
 # Changelog
 
+### Current
+
+* OptionsManifest now checks if the slugs being added exist before using
+  them.
+  * Fixed tests affected by this change.
+
 ### 1.2.2
 
 * Adds support for streaming assets.
