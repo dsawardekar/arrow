@@ -1,6 +1,6 @@
 # Changelog
 
-### Current
+### 1.3.0
 
 * OptionsManifest now checks if the slugs being added exist before using
   them.
