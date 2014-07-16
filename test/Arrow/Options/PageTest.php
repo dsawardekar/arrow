@@ -97,11 +97,8 @@ class PageTest extends \WP_UnitTestCase {
   function test_it_can_add_options_page() {
     $this->page->register();
 
-    $this->assertTrue($this->scriptLoader->isScheduled('sample-vendor'));
-    $this->assertTrue($this->scriptLoader->isScheduled('sample-app'));
-
-    $this->assertTrue($this->stylesheetLoader->isScheduled('sample-vendor'));
-    $this->assertTrue($this->stylesheetLoader->isScheduled('sample-app'));
+    $manifest = $this->container->lookup('optionsManifest');
+    $this->assertNotNull($manifest->getContext());
   }
 
   function test_it_configures_manifest_context_on_register() {

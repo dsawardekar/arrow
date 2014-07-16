@@ -88,9 +88,14 @@ class ManifestTest extends \WP_UnitTestCase {
   }
 
   function mockDevAssets($value = true) {
-    $this->manifest = \Mockery::mock('Arrow\Options\Manifest[hasDevAssets]');
+    $this->manifest = \Mockery::mock('Arrow\Options\Manifest[hasDevAssets,getValidSlugs]');
     $this->manifest->shouldReceive('hasDevAssets')->andReturn($value);
+    $this->manifest->shouldReceive('getValidSlugs')->andReturnUsing(array($this, 'returnSlugs'));
     $this->container->inject($this->manifest);
+  }
+
+  function returnSlugs($slugs, $type) {
+    return $slugs;
   }
 
   function test_it_has_correct_scripts_in_debug_mode() {
@@ -107,6 +112,7 @@ class ManifestTest extends \WP_UnitTestCase {
   }
 
   function test_it_has_correct_scripts_in_production_mode() {
+    $this->mockDevAssets();
     $mockMeta = $this->getMock('Arrow\PluginMeta', array(), array('my-plugin'));
     $mockMeta->expects($this->any())->method('getSlug')->will($this->returnValue('my-plugin'));
     $mockMeta->expects($this->once())->method('getDebug')->will($this->returnValue(false));
@@ -134,6 +140,8 @@ class ManifestTest extends \WP_UnitTestCase {
   }
 
   function test_it_has_correct_styles_in_production_mode() {
+    $this->mockDevAssets();
+
     $mockMeta = $this->getMock('Arrow\PluginMeta', array(), array('my-plugin'));
     $mockMeta->expects($this->any())->method('getSlug')->will($this->returnValue('my-plugin'));
     $mockMeta->expects($this->once())->method('getDebug')->will($this->returnValue(false));
