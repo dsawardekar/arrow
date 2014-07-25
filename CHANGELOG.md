@@ -1,5 +1,11 @@
 # Changelog
 
+### Current
+
+* Makes the variable that the plugin writes configurable.
+  * The options variable now will correspond to the underscorized plugin
+    slug name.
+
 ### 1.3.0
 
 * OptionsManifest now checks if the slugs being added exist before using
