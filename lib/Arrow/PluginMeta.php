@@ -16,8 +16,9 @@ class PluginMeta {
   public $scriptOptions     = array('in_footer' => true);
   public $stylesheetOptions = array('media' => 'all');
   public $minify;
-  public $minifyChecks = true;
-  public $ajaxDebug    = false;
+  public $minifyChecks     = true;
+  public $ajaxDebug        = false;
+  public $localizedStrings = array();
 
   function __construct($file) {
     $this->file = $file;
@@ -120,6 +121,10 @@ class PluginMeta {
 
   function getDefaultOptions() {
     return $this->defaultOptions;
+  }
+
+  function getLocalizedStrings() {
+    return $this->localizedStrings;
   }
 
   function getOptionsUrl() {
