@@ -44,4 +44,12 @@ class Script extends Asset {
   function defaultOptions() {
     return $this->pluginMeta->getScriptOptions();
   }
+
+  function localizeSlug() {
+    if (array_key_exists('variable', $this->options)) {
+      return $this->options['variable'];
+    } else {
+      return parent::localizeSlug();
+    }
+  }
 }
