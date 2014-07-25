@@ -36,6 +36,11 @@ class Manifest extends \Arrow\Asset\Manifest\Manifest {
     return $this->pluginMeta->getStylesheetOptions();
   }
 
+  function getLocalizerVariable() {
+    $slug = $this->pluginMeta->getSlug();
+    return str_replace('-', '_', $slug);
+  }
+
   /* helpers */
   function getDebug() {
     return $this->pluginMeta->getDebug();

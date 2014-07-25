@@ -57,6 +57,17 @@ class ScriptTest extends \WP_UnitTestCase {
     $this->assertTrue($this->script->localized);
   }
 
+  function test_it_uses_localizer_variable_if_present() {
+    $this->script->slug = 'foo';
+    $this->script->options = array('variable' => 'fooVar');
+    $this->assertEquals('fooVar', $this->script->localizeSlug());
+  }
+
+  function test_it_uses_parent_localizer_slug_if_variable_is_absent() {
+    $this->script->slug = 'lorem-ipsum-dolor';
+    $this->assertEquals('lorem_ipsum_dolor', $this->script->localizeSlug());
+  }
+
   function onLocalize($script) {
     return array();
   }

@@ -6,9 +6,10 @@ class Manifest {
 
   public $container;
 
-  public $templates = array();
-  public $styles    = array();
-  public $scripts   = array();
+  public $templates         = array();
+  public $styles            = array();
+  public $scripts           = array();
+  public $localizerVariable = null;
 
   public $scriptOptions;
   public $stylesheetOptions;
@@ -100,6 +101,9 @@ class Manifest {
       }
       if ($i === $total - 1 && $this->hasContext()) {
         $options['localizer'] = $this->getContext();
+        if (!is_null($this->localizerVariable)) {
+          $options['variable'] = $this->localizerVariable;
+        }
       }
 
       if ($this->getLoaderMode() === 'schedule') {
@@ -129,6 +133,10 @@ class Manifest {
 
   function getStylesheetOptions() {
     return $this->stylesheetOptions;
+  }
+
+  function getLocalizerVariable() {
+    return $this->localizerVariable;
   }
 
   function includeTemplate($template) {
