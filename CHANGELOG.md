@@ -1,5 +1,14 @@
 # Changelog
 
+### 1.4.0
+
+* Makes the variable that the plugin writes configurable.
+  * The options variable now will correspond to the underscorized plugin
+    slug name.
+* Adds support for localized strings.
+  * The options object is now nested inside the main plugin variable.
+  * Type information is now preserved from PHP to Javascript.
+
 ### 1.3.0
 
 * OptionsManifest now checks if the slugs being added exist before using

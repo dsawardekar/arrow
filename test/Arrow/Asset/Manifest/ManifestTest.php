@@ -128,6 +128,25 @@ class ManifestTest extends \WP_UnitTestCase {
     $this->assertTrue(is_callable($script->localizer));
   }
 
+  function test_it_will_set_localizer_variable_if_present() {
+    $this->manifest->localizerVariable = 'foo_plugin';
+    $this->manifest->setContext(array($this, 'getContext'));
+    $this->manifest->scripts = array('foo', 'bar');
+    $this->manifest->loadScripts();
+
+    $script = $this->scriptLoader->find('bar');
+    $this->assertEquals('foo_plugin', $script->option('variable'));
+  }
+
+  function test_it_will_not_set_localizer_variable_if_absent() {
+    $this->manifest->setContext(array($this, 'getContext'));
+    $this->manifest->scripts = array('foo', 'bar');
+    $this->manifest->loadScripts();
+
+    $script = $this->scriptLoader->find('bar');
+    $this->assertFalse($script->option('variable'));
+  }
+
   function test_it_will_localize_the_only_script_if_context_is_valid() {
     $this->manifest->setContext(array($this, 'getContext'));
     $this->manifest->scripts = array('foo');

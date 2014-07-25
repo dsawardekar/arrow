@@ -165,4 +165,10 @@ class PluginMetaTest extends \WP_UnitTestCase {
     $this->assertEmpty($context);
   }
 
+  function test_it_can_store_localized_strings() {
+    $this->meta->localizedStrings = array('foo' => 'bar');
+    $actual = $this->meta->getLocalizedStrings();
+    $this->assertEquals(array('foo' => 'bar'), $actual);
+  }
+
 }

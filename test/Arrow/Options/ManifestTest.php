@@ -79,6 +79,11 @@ class ManifestTest extends \WP_UnitTestCase {
     $this->assertEquals('options', $actual);
   }
 
+  function test_it_has_valid_localizer_variable() {
+    $actual = $this->manifest->getLocalizerVariable();
+    $this->assertEquals('my_plugin', $actual);
+  }
+
   function test_it_does_not_have_static_templates() {
     $this->assertEmpty($this->manifest->getTemplates());
   }
