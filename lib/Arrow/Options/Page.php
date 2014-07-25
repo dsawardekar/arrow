@@ -45,14 +45,21 @@ class Page {
   }
 
   function getPageContext($script) {
-    $baseContext = $this->pluginMeta->getOptionsContext();
-    $context = array(
-      'apiEndpoint' => $this->getApiEndpoint(),
-      'nonce'       => $this->getNonceValue(),
-      'debug'       => $this->pluginMeta->getDebug()
-    );
+    $strings = $this->pluginMeta->getLocalizedStrings();
+    if (!is_array($strings)) {
+      $strings = array();
+    }
 
-    return array_merge($baseContext, $context);
+    /* Documentation note, these variables are reserved,
+     * plugins can't use the same variables */
+    $options                = $this->pluginMeta->getOptionsContext();
+    $options['apiEndpoint'] = $this->getApiEndpoint();
+    $options['nonce']       = $this->getNonceValue();
+    $options['debug']       = $this->pluginMeta->getDebug();
+
+    $strings['options'] = $options;
+
+    return $strings;
   }
 
   /* helpers */

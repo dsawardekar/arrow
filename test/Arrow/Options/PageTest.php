@@ -55,8 +55,8 @@ class PageTest extends \WP_UnitTestCase {
     $this->assertContains('admin=1', $apiEndpoint);
   }
 
-  function test_it_has_page_context() {
-    $config      = $this->page->getPageContext(null);
+  function test_it_has_page_context_options() {
+    $config      = $this->page->getPageContext(null)['options'];
     $apiEndpoint = $config['apiEndpoint'];
     $nonce       = $config['nonce'];
 
@@ -67,6 +67,15 @@ class PageTest extends \WP_UnitTestCase {
     $this->assertTrue($config['debug']);
   }
 
+  function test_it_has_localized_strings_for_page() {
+    $this->pluginMeta->localizedStrings = array(
+      'foo' => 'bar'
+    );
+    $strings = $this->page->getPageContext(null);
+
+    $this->assertEquals('bar', $strings['foo']);
+  }
+
   function test_it_does_not_have_debug_true_in_production() {
     $mockMeta = $this->getMock('Arrow\PluginMeta', array(), array('foo.php'));
     $mockMeta->expects($this->once())->method('getDebug')->will($this->returnValue(false));
@@ -75,7 +84,7 @@ class PageTest extends \WP_UnitTestCase {
     $this->page->pluginMeta = $mockMeta;
     $actual = $this->page->getPageContext(null);
 
-    $this->assertFalse($actual['debug']);
+    $this->assertFalse($actual['options']['debug']);
   }
 
   function test_it_uses_plugin_meta_options_context_if_present() {
@@ -88,7 +97,7 @@ class PageTest extends \WP_UnitTestCase {
     $mockMeta->expects($this->once())->method('getOptionsContext')->will($this->returnValue($context));
 
     $this->page->pluginMeta = $mockMeta;
-    $actual = $this->page->getPageContext(null);
+    $actual = $this->page->getPageContext(null)['options'];
 
     $this->assertEquals('123', $actual['foo']);
     $this->assertEquals('456', $actual['bar']);
