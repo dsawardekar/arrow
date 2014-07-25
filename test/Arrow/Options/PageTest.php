@@ -56,7 +56,8 @@ class PageTest extends \WP_UnitTestCase {
   }
 
   function test_it_has_page_context_options() {
-    $config      = $this->page->getPageContext(null)['options'];
+    $config      = $this->page->getPageContext(null);
+    $config      = $config['options'];
     $apiEndpoint = $config['apiEndpoint'];
     $nonce       = $config['nonce'];
 
@@ -97,7 +98,8 @@ class PageTest extends \WP_UnitTestCase {
     $mockMeta->expects($this->once())->method('getOptionsContext')->will($this->returnValue($context));
 
     $this->page->pluginMeta = $mockMeta;
-    $actual = $this->page->getPageContext(null)['options'];
+    $actual      = $this->page->getPageContext(null);
+    $actual      = $actual['options'];
 
     $this->assertEquals('123', $actual['foo']);
     $this->assertEquals('456', $actual['bar']);
