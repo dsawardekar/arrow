@@ -1,6 +1,6 @@
 # Changelog
 
-### Current
+### 1.4.0
 
 * Makes the variable that the plugin writes configurable.
   * The options variable now will correspond to the underscorized plugin
