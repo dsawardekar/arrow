@@ -101,7 +101,7 @@ class Manifest {
       }
       if ($i === $total - 1 && $this->hasContext()) {
         $options['localizer'] = $this->getContext();
-        if (!is_null($this->localizerVariable)) {
+        if (!is_null($this->getLocalizerVariable())) {
           $options['variable'] = $this->localizerVariable;
         }
       }
