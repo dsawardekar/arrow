@@ -38,7 +38,8 @@ class ManifestTest extends \WP_UnitTestCase {
     $actual = $this->manifest->getAssetSlugs();
     $expected = array(
       'my-plugin/dist/assets/vendor',
-      'my-plugin/dist/assets/my-plugin'
+      'my-plugin/dist/assets/my-plugin',
+      'my-plugin/dist/assets/app'
     );
 
     $this->assertEquals($expected, $actual);
@@ -110,6 +111,7 @@ class ManifestTest extends \WP_UnitTestCase {
     $expected = array(
       'my-plugin/dist/assets/vendor',
       'my-plugin/dist/assets/my-plugin',
+      'my-plugin/dist/assets/app',
       'my-plugin-app-run'
     );
 
@@ -138,7 +140,8 @@ class ManifestTest extends \WP_UnitTestCase {
     $actual = $this->manifest->getStyles();
     $expected = array(
       'my-plugin/dist/assets/vendor',
-      'my-plugin/dist/assets/my-plugin'
+      'my-plugin/dist/assets/my-plugin',
+      'my-plugin/dist/assets/app'
     );
 
     $this->assertEquals($expected, $actual);

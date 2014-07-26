@@ -1,5 +1,11 @@
 # Changelog
 
+### 1.5.0
+
+* Fixes development mode CSS path bug in OptionsManifest.
+* Adds extra alias in development to allow frontend build scripts to
+  build app.js or wp-foo.js.
+
 ### 1.4.0
 
 * Makes the variable that the plugin writes configurable.
