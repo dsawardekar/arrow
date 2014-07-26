@@ -1,6 +1,6 @@
 <?php
 
-namespace Arrow\Asset\Manifest;
+namespace Arrow\Asset;
 
 class Manifest {
 
