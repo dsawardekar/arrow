@@ -1,6 +1,6 @@
 # Changelog
 
-### Current
+### 1.5.0
 
 * Fixes development mode CSS path bug in OptionsManifest.
 * Adds extra alias in development to allow frontend build scripts to
