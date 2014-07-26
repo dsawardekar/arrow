@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.6.0
+
+* Moves the base Manifest class to inside the Asset Package.
+
 ### 1.5.0
 
 * Fixes development mode CSS path bug in OptionsManifest.
