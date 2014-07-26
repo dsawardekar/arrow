@@ -52,9 +52,13 @@ class Manifest extends \Arrow\Asset\Manifest\Manifest {
     if ($this->getDebug() && $this->hasDevAssets()) {
       $prefix = $slug . '/dist/assets/';
 
+      /* allows the frontend build system to generate
+       * app.js or wp-slug.js
+       */
       return array(
         $prefix . 'vendor',
         $prefix . $slug,
+        $prefix . 'app',
       );
     } else {
       return array(
@@ -71,9 +75,15 @@ class Manifest extends \Arrow\Asset\Manifest\Manifest {
     return is_dir($dir . '/js/' . $slug . '/dist/assets');
   }
 
+  /*
+   * In dev mode, the CSS is under js/wp-foo, at
+   * dist/assets/foo.css. While in production it is at,
+   * plugin-dir/css/foo.css
+   */
   function hasSlugAsset($slug, $type) {
-    $dir  = $this->pluginMeta->getDir();
-    $path = $dir . '/' . $type . '/' . $slug . '.' . $type;
+    $dir     = $this->pluginMeta->getDir();
+    $typeDir = $this->pluginMeta->getDebug() ? 'js' : $type;
+    $path    = $dir . '/' . $typeDir . '/' . $slug . '.' . $type;
 
     return file_exists($path);
   }
