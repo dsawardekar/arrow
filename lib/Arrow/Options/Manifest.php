@@ -2,7 +2,7 @@
 
 namespace Arrow\Options;
 
-class Manifest extends \Arrow\Asset\Manifest\Manifest {
+class Manifest extends \Arrow\Asset\Manifest {
 
   public $pluginMeta;
 

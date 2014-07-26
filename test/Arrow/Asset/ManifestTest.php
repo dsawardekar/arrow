@@ -1,6 +1,6 @@
 <?php
 
-namespace Arrow\Asset\Manifest;
+namespace Arrow\Asset;
 
 use Encase\Container;
 
@@ -18,7 +18,7 @@ class ManifestTest extends \WP_UnitTestCase {
     $this->container
       ->object('pluginMeta', new \Arrow\PluginMeta('my-plugin.php'))
       ->packager('assetPackager', 'Arrow\Asset\Packager')
-      ->factory('manifest', 'Arrow\Asset\Manifest\Manifest');
+      ->factory('manifest', 'Arrow\Asset\Manifest');
 
     $this->manifest         = $this->container->lookup('manifest');
     $this->scriptLoader     = $this->container->lookup('adminScriptLoader');
