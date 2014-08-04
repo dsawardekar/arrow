@@ -216,4 +216,13 @@ class PluginMeta {
     return $this->translate($string);
   }
 
+  /* Plugin Upgrade */
+  function needsUpgrade() {
+    $storedVersion = $this->lookup('optionsStore')->getOption('pluginVersion');
+    $actualVersion = $this->version;
+
+    return empty($storedVersion) ||
+      version_compare($storedVersion, $actualVersion, '<');
+  }
+
 }

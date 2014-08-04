@@ -89,7 +89,8 @@ class ControllerTest extends \WP_UnitTestCase {
   function test_it_can_update_plugin_options_for_valid_input() {
     $this->controller->params = array(
       'name' => 'Darshan',
-      'email' => 'darshan@email.com'
+      'email' => 'darshan@email.com',
+      'pluginVersion' => '0.0.0'
     );
 
     $this->controller->patch();
