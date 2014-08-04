@@ -19,6 +19,7 @@ class PluginMeta {
   public $minifyChecks     = true;
   public $ajaxDebug        = false;
   public $localizedStrings = array();
+  public $loadedTextDomain = false;
 
   function __construct($file) {
     $this->file = $file;
@@ -123,10 +124,6 @@ class PluginMeta {
     return $this->defaultOptions;
   }
 
-  function getLocalizedStrings() {
-    return $this->localizedStrings;
-  }
-
   function getOptionsUrl() {
     return admin_url(
       'options-general.php?page=' . $this->getOptionsMenuSlug()
@@ -168,4 +165,52 @@ class PluginMeta {
   function getMinifyChecks() {
     return $this->minifyChecks;
   }
+
+  /* Localization */
+  function getLocalizedStrings() {
+    $this->localizedStrings = array();
+    $this->localize();
+
+    return $this->localizedStrings;
+  }
+
+  function localize() {
+    // $this->translate calls go here.
+  }
+
+  function loadTextDomain() {
+    load_plugin_textdomain(
+      $this->getTextDomain(), false, $this->getLanguagesDir()
+    );
+    $this->loadedTextDomain = true;
+  }
+
+  function getTextDomain() {
+    return $this->getSlug();
+  }
+
+  function getLanguagesDir() {
+    return $this->getSlug() . '/languages/';
+  }
+
+  function translate($string) {
+    if (!$this->loadedTextDomain) {
+      $this->loadTextDomain();
+    }
+
+    $this->localizedStrings[$string] = __($string, $this->getTextDomain());
+  }
+
+  function _($string) {
+    return $this->translate($string);
+  }
+
+  function __($string) {
+    return $this->translate($string);
+  }
+
+  function t($string) {
+    return $this->translate($string);
+  }
+
 }

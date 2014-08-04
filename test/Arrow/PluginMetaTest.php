@@ -165,10 +165,50 @@ class PluginMetaTest extends \WP_UnitTestCase {
     $this->assertEmpty($context);
   }
 
-  function test_it_can_store_localized_strings() {
+  function _test_it_can_store_localized_strings() {
     $this->meta->localizedStrings = array('foo' => 'bar');
     $actual = $this->meta->getLocalizedStrings();
     $this->assertEquals(array('foo' => 'bar'), $actual);
   }
 
+  function test_it_has_a_valid_text_domain() {
+    $actual = $this->meta->getTextDomain();
+    $this->assertEquals('my-plugin', $actual);
+  }
+
+  function test_it_has_a_valid_languages_directory() {
+    $actual = $this->meta->getLanguagesDir();
+    $this->assertEquals('my-plugin/languages/', $actual);
+  }
+
+  function test_it_can_load_text_domain() {
+    $actual = $this->meta->loadTextDomain();
+    $this->assertTrue($this->meta->loadedTextDomain);
+  }
+
+  function test_it_can_translate_single_string() {
+    $this->meta->translate('Lorem');
+    $actual = $this->meta->localizedStrings['Lorem'];
+    $this->assertEquals('Lorem', $actual);
+  }
+
+  function test_it_can_return_localized_strings() {
+    $this->container->object('pluginMeta', new PluginMetaA('my-plugin.php'));
+    $this->meta = $this->container->lookup('pluginMeta');
+    $actual = $this->meta->getLocalizedStrings();
+
+    $this->assertTrue($this->meta->loadedTextDomain);
+    $this->assertEquals('Lorem', $actual['Lorem']);
+    $this->assertEquals('Ipsum', $actual['Ipsum']);
+    $this->assertEquals('Dolor', $actual['Dolor']);
+  }
+
+}
+
+class PluginMetaA extends PluginMeta {
+  function localize() {
+    $this->_('Lorem');
+    $this->_('Ipsum');
+    $this->_('Dolor');
+  }
 }
