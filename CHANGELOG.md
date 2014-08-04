@@ -1,5 +1,11 @@
 # Changelog
 
+### Current
+
+* Adds Localization API.
+* Adds `pluginVersion` to OptionsStore.
+* Adds `needsUpgrade` to PluginMeta.
+
 ### 1.6.0
 
 * Moves the base Manifest class to inside the Asset Package.
