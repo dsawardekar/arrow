@@ -243,4 +243,21 @@ class StoreTest extends \WP_UnitTestCase {
     $this->assertEquals(1, $this->store->getOption('foo'));
     $this->assertEquals('two', $this->store->getOption('bar'));
   }
+
+  function test_it_does_not_have_plugin_version_if_options_are_absent() {
+    $this->store->clear();
+    $this->store->reload();
+
+    $this->assertNull($this->store->getOption('pluginVersion'));
+  }
+
+  function test_it_stores_plugin_version_on_save() {
+    $this->store->setOption('foo', 'bar');
+    $this->store->pluginMeta->version = '1.2.3';
+    $this->store->save();
+
+    $this->store->reload();
+    $this->assertEquals('1.2.3', $this->store->getOption('pluginVersion'));
+  }
+
 }

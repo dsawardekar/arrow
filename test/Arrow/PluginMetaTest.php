@@ -13,7 +13,9 @@ class PluginMetaTest extends \WP_UnitTestCase {
     parent::setUp();
 
     $this->container = new Container();
-    $this->container->object('pluginMeta', new PluginMeta(getcwd() . '/my-plugin.php'));
+    $this->container
+      ->object('pluginMeta', new PluginMeta(getcwd() . '/my-plugin.php'))
+      ->packager('optionsPackager', 'Arrow\Options\Packager');
 
     $this->meta = $this->container->lookup('pluginMeta');
   }
@@ -217,6 +219,47 @@ class PluginMetaTest extends \WP_UnitTestCase {
     $this->assertEquals('Dolor', $actual['Dolor']);
   }
 
+  function test_it_needs_upgrade_if_stored_version_is_absent() {
+    $optionsStore = $this->container->lookup('optionsStore');
+    $optionsStore->clear();
+
+    $this->assertTrue($this->meta->needsUpgrade());
+  }
+
+  function test_it_does_not_need_upgrade_if_stored_version_equals_current_version() {
+    $optionsStore = $this->container->lookup('optionsStore');
+    $optionsStore->setOption('pluginVersion', '1.5.0');
+    $this->meta->version = '1.5.0';
+
+    $this->assertFalse($this->meta->needsUpgrade());
+  }
+
+  function test_it_does_not_need_upgrade_if_stored_version_is_greated_than_current_version() {
+    $optionsStore = $this->container->lookup('optionsStore');
+    $optionsStore->setOption('pluginVersion', '2.5.0');
+    $this->meta->version = '1.5.0';
+
+    $this->assertFalse($this->meta->needsUpgrade());
+  }
+
+  function test_it_needs_upgrade_if_stored_version_is_less_than_current_version() {
+    $optionsStore = $this->container->lookup('optionsStore');
+    $optionsStore->setOption('pluginVersion', '1.4.9');
+    $this->meta->version = '1.5.0';
+
+    $this->assertTrue($this->meta->needsUpgrade());
+  }
+
+  function test_it_does_not_read_an_upgrade_after_it_has_been_upgraded() {
+    $optionsStore = $this->container->lookup('optionsStore');
+    $optionsStore->setOption('pluginVersion', '1.4.9');
+    $this->meta->version = '1.5.0';
+
+    $optionsStore->save();
+    $optionsStore->reload();
+
+    $this->assertFalse($this->meta->needsUpgrade());
+  }
 }
 
 class PluginMetaA extends PluginMeta {
