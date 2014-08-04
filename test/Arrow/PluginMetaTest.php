@@ -186,10 +186,24 @@ class PluginMetaTest extends \WP_UnitTestCase {
     $this->assertTrue($this->meta->loadedTextDomain);
   }
 
+  function test_it_will_not_load_text_domain_if_already_loaded() {
+    $this->meta->translate('Foo');
+    $this->meta->loadedTextDomain = 'already_loaded';
+
+    $this->meta->translate('Foo');
+    $this->assertEquals('already_loaded', $this->meta->loadedTextDomain);
+  }
+
   function test_it_can_translate_single_string() {
     $this->meta->translate('Lorem');
     $actual = $this->meta->localizedStrings['Lorem'];
     $this->assertEquals('Lorem', $actual);
+  }
+
+  function test_it_can_translate_single_string_with_aliases() {
+    $this->assertEquals('Lorem', $this->meta->_('Lorem'));
+    $this->assertEquals('Lorem', $this->meta->t('Lorem'));
+    $this->assertEquals('Lorem', $this->meta->__('Lorem'));
   }
 
   function test_it_can_return_localized_strings() {

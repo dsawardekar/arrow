@@ -198,7 +198,10 @@ class PluginMeta {
       $this->loadTextDomain();
     }
 
-    $this->localizedStrings[$string] = __($string, $this->getTextDomain());
+    $translation                     = __($string, $this->getTextDomain());
+    $this->localizedStrings[$string] = $translation;
+
+    return $translation;
   }
 
   function _($string) {
