@@ -140,7 +140,7 @@ class StoreTest extends \WP_UnitTestCase {
     $this->store->setOption('bar', 2);
 
     $this->store->save();
-    $this->assertEquals('{"foo":1,"bar":2}', get_option('store-plugin-options'));
+    $this->assertEquals('{"foo":1,"bar":2,"pluginVersion":"0.0.0"}', get_option('store-plugin-options'));
   }
 
   function test_it_can_change_options_in_memory() {

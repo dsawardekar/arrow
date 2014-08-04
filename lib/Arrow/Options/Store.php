@@ -39,6 +39,9 @@ class Store {
       return false;
     }
 
+    // we need the real plugin version, not the debug mode timestamp
+    $this->options['pluginVersion'] = $this->pluginMeta->version;
+
     $json = $this->toJSON($this->options);
     update_option($this->getOptionsKey(), $json);
     $this->didChange = false;
