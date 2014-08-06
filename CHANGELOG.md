@@ -1,5 +1,9 @@
 # Changelog
 
+### Current
+
+* Loads default mofile if no custom translations are present.
+
 ### 1.7.0
 
 * Adds Localization API.
