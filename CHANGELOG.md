@@ -1,6 +1,6 @@
 # Changelog
 
-### Current
+### 1.8.0
 
 * Loads default mofile if no custom translations are present.
 
