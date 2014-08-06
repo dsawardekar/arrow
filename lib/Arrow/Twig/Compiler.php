@@ -33,10 +33,6 @@ class Compiler {
     return array_map(array($this, 'templateNameFor'), $templates);
   }
 
-  function getFoo() {
-    return 'foo';
-  }
-
   function templatesInDir($dir) {
     return glob($this->globForDir($dir));
   }

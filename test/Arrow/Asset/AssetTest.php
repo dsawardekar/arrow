@@ -38,6 +38,17 @@ class AssetTest extends \WP_UnitTestCase {
     $this->assertEquals('.js', $this->asset->extension());
   }
 
+  function test_it_has_abstract_api_methods() {
+    $this->assertTrue(method_exists($this->asset, 'register'));
+    $this->assertTrue(method_exists($this->asset, 'enqueue'));
+    $this->assertTrue(method_exists($this->asset, 'localize'));
+
+    $this->asset->register();
+    $this->asset->enqueue();
+    $this->asset->localize('foo');
+
+  }
+
   function test_it_can_build_relative_path() {
     $this->asset->slug = 'foo';
     $path = $this->asset->relpath();
