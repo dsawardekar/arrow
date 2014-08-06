@@ -5,6 +5,7 @@
 * Adds Localization API.
 * Adds `pluginVersion` to OptionsStore.
 * Adds `needsUpgrade` to PluginMeta.
+* Improve code coverage.
 
 ### 1.6.0
 
