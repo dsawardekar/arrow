@@ -91,6 +91,14 @@ class PluginMetaTest extends \WP_UnitTestCase {
     $this->assertNotEquals('', $actual);
   }
 
+  function test_it_has_valid_version_in_production_mode() {
+    $meta = \Mockery::mock('Arrow\PluginMeta[getDebug]', array('foo-plugin.php'));
+    $meta->shouldReceive('getDebug')->andReturn(false);
+
+    $meta->version = '1.2.3';
+    $this->assertEquals('1.2.3', $meta->getVersion());
+  }
+
   function test_it_has_default_script_options() {
     $options = $this->meta->getScriptOptions();
     $this->assertNotEquals('', $options['version']);

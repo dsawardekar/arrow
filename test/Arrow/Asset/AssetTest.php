@@ -42,6 +42,11 @@ class AssetTest extends \WP_UnitTestCase {
     $this->assertTrue(method_exists($this->asset, 'register'));
     $this->assertTrue(method_exists($this->asset, 'enqueue'));
     $this->assertTrue(method_exists($this->asset, 'localize'));
+
+    $this->asset->register();
+    $this->asset->enqueue();
+    $this->asset->localize('foo');
+
   }
 
   function test_it_can_build_relative_path() {

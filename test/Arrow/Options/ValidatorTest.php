@@ -128,7 +128,9 @@ class ValidatorTest extends \WP_UnitTestCase {
   }
 
   function test_it_has_abstract_method_to_load_user_rules() {
-    $this->assertTrue(method_exists($this->validator, 'loadRules'));
+    $validator = new \Arrow\Options\Validator();
+    $this->assertTrue(method_exists($validator, 'loadRules'));
+    $validator->loadRules(null);
   }
 
   function test_it_will_load_static_rules_if_not_already_loaded() {
