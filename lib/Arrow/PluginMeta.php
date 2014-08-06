@@ -179,9 +179,15 @@ class PluginMeta {
   }
 
   function loadTextDomain() {
-    load_plugin_textdomain(
-      $this->getTextDomain(), false, $this->getLanguagesDir()
-    );
+    $textDomain = $this->getTextDomain();
+    $loaded     = load_plugin_textdomain($textDomain, false, $this->getLanguagesDir());
+
+    /* loads wp-foo-en.mo if no custom mofile as present */
+    if (!$loaded) {
+      $moFile = $this->getDir() . '/languages/' . $this->getSlug() . '-en.mo';
+      load_textdomain($textDomain, $moFile);
+    }
+
     $this->loadedTextDomain = true;
   }
 
