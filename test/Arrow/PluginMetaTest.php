@@ -13,7 +13,9 @@ class PluginMetaTest extends \WP_UnitTestCase {
     parent::setUp();
 
     $this->container = new Container();
-    $this->container->object('pluginMeta', new PluginMeta(getcwd() . '/my-plugin.php'));
+    $this->container
+      ->object('pluginMeta', new PluginMeta(getcwd() . '/my-plugin.php'))
+      ->packager('optionsPackager', 'Arrow\Options\Packager');
 
     $this->meta = $this->container->lookup('pluginMeta');
   }
@@ -87,6 +89,14 @@ class PluginMetaTest extends \WP_UnitTestCase {
   function test_it_has_a_default_version() {
     $actual = $this->meta->getVersion();
     $this->assertNotEquals('', $actual);
+  }
+
+  function test_it_has_valid_version_in_production_mode() {
+    $meta = \Mockery::mock('Arrow\PluginMeta[getDebug]', array('foo-plugin.php'));
+    $meta->shouldReceive('getDebug')->andReturn(false);
+
+    $meta->version = '1.2.3';
+    $this->assertEquals('1.2.3', $meta->getVersion());
   }
 
   function test_it_has_default_script_options() {
@@ -165,10 +175,105 @@ class PluginMetaTest extends \WP_UnitTestCase {
     $this->assertEmpty($context);
   }
 
-  function test_it_can_store_localized_strings() {
+  function _test_it_can_store_localized_strings() {
     $this->meta->localizedStrings = array('foo' => 'bar');
     $actual = $this->meta->getLocalizedStrings();
     $this->assertEquals(array('foo' => 'bar'), $actual);
   }
 
+  function test_it_has_a_valid_text_domain() {
+    $actual = $this->meta->getTextDomain();
+    $this->assertEquals('my-plugin', $actual);
+  }
+
+  function test_it_has_a_valid_languages_directory() {
+    $actual = $this->meta->getLanguagesDir();
+    $this->assertEquals('my-plugin/languages/', $actual);
+  }
+
+  function test_it_can_load_text_domain() {
+    $actual = $this->meta->loadTextDomain();
+    $this->assertTrue($this->meta->loadedTextDomain);
+  }
+
+  function test_it_will_not_load_text_domain_if_already_loaded() {
+    $this->meta->translate('Foo');
+    $this->meta->loadedTextDomain = 'already_loaded';
+
+    $this->meta->translate('Foo');
+    $this->assertEquals('already_loaded', $this->meta->loadedTextDomain);
+  }
+
+  function test_it_can_translate_single_string() {
+    $this->meta->translate('Lorem');
+    $actual = $this->meta->localizedStrings['Lorem'];
+    $this->assertEquals('Lorem', $actual);
+  }
+
+  function test_it_can_translate_single_string_with_aliases() {
+    $this->assertEquals('Lorem', $this->meta->_('Lorem'));
+    $this->assertEquals('Lorem', $this->meta->t('Lorem'));
+    $this->assertEquals('Lorem', $this->meta->__('Lorem'));
+  }
+
+  function test_it_can_return_localized_strings() {
+    $this->container->object('pluginMeta', new PluginMetaA('my-plugin.php'));
+    $this->meta = $this->container->lookup('pluginMeta');
+    $actual = $this->meta->getLocalizedStrings();
+
+    $this->assertTrue($this->meta->loadedTextDomain);
+    $this->assertEquals('Lorem', $actual['Lorem']);
+    $this->assertEquals('Ipsum', $actual['Ipsum']);
+    $this->assertEquals('Dolor', $actual['Dolor']);
+  }
+
+  function test_it_needs_upgrade_if_stored_version_is_absent() {
+    $optionsStore = $this->container->lookup('optionsStore');
+    $optionsStore->clear();
+
+    $this->assertTrue($this->meta->needsUpgrade());
+  }
+
+  function test_it_does_not_need_upgrade_if_stored_version_equals_current_version() {
+    $optionsStore = $this->container->lookup('optionsStore');
+    $optionsStore->setOption('pluginVersion', '1.5.0');
+    $this->meta->version = '1.5.0';
+
+    $this->assertFalse($this->meta->needsUpgrade());
+  }
+
+  function test_it_does_not_need_upgrade_if_stored_version_is_greated_than_current_version() {
+    $optionsStore = $this->container->lookup('optionsStore');
+    $optionsStore->setOption('pluginVersion', '2.5.0');
+    $this->meta->version = '1.5.0';
+
+    $this->assertFalse($this->meta->needsUpgrade());
+  }
+
+  function test_it_needs_upgrade_if_stored_version_is_less_than_current_version() {
+    $optionsStore = $this->container->lookup('optionsStore');
+    $optionsStore->setOption('pluginVersion', '1.4.9');
+    $this->meta->version = '1.5.0';
+
+    $this->assertTrue($this->meta->needsUpgrade());
+  }
+
+  function test_it_does_not_read_an_upgrade_after_it_has_been_upgraded() {
+    $optionsStore = $this->container->lookup('optionsStore');
+    $optionsStore->setOption('pluginVersion', '1.4.9');
+    $this->meta->version = '1.5.0';
+
+    $optionsStore->save();
+    $optionsStore->reload();
+
+    $this->assertFalse($this->meta->needsUpgrade());
+  }
+}
+
+class PluginMetaA extends PluginMeta {
+  function localize() {
+    $this->_('Lorem');
+    $this->_('Ipsum');
+    $this->_('Dolor');
+  }
 }

@@ -56,6 +56,22 @@ class SentryTest extends \WP_UnitTestCase {
     $this->assertFalse($this->sentry->isValidMethod());
   }
 
+  function test_it_uses_GET_for_corresponding_valid_method() {
+    $_GET['foo'] = 'bar';
+    $this->sentry->setValidMethod('GET');
+    $actual = $this->sentry->getRequestParams();
+    $actual = $actual['foo'];
+    $this->assertEquals('bar', $actual);
+  }
+
+  function test_it_uses_POST_for_corresponding_valid_method() {
+    $_POST['foo'] = 'bar';
+    $this->sentry->setValidMethod('POST');
+    $actual = $this->sentry->getRequestParams();
+    $actual = $actual['foo'];
+    $this->assertEquals('bar', $actual);
+  }
+
   function test_it_can_store_referer() {
     $this->sentry->setValidReferer('foo');
     $this->assertEquals('foo', $this->sentry->getValidReferer());

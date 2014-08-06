@@ -69,12 +69,9 @@ class PageTest extends \WP_UnitTestCase {
   }
 
   function test_it_has_localized_strings_for_page() {
-    $this->pluginMeta->localizedStrings = array(
-      'foo' => 'bar'
-    );
     $strings = $this->page->getPageContext(null);
 
-    $this->assertEquals('bar', $strings['foo']);
+    $this->assertTrue(is_array($strings));
   }
 
   function test_it_does_not_have_debug_true_in_production() {
